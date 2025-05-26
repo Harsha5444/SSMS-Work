@@ -1,5 +1,6 @@
 --[Clayton_ACCESSAssessment_VW]
 select StateStudentID,count(StateStudentID) from (
+
 SELECT  a.SchoolYear
 	,b.SchoolIdentifier as School_Number
 	,b.SchoolName
@@ -50,7 +51,7 @@ CROSS APPLY
         ('Oral', Proficiency_Level_Oral, Scale_Score_Oral),
         ('Overall', Proficiency_Level_Overall, Scale_Score_Overall)
 ) AS UnpivotedData ([StrandArea], Proficiency_Level, Scale_Score)
-where a.StateStudentID ='9974732031'
+--where a.StateStudentID ='9974732031'
 
 )a group by StateStudentID
 order by StateStudentID desc	

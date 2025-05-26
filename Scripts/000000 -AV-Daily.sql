@@ -298,3 +298,5 @@ join RoleDashboard rd on r.roleid = rd.roleid
 join Dashboard d on d.DashboardId = rd.DashboardId
 where r.rolename = 'District Admin' and d.StatusId = 1 and rd.StatusId = 1
 
+--this is push test
+

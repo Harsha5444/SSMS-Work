@@ -1,6 +1,6 @@
 EXEC SP_DEPENDS GSHS_ES_675_Response_Vw;   --dbo.HCS_PSO_Student_Connectivity_ES_Vw
-EXEC sp_helptext fn_DashboardReportsDetails;
-SELECT * FROM dbo.fn_DashboardReportsDetails(4)
+EXEC sp_helptext fn_DashboardReportDetails;
+SELECT * FROM dbo.fn_DashboardReportDetails(4)
 
 --==============================================================================================================================
 SET TRANSACTION ISOLATION LEVEL READ UNCOMMITTED
@@ -117,4 +117,20 @@ FROM ReportDetails rd
 CROSS APPLY OPENJSON(rd.ReportFileDetails, '$.AdvanceFilter') WITH (AliasName NVARCHAR(100) '$.AliasName') AS j
 WHERE rd.ReportDetailsName = 'EOC Algebra by School and Achievement Level '
 ORDER BY j.AliasName;
+
+
+--===================================================================================================
+select rd.*
+from ReportDetails rd
+cross apply openjson(rd.Reportfiledetails, '$.ValueColumn') 
+     with (Code nvarchar(100)) as vc
+where vc.Code = 'PercentageDistinctCount'   -- change this to filter other codes
+or vc.Code = 'PercentageCount' 
+or vc.Code = 'Percentage'
+
+select distinct vc.Code
+from ReportDetails rd
+cross apply openjson(rd.Reportfiledetails, '$.ValueColumn') 
+     with (Code nvarchar(100)) as vc
+where vc.Code is not null
 

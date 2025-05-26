@@ -5,7 +5,7 @@ AS (
 		,CHARINDEX('<div id="dashboardchart', DashboardContent) AS start_pos
 		,DashboardContent
 	FROM dashboard WITH (NOLOCK)
-	WHERE tenantid = 50
+	WHERE tenantid = 4
 	
 	UNION ALL
 	
@@ -111,4 +111,22 @@ LEFT JOIN (
 LEFT JOIN ViewDependencies vd
 	ON idmds_parent.tablename = vd.view_name
 LEFT JOIN ViewDependencies child_vd
-	ON idmds_child.tablename = child_vd.view_name
+	ON idmds_child.tablename = child_vd.view_name 
+Order By GroupName	
+OPTION (MAXrecursion 1000)
+
+select Reportfiledetails from ReportDetails 
+
+select rd.*
+from ReportDetails rd
+cross apply openjson(rd.Reportfiledetails, '$.ValueColumn') 
+     with (Code nvarchar(100)) as vc
+where vc.Code = 'PercentageDistinctCount'   -- change this to filter other codes
+or vc.Code = 'PercentageCount' 
+or vc.Code = 'Percentage'
+
+select distinct vc.Code
+from ReportDetails rd
+cross apply openjson(rd.Reportfiledetails, '$.ValueColumn') 
+     with (Code nvarchar(100)) as vc
+where vc.Code is not null

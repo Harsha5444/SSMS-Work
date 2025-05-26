@@ -56,4 +56,4 @@ CROSS APPLY
 )a group by StateStudentID
 order by StateStudentID desc	
 
-select * from main.Clayton_AnalyticVue_ICStudents where stateid = '9974732031'
+

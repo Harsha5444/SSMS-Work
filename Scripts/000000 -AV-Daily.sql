@@ -84,7 +84,7 @@ FROM
 WHERE 1=1
 	--AND TABLE_SCHEMA IN ('idm')
     --AND TABLE_SCHEMA IN ('main','stage')  
-    AND table_name LIKE '%dashboard%' 
+    AND table_name LIKE '%ell%' 
 ORDER BY 
     TABLE_SCHEMA, 
     table_name;

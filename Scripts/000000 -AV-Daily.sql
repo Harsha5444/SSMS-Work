@@ -298,5 +298,25 @@ join RoleDashboard rd on r.roleid = rd.roleid
 join Dashboard d on d.DashboardId = rd.DashboardId
 where r.rolename = 'District Admin' and d.StatusId = 1 and rd.StatusId = 1
 
---this is push test
+--==================================================================================
+exec sp_depends Clayton_SecondaryEnrollmentDetails_View
+exec sp_depends Clayton_SecondaryEnrollment_Programs
+exec sp_depends Usp_Clayton_SecondaryEnrollment_Programs_Loading
+
+select schoolyear, studentnumber,startdate, enddate, schoolname, OverrideSchoolName 
+from Clayton_SecondaryEnrollmentDetails_View
+where studentNumber in 
+(select studentNumber from (select schoolyear, studentnumber,startdate, enddate, schoolname, OverrideSchoolName,ROW_NUMBER ()over (partition by studentnumber order by studentnumber desc) as rn
+from Clayton_SecondaryEnrollmentDetails_View )a where rn = 2)
+
+select studentnumber , count(studentnumber)
+from Clayton_SecondaryEnrollmentDetails_View
+group by studentnumber having count(studentnumber) > 1
+
+select 96*2
+--3819
+select * from stage.Clayton_AnalyticVue_ICStudents_NoAction where  studentnumber = '0326430' and schoolyear = 2025 and batchid = 3817
+
+
+SELECT * FROM Clayton_ACT_Assessment_VW
 

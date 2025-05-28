@@ -1,8 +1,8 @@
-SELECT DISTINCT ca.REPORTED_SCH_YEAR AS SchoolYear,
-	ca.DISTRICT_NAME AS DistrictName,
+SELECT ca.REPORTED_SCH_YEAR AS SchoolYear,
+	ps.leaname AS DistrictName,
 	ca.DISTRICT_NUMBER AS LeaIdentifer,
 	ca.SCHOOL_NAME AS SchoolName,
-	ca.SCHOOL_NUMBER AS SchoolIdentifier,
+	ps.SchoolIdentifier AS SchoolIdentifier,
 	ca.GTID AS StateStudentID,
 	ca.LAST_NAME AS LastName,
 	ca.FIRST_NAME AS FirstName,
@@ -47,8 +47,3 @@ FROM main.clayton_Access ca
 JOIN clayton_studentprogram ps ON ca.GTID = ps.StateStudentId
 	AND ca.schoolyear = ps.schoolyear
 	AND ca.tenantid = ps.tenantid
-
-
-
---This is Pull Test
---This is Push Test

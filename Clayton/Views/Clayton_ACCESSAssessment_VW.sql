@@ -49,5 +49,35 @@ CROSS APPLY
         ('Overall', Proficiency_Level_Overall, Scale_Score_Overall)
 ) AS UnpivotedData ([StrandArea], Proficiency_Level, Scale_Score)
 
+--============================[Previous Counts]============================
+select Count(*) from Clayton_ACCESSAssessment_VW --150192
+select  distinct StateStudentID  from Clayton_ACCESSAssessment_VW  --9117
+select  schoolyear, count(distinct StateStudentID)  from Clayton_ACCESSAssessment_VW group by SchoolYear
+--2023	5988
+--2024	6294
+--2025	6374
 
+--============================[Current Counts]============================
+select Count(*) from #temp_test_access  --151856
+select distinct StateStudentID from #temp_test_access  --9122
+select  schoolyear, count(distinct StateStudentID) from #temp_test_access group by SchoolYear
+--2023	6063
+--2024	6410
+--2025	6330
+
+--============================[Main table Counts]============================
+select schoolyear, count(distinct StateStudentID)  from main.Clayton_AnalyticVue_ACCESS  group by SchoolYear
+--2023	6063
+--2024	6410
+--2025	6506
+
+select distinct StateStudentID from  main.Clayton_AnalyticVue_ACCESS where schoolyear = 2025
+except
+select distinct StateStudentID from #temp_test_access  where schoolyear = 2025
+--176
+select 6506-6330  --176 students are missing  
+
+select * from main.Clayton_AnalyticVue_ACCESS where StateStudentID = '1859498872'
+select * from Clayton_Studentprogram where statestudentid = '1859498872'
+select * from main.clayton_analyticvue_icstudents where stateid = '1859498872'
 

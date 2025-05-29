@@ -40,6 +40,8 @@ select distinct BatchId from Clayton_BatchProcessingStatus where 1=1 and Schedul
 select * from fn_DashboardReportsDetails(50) where groupname like '%mile%'
 --[USP_ClaytonStudents5YR_Loading]
 select * from Clayton_Students_5YR
+select * from [Clayton_ProcessLogStatistics]
+
 --=================================================================================================
 SELECT 
     OBJECT_SCHEMA_NAME(o.object_id) AS schema_name,
@@ -84,7 +86,7 @@ FROM
 WHERE 1=1
 	--AND TABLE_SCHEMA IN ('idm')
     --AND TABLE_SCHEMA IN ('main','stage')  
-    AND table_name LIKE '%ell%' 
+    AND table_name LIKE '%frlell%' 
 ORDER BY 
     TABLE_SCHEMA, 
     table_name;
@@ -319,4 +321,3 @@ select * from stage.Clayton_AnalyticVue_ICStudents_NoAction where  studentnumber
 
 
 SELECT * FROM Clayton_ACT_Assessment_VW
-

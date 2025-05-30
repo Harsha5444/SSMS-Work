@@ -1,4 +1,4 @@
-SELECT ca.REPORTED_SCH_YEAR AS SchoolYear,
+SELECT  ca.REPORTED_SCH_YEAR AS SchoolYear,
 	ps.leaname AS DistrictName,
 	ca.DISTRICT_NUMBER AS LeaIdentifer,
 	ca.SCHOOL_NAME AS SchoolName,
@@ -43,8 +43,8 @@ SELECT ca.REPORTED_SCH_YEAR AS SchoolYear,
 	ps.Race AS Race,
 	ps.SchoolCategory AS SchoolCategory,
 	ps.Magnet AS Magnet
-FROM main.clayton_Access ca
-JOIN clayton_studentprogram ps ON ca.GTID = ps.StateStudentId
+FROM main.clayton_Access ca 
+LEFT JOIN clayton_studentprogram ps ON ca.GTID = ps.StateStudentId
 	AND ca.schoolyear = ps.schoolyear
 	AND ca.tenantid = ps.tenantid
 
@@ -182,7 +182,7 @@ JOIN clayton_studentprogram ps ON ca.GTID = ps.StateStudentId
 --	ps.SchoolCategory AS SchoolCategory,
 --	ps.Magnet AS Magnet
 --FROM main.clayton_Access ca 
---JOIN clayton_studentprogram ps ON ca.GTID = ps.StateStudentId
+--LEFT JOIN clayton_studentprogram ps ON ca.GTID = ps.StateStudentId
 --	AND ca.schoolyear = ps.schoolyear
 --	AND ca.tenantid = ps.tenantid
 

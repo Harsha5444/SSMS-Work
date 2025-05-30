@@ -33,15 +33,15 @@ select * from idm.apperrorlog order by 1 desc
 use AnalyticVue_clayton
 select * from idm.tenant
 select * from idm.apperrorlog order by 1 desc
-select * from Clayton_ReportDetails
-select * from Clayton_DashboardReportDetails where 1 = 1 and dataset = 'Clayton_Assessment_EOC_DS'
+select * from Clayton_ReportDetails order by 1 desc
+select *from Clayton_DashboardReportDetails where 1 = 1 and groupname = 'Attendance'
 select * from Clayton_ReportDetails
 select distinct BatchId from Clayton_BatchProcessingStatus where 1=1 and ScheduledDay='Today'  order by 1 desc 
 select * from fn_DashboardReportsDetails(50) where groupname like '%mile%'
 --[USP_ClaytonStudents5YR_Loading]
 select * from Clayton_Students_5YR
 select * from [Clayton_ProcessLogStatistics]
-
+select * from errorlogforusp order by 1 desc
 --=================================================================================================
 SELECT 
     OBJECT_SCHEMA_NAME(o.object_id) AS schema_name,
@@ -52,7 +52,7 @@ FROM
     sys.objects o
 WHERE 
     o.type IN ('V', 'P') -- V = View, P = Stored Procedure
-    AND OBJECT_DEFINITION(o.object_id) LIKE '%Clayton_AnalyticVue_ICFRLELL%';
+    AND OBJECT_DEFINITION(o.object_id) LIKE '%main.clayton_act%';
 
 --==================================================================================================
 SELECT 
@@ -86,7 +86,7 @@ FROM
 WHERE 1=1
 	--AND TABLE_SCHEMA IN ('idm')
     --AND TABLE_SCHEMA IN ('main','stage')  
-    AND table_name LIKE '%frlell%' 
+    AND table_name LIKE '%attendance%' 
 ORDER BY 
     TABLE_SCHEMA, 
     table_name;
@@ -318,6 +318,5 @@ group by studentnumber having count(studentnumber) > 1
 select 96*2
 --3819
 select * from stage.Clayton_AnalyticVue_ICStudents_NoAction where  studentnumber = '0326430' and schoolyear = 2025 and batchid = 3817
-
 
 SELECT * FROM Clayton_ACT_Assessment_VW

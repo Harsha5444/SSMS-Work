@@ -46,8 +46,22 @@ LEFT JOIN Clayton_StudentProgram c
 	ON a.DistrictStudentId = c.DistrictStudentId
 		AND a.TenantId = c.TenantId
 		AND a.schoolyear = c.schoolyear
-WHERE a.Assessmentcode = 'ACT'  
+WHERE a.Assessmentcode = 'ACT' and  a.schoolyear = 2025
 --5145
 --5141
 
-select * from Clayton_ACT_Assessment_VW
+--4346
+--4346
+select * from AggrptAssessmentSubgroupData where schoolyear = 2025 and assessmentcode = 'act'
+
+select * from Clayton_ACT_Assessment_VW where schoolyear = 2025
+
+select * from main.clayton_act where schoolyear = 2021
+
+select * from Main.K12StudentGenericAssessment where schoolyear = 2021 and assessmentcodeid in (
+select AssessmentDetailsId from main.assessmentdetails where assessmentcode = 'act' and schoolyear = 2021
+)
+
+
+select * from [Import_ACT_K12Studentgenericassessment_Vw_50] where schoolyear = 2021
+--ID_StateAssign

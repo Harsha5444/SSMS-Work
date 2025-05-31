@@ -34,7 +34,7 @@ use AnalyticVue_clayton
 select * from idm.tenant
 select * from idm.apperrorlog order by 1 desc
 select * from Clayton_ReportDetails order by 1 desc
-select *from Clayton_DashboardReportDetails where 1 = 1 and groupname = 'Attendance'
+select *from Clayton_DashboardReportDetails where 1 = 1 and dashboardname = 'attendance'
 select * from Clayton_ReportDetails
 select distinct BatchId from Clayton_BatchProcessingStatus where 1=1 and ScheduledDay='Today'  order by 1 desc 
 select * from fn_DashboardReportsDetails(50) where groupname like '%mile%'
@@ -301,8 +301,8 @@ join Dashboard d on d.DashboardId = rd.DashboardId
 where r.rolename = 'District Admin' and d.StatusId = 1 and rd.StatusId = 1
 
 --==================================================================================
-exec sp_depends Clayton_SecondaryEnrollmentDetails_View
 exec sp_depends Clayton_SecondaryEnrollment_Programs
+exec sp_depends Clayton_SecondaryEnrollmentDetails_View
 exec sp_depends Usp_Clayton_SecondaryEnrollment_Programs_Loading
 
 select schoolyear, studentnumber,startdate, enddate, schoolname, OverrideSchoolName 
@@ -319,4 +319,54 @@ select 96*2
 --3819
 select * from stage.Clayton_AnalyticVue_ICStudents_NoAction where  studentnumber = '0326430' and schoolyear = 2025 and batchid = 3817
 
-SELECT * FROM Clayton_ACT_Assessment_VW
+SELECT top 100* FROM Clayton_students_5yr
+
+
+select schoolyear,grade,count(distinct DistrictStudentId) from dbo.Clayton_DisciplineIncident_Programs
+where schoolyear = 2024
+group by schoolyear , grade
+order by schoolyear,grade
+
+select * from reportdetails order by 1 desc
+
+,case when ic.schooloverride is not null then 'Override School'
+			 else 'Home School' end as SchoolType
+
+
+exec sp_depends Clayton_Attendance_Age_Programs
+exec sp_depends Clayton_StudentsAbsentRange_programs
+
+dbo.Clayton_Attendance_Agefilter_Vw
+
+select * from dbo.Clayton_StudentsAbsentRange_Vw
+
+select *from Clayton_DashboardReportDetails where 1 = 1 and dashboardname = 'attendance'
+
+
+select * from idm.AppErrorLog order by 1 desc
+
+select * from ReportDetails order by 1 desc
+
+
+
+--Clayton_OverrideAttendance_Agefilter_Vw
+--Clayton_Override_StudentsAbsentRange_Vw
+--Clayton_AttendanceStatus_VW
+
+
+--1342	Override Attendance by Status
+--1341	Override Students by Absent Range
+--1340	Override Attendance by School Category
+--1339	Override Attendance by Race Level
+--1338	Override Attendance by Grade Level
+--1337	Home School CCRPI Projected Attendance Rate
+--1336	Home School Absent
+--1335	Home School Students with Perfect Attendance
+--1334	Home School Attendance
+--1333	Override CCRPI Projected Attendance Rate
+--1332	Override Attendance Range Student List
+--1331	Override Absent
+--1330	Override Students with Perfect Attendance
+--1329	Override Attendance List
+--1328	Override Attendance
+--1327	Attendance by Status Type

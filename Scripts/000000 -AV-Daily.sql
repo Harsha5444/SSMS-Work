@@ -52,7 +52,7 @@ FROM
     sys.objects o
 WHERE 
     o.type IN ('V', 'P') -- V = View, P = Stored Procedure
-    AND OBJECT_DEFINITION(o.object_id) LIKE '%main.clayton_act%';
+    AND OBJECT_DEFINITION(o.object_id) LIKE '%UPDATE ss set statusid=3,ModifiedDate=GETDATE()%';
 
 --==================================================================================================
 SELECT 
@@ -370,3 +370,259 @@ select * from ReportDetails order by 1 desc
 --1329	Override Attendance List
 --1328	Override Attendance
 --1327	Attendance by Status Type
+
+
+--ALTER TABLE Clayton_DisciplineIncident_Programs
+--ADD [Override] varchar (150),[SchoolOverrideType] varchar (150),[OverrideSchoolName] varchar (150)
+
+--ALTER TABLE Clayton_DisciplineIncident_Programs
+--alter column EIP varchar(10) null 
+--ALTER TABLE Clayton_DisciplineIncident_Programs
+--alter column GAA varchar(10) null
+--ALTER TABLE Clayton_DisciplineIncident_Programs
+--alter column REIP varchar(10) null
+--ALTER TABLE Clayton_DisciplineIncident_Programs
+--alter column IEP varchar(10) null
+
+
+--,CASE WHEN orr.[SchoolType] = 'Home School' THEN 'No' WHEN orr.[SchoolType] = 'Override School' THEN 'Yes' ELSE NULL END AS [Override]
+--,orr.[SchoolType] AS [SchoolOverrideType]
+--,orr.[OverrideSchoolName]
+
+--LEFT JOIN Clayton_SecondaryEnrollment_Programs orr
+--    ON orr.[studentNumber] = a.[districtstudentiD]
+--        AND orr.schoolyear = a.schoolyear
+--        AND orr.tenantid = a.tenantid
+--        AND orr.schoolnumber = a.schoolidentifier
+
+--[Usp_Clayton_DisciplineIncident_Programs_IOS_Loading]
+--[Usp_Clayton_DisciplineIncident_Programs_ODR_Loading]
+--[Usp_Clayton_DisciplineIncident_Programs_Loading]
+
+
+SELECT qsqt.query_sql_text
+    ,rs.first_execution_time
+    ,rs.last_execution_time
+    ,rs.count_executions
+    ,rs.avg_duration
+    ,rs.avg_cpu_time
+    ,rsi.start_time AS stats_interval_start
+    ,rsi.end_time AS stats_interval_end
+FROM sys.query_store_query_text AS qsqt
+INNER JOIN sys.query_store_query AS qsq
+    ON qsqt.query_text_id = qsq.query_text_id
+INNER JOIN sys.query_store_plan AS qsp
+    ON qsq.query_id = qsp.query_id
+INNER JOIN sys.query_store_runtime_stats AS rs
+    ON qsp.plan_id = rs.plan_id
+INNER JOIN sys.query_store_runtime_stats_interval AS rsi
+    ON rs.runtime_stats_interval_id = rsi.runtime_stats_interval_id
+WHERE rs.first_execution_time >= '2025-06-03 11:00:00'
+    AND rs.last_execution_time <= '2025-06-03 11:20:00'
+    AND qsqt.query_sql_text LIKE '%idm.ddauser%'
+
+
+
+
+WITH icsource AS (
+    SELECT								
+        ic.[SchoolNumber],
+        ic.[stateID],
+        ic.[studentNumber],
+        ic.[grade],
+        ic.[startDate],
+        ic.[endDate],
+        ic.[SchoolName],
+        ic.[active],
+        ic.[servicetype],
+        ic.[TenantId],
+        ic.[schoolOverride],
+        ic.[SchoolYear] 
+    FROM main.Clayton_AnalyticVue_ICStudents ic
+)
+
+--Students with multiple records in same year (any service type)
+--SELECT 
+--    'Multiple Records Same Year - All Service Types' AS analysis_type,
+--    schoolyear,
+--    studentnumber,
+--    COUNT(studentnumber) as record_count,
+--    STUFF((SELECT DISTINCT ', ' + servicetype 
+--           FROM icsource i2 
+--           WHERE i2.schoolyear = i1.schoolyear AND i2.studentnumber = i1.studentnumber 
+--           FOR XML PATH('')), 1, 2, '') as service_types,
+--    STUFF((SELECT DISTINCT ', ' + CAST(SchoolNumber AS VARCHAR(10))
+--           FROM icsource i3 
+--           WHERE i3.schoolyear = i1.schoolyear AND i3.studentnumber = i1.studentnumber 
+--           FOR XML PATH('')), 1, 2, '') as school_numbers
+--FROM icsource i1
+--GROUP BY schoolyear, studentnumber
+--HAVING COUNT(studentnumber) > 1
+--ORDER BY schoolyear, studentnumber;
+
+--Students with multiple records in Primary service type only
+--SELECT 
+--    'Multiple Records Same Year - Primary Service Only' AS analysis_type,
+--    schoolyear,
+--    studentnumber,
+--    COUNT(studentnumber) as record_count,
+--    STUFF((SELECT DISTINCT ', ' + CAST(SchoolNumber AS VARCHAR(10))
+--           FROM icsource i2 
+--           WHERE i2.schoolyear = i1.schoolyear AND i2.studentnumber = i1.studentnumber AND i2.servicetype = 'p'
+--           FOR XML PATH('')), 1, 2, '') as school_numbers
+--FROM icsource i1
+--WHERE servicetype = 'p'
+--GROUP BY schoolyear, studentnumber
+--HAVING COUNT(studentnumber) > 1
+--ORDER BY schoolyear, studentnumber;
+
+--Students with multiple records in Secondary service type only
+--SELECT 
+--    'Multiple Records Same Year - Secondary Service Only' AS analysis_type,
+--    schoolyear,
+--    studentnumber,
+--    COUNT(studentnumber) as record_count,
+--    STUFF((SELECT DISTINCT ', ' + CAST(SchoolNumber AS VARCHAR(10))
+--           FROM icsource i2 
+--           WHERE i2.schoolyear = i1.schoolyear AND i2.studentnumber = i1.studentnumber AND i2.servicetype = 's'
+--           FOR XML PATH('')), 1, 2, '') as school_numbers
+--FROM icsource i1
+--WHERE servicetype = 's'
+--GROUP BY schoolyear, studentnumber
+--HAVING COUNT(studentnumber) > 1
+--ORDER BY schoolyear, studentnumber;
+
+--Students with Secondary records but NO Primary records in same year
+--SELECT 
+--    'Secondary Only Students (No Primary in Same Year)' AS analysis_type,
+--    s.schoolyear,
+--    s.studentnumber,
+--    COUNT(s.studentnumber) as secondary_record_count,
+--    STUFF((SELECT DISTINCT ', ' + CAST(s2.SchoolNumber AS VARCHAR(10))
+--           FROM icsource s2 
+--           WHERE s2.schoolyear = s.schoolyear AND s2.studentnumber = s.studentnumber AND s2.servicetype = 's'
+--           FOR XML PATH('')), 1, 2, '') as secondary_schools
+--FROM icsource s
+--WHERE s.servicetype = 's'
+--AND NOT EXISTS (
+--    SELECT 1 
+--    FROM icsource p 
+--    WHERE p.studentnumber = s.studentnumber 
+--    AND p.schoolyear = s.schoolyear 
+--    AND p.servicetype = 'p'
+--)
+--GROUP BY s.schoolyear, s.studentnumber
+--ORDER BY s.schoolyear, s.studentnumber;
+
+-- Students in both Primary and Secondary same year
+SELECT 
+    'Students in Both Primary and Secondary Same Year' AS analysis_type,
+    p.schoolyear,
+    p.studentnumber,
+    COUNT(DISTINCT CASE WHEN p.servicetype = 'p' THEN p.SchoolNumber END) as primary_schools,
+    COUNT(DISTINCT CASE WHEN s.servicetype = 's' THEN s.SchoolNumber END) as secondary_schools,
+    STUFF((SELECT DISTINCT ', ' + CAST(p2.SchoolNumber AS VARCHAR(10))
+           FROM icsource p2 
+           WHERE p2.schoolyear = p.schoolyear AND p2.studentnumber = p.studentnumber AND p2.servicetype = 'p'
+           FOR XML PATH('')), 1, 2, '') as primary_school_numbers,
+    STUFF((SELECT DISTINCT ', ' + CAST(s2.SchoolNumber AS VARCHAR(10))
+           FROM icsource s2 
+           WHERE s2.schoolyear = p.schoolyear AND s2.studentnumber = p.studentnumber AND s2.servicetype = 's'
+           FOR XML PATH('')), 1, 2, '') as secondary_school_numbers
+FROM icsource p
+INNER JOIN icsource s ON p.studentnumber = s.studentnumber AND p.schoolyear = s.schoolyear
+WHERE p.servicetype = 'p' AND s.servicetype = 's'
+GROUP BY p.schoolyear, p.studentnumber
+ORDER BY p.schoolyear, p.studentnumber;
+
+-- Students with schoolOverride NOT NULL in Primary service
+SELECT 
+    'Primary Students with School Override' AS analysis_type,
+    schoolyear,
+    studentnumber,
+    SchoolNumber,
+    schoolOverride,
+    SchoolName,
+    grade,
+    active
+FROM icsource
+WHERE servicetype = 'p' 
+AND schoolOverride IS NOT NULL
+ORDER BY schoolyear, studentnumber;
+
+-- Students with schoolOverride NOT NULL in Secondary service
+SELECT 
+    'Secondary Students with School Override' AS analysis_type,
+    schoolyear,
+    studentnumber,
+    SchoolNumber,
+    schoolOverride,
+    SchoolName,
+    grade,
+    active
+FROM icsource
+WHERE servicetype = 's' 
+AND schoolOverride IS NOT NULL
+ORDER BY schoolyear, studentnumber;
+
+--select * from main.Clayton_AnalyticVue_ICStudents where studentnumber = '0401318'    
+
+
+
+WITH UpdatedJSON AS (
+    SELECT 
+        rd.ReportDetailsId,
+        rd.ReportFileDetails,
+        CAST(rd.ReportFileDetails AS NVARCHAR(MAX)) AS OriginalJSON,
+        JSON_QUERY(rd.ReportFileDetails, '$.AdvanceFilter') AS AdvanceFilterJSON
+    FROM reportdetails rd
+    WHERE EXISTS (
+        SELECT 1
+        FROM OPENJSON(rd.ReportFileDetails, '$.AdvanceFilter') 
+        WITH (
+            DisplayName NVARCHAR(100),
+            DefaultValue NVARCHAR(100)
+        ) AS j
+        WHERE j.DisplayName = 'TestTerm'
+          AND j.DefaultValue = 'Winter'
+    )
+)
+--UPDATE rd
+--SET ReportFileDetails = JSON_MODIFY(OriginalJSON, '$.AdvanceFilter', 
+    (
+        SELECT 
+            JSON_QUERY('[' + STRING_AGG(
+                CASE 
+                    WHEN JSON_VALUE(value, '$.DisplayName') = 'TestTerm'
+                         AND JSON_VALUE(value, '$.DefaultValue') = 'Winter'
+                    THEN JSON_MODIFY(value, '$.DefaultValue', 'Spring')
+                    ELSE value
+                END, ','
+            ) + ']')
+        FROM OPENJSON(AdvanceFilterJSON)
+    )
+)
+FROM UpdatedJSON rd;
+
+
+
+SELECT 
+    o.type_desc AS ObjectType,
+    SCHEMA_NAME(o.schema_id) AS SchemaName,
+    o.name AS ObjectName,
+    o.create_date,
+    o.modify_date
+FROM 
+    sys.sql_expression_dependencies d
+INNER JOIN 
+    sys.objects o ON d.referencing_id = o.object_id
+INNER JOIN 
+    sys.objects ro ON d.referenced_id = ro.object_id
+WHERE 
+    ro.name = 'Clayton_SecondaryEnrollment_Programs'
+    AND ro.type = 'U' -- User tables only
+    AND o.type IN ('V', 'P', 'FN', 'IF', 'TF') -- Views, Stored Procedures, Functions
+ORDER BY 
+    o.type_desc, 
+    SchemaName, 
+    ObjectName;

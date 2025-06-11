@@ -62,3 +62,4 @@ SELECT
     REPLACE(ProposedJson, '''', '''''') + 
     ''' WHERE ReportDetailsId = ' + CAST(ReportDetailsId AS VARCHAR(10)) + ';' AS UpdateStatement
 FROM ReportData;
+

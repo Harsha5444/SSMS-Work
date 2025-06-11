@@ -626,3 +626,418 @@ ORDER BY
     o.type_desc, 
     SchemaName, 
     ObjectName;
+
+
+WITH ObjectDependencies AS (
+    SELECT 
+        o.object_id,
+        o.name AS ObjectName,
+        o.type_desc AS ObjectType,
+        SCHEMA_NAME(o.schema_id) AS SchemaName,
+        referenced.name AS ReferencedTable
+    FROM sys.sql_expression_dependencies d
+    INNER JOIN sys.objects o ON d.referencing_id = o.object_id
+    INNER JOIN sys.objects referenced ON d.referenced_id = referenced.object_id
+    WHERE 
+        referenced.name IN ('AggRptK12StudentDetails', 'K12StudentDailyAttendance')
+        AND referenced.type = 'U' -- Only user tables
+        AND o.type IN ('V', 'P', 'FN', 'IF', 'TF') -- View, SP, scalar/table functions
+)
+SELECT 
+    d1.ObjectName,
+    d1.SchemaName,
+    d1.ObjectType
+FROM ObjectDependencies d1
+JOIN ObjectDependencies d2 
+    ON d1.object_id = d2.object_id
+    AND d1.ReferencedTable = 'AggRptK12StudentDetails'
+    AND d2.ReferencedTable = 'K12StudentDailyAttendance'
+ORDER BY d1.ObjectType, d1.SchemaName, d1.ObjectName;
+
+
+
+
+SELECT 
+    rd.ReportDetailsId,
+    rd.reportdetailsname,
+    rd.ReportFileDetails,
+    CAST(rd.ReportFileDetails AS NVARCHAR(MAX)) AS OriginalJSON,
+    JSON_QUERY(rd.ReportFileDetails, '$.SeriesColumn') AS SeriesColumnJSON,
+    JSON_QUERY(rd.ReportFileDetails, '$.CategoryColumns') AS CategoryColumnsJSON
+FROM reportdetails rd
+WHERE 
+    rd.reportdetailsname LIKE '%map%' 
+    AND (
+        EXISTS (
+            SELECT 1
+            FROM OPENJSON(rd.ReportFileDetails, '$.SeriesColumn') AS j
+            WHERE j.value = 'CCPS_Projected_Proficiency' OR j.value = 'proflevel'
+        )
+        OR
+        EXISTS (
+            SELECT 1
+            FROM OPENJSON(rd.ReportFileDetails, '$.CategoryColumns') AS j
+            WHERE j.value = 'CCPS_Projected_Proficiency' OR j.value = 'proflevel'
+        )
+    )
+
+
+
+select * from Clayton_SecondaryEnrollment_Programs
+
+SELECT 
+    o.type_desc AS ObjectType,
+    SCHEMA_NAME(o.schema_id) AS SchemaName,
+    o.name AS ObjectName,
+    o.create_date,
+    o.modify_date
+FROM 
+    sys.sql_expression_dependencies d
+INNER JOIN 
+    sys.objects o ON d.referencing_id = o.object_id
+INNER JOIN 
+    sys.objects ro ON d.referenced_id = ro.object_id
+WHERE 
+    ro.name = 'Clayton_SecondaryEnrollment_Programs'
+    AND ro.type = 'U' -- User tables only
+    AND o.type IN ('V', 'P', 'FN', 'IF', 'TF') -- Views, Stored Procedures, Functions
+ORDER BY 
+    o.type_desc, 
+    SchemaName, 
+    ObjectName;
+
+--Clayton_Override_StudentsAbsentRange_Vw
+--Clayton_OverrideAttendance_Agefilter_Vw
+
+select * from ReportDetails 
+where ReportDetailsId in
+(
+844
+,845
+,1353
+,1361
+,1362
+,1363
+,1364
+,1365
+,1366
+,1383
+,1385
+,1389
+,1392
+,1403
+,1404
+,1405
+,1406
+,1407
+,1408
+,1409
+,1420
+,1421
+,1422
+,1423
+,1424
+,1425
+)
+order by 1 desc
+
+
+
+SELECT rd.ReportDetailsId, j.*
+FROM ReportDetails rd
+CROSS APPLY OPENJSON(rd.filterby) WITH (
+    Filter nvarchar(100) '$.Filter',
+    ComaprisonValue nvarchar(100) '$.ComaprisonValue'
+) AS j
+WHERE rd.filterby IS NOT NULL 
+  AND ISJSON(rd.filterby) = 1
+  and j.Filter = 'SchoolOverrideType' 
+  AND j.ComaprisonValue = 'Home School'
+
+
+SELECT rd.ReportDetailsId, j.*
+FROM ReportDetails rd
+CROSS APPLY OPENJSON(rd.filterby) WITH (
+    Filter nvarchar(100) '$.Filter',
+    ComaprisonValue nvarchar(100) '$.ComaprisonValue'
+) AS j
+WHERE rd.filterby IS NOT NULL 
+  AND ISJSON(rd.filterby) = 1
+  and j.Filter = 'SchoolOverrideType' 
+  AND (j.ComaprisonValue = 'Override School' or  j.ComaprisonValue = 'Home School')
+
+SELECT 
+    rd.ReportDetailsId,
+    filterby,
+    JSON_MODIFY(
+        filterby, 
+        '$[' + CAST(j.[key] AS nvarchar(10)) + '].ComaprisonValue' COLLATE SQL_Latin1_General_CP1_CI_AS, 
+        'Servicing School (Attending)' COLLATE SQL_Latin1_General_CP1_CI_AS
+    ) AS Updated_JSON
+FROM ReportDetails rd
+CROSS APPLY OPENJSON(rd.filterby) j
+CROSS APPLY OPENJSON(j.value) WITH (
+    Filter nvarchar(100) '$.Filter',
+    ComaprisonValue nvarchar(100) '$.ComaprisonValue'
+) AS parsed
+WHERE rd.filterby IS NOT NULL 
+  AND ISJSON(rd.filterby) = 1
+  AND parsed.Filter = 'SchoolOverrideType' 
+  AND parsed.ComaprisonValue = 'Zoned Home School'
+
+
+select ReportDetailsId from (select * from reportdetails
+where reportdetailsname like '%Home School/Override%'
+union 
+select * from reportdetails
+where reportdetailsname like '%Override School%'
+union 
+select * from reportdetails
+where reportdetailsname like '%Home School%' and reportdetailsname not like '%Home School/Override%')a where filterby <> ''
+except
+
+SELECT rd.ReportDetailsId
+FROM ReportDetails rd
+CROSS APPLY OPENJSON(rd.filterby) WITH (
+    Filter nvarchar(100) '$.Filter',
+    ComaprisonValue nvarchar(100) '$.ComaprisonValue'
+) AS j
+WHERE rd.filterby IS NOT NULL 
+  AND ISJSON(rd.filterby) = 1
+  and j.Filter = 'SchoolOverrideType' 
+  AND (j.ComaprisonValue = 'Override School' or  j.ComaprisonValue = 'Home School')
+
+  
+select * from Clayton_DashboardReportDetails where groupname = 'Override/Home School'
+
+
+
+
+WITH UpdatedJSON
+AS (
+	SELECT rd.ReportDetailsId
+		,rd.ReportFileDetails
+		,CAST(rd.ReportFileDetails AS NVARCHAR(MAX)) AS OriginalJSON
+		,JSON_QUERY(rd.ReportFileDetails, '$.AdvanceFilter') AS AdvanceFilterJSON
+	FROM reportdetails rd
+	WHERE EXISTS (
+			SELECT 1
+			FROM OPENJSON(rd.ReportFileDetails, '$.AdvanceFilter') WITH (
+					DisplayName NVARCHAR(100)
+					,DefaultValue NVARCHAR(100)
+					) AS j
+			WHERE j.DisplayName = 'SchoolYear'
+				AND j.DefaultValue = '2023' 
+				--AND j.DefaultValue = '2023,2023'
+			)
+		AND ReportDetailsId IN (888, 884, 878, 875, 874, 873, 863, 862, 861, 454, 451, 448, 444, 362, 361, 360, 359, 358, 357, 356, 321, 320, 319, 318)
+	)
+--UPDATE rd
+--SET ReportFileDetails = JSON_MODIFY(OriginalJSON, '$.AdvanceFilter', 
+select JSON_MODIFY(OriginalJSON, '$.AdvanceFilter',
+    (
+        SELECT 
+            JSON_QUERY('[' + STRING_AGG(
+                CASE 
+                    WHEN JSON_VALUE(value, '$.DisplayName') = 'SchoolYear'
+                         AND JSON_VALUE(value, '$.DefaultValue') = '2023'
+                    THEN JSON_MODIFY(value, '$.DefaultValue', '2023, 2022')
+                    ELSE value
+                END, ','
+            ) + ']')
+        FROM OPENJSON(AdvanceFilterJSON)
+    )
+)
+FROM UpdatedJSON rd;
+
+
+WITH UpdatedJSON AS (
+    SELECT rd.ReportDetailsId
+        ,rd.ReportFileDetails
+        ,CAST(rd.ReportFileDetails AS NVARCHAR(MAX)) AS OriginalJSON
+        ,JSON_QUERY(rd.ReportFileDetails, '$.AdvanceFilter') AS AdvanceFilterJSON
+    FROM reportdetails rd
+    WHERE EXISTS (
+            SELECT 1
+            FROM OPENJSON(rd.ReportFileDetails, '$.AdvanceFilter') WITH (
+                    DisplayName NVARCHAR(100)
+                    ,DefaultValue NVARCHAR(100)
+                    ) AS j
+            WHERE j.DisplayName = 'TestTerm'
+            )
+        AND ReportDetailsId IN (888, 884, 878, 875, 874, 873, 863, 862, 861, 454, 451, 448, 444, 362, 361, 360, 359, 358, 357, 356, 321, 320, 319, 318)
+),
+ProcessedFilters AS (
+    SELECT 
+        rd.ReportDetailsId,
+        rd.OriginalJSON,
+        '[' + STRING_AGG(
+            CASE 
+                WHEN af.DisplayName = 'TestTerm'
+                THEN JSON_OBJECT(
+                    'DisplayName': af.DisplayName,
+                    'ColumnName': af.ColumnName,
+                    'AliasName': af.AliasName,
+                    'SortOrder': af.SortOrder,
+                    'FiledId': af.FiledId,
+                    'DefaultValue': NULL
+                )
+                ELSE JSON_OBJECT(
+                    'DisplayName': af.DisplayName,
+                    'ColumnName': af.ColumnName,
+                    'AliasName': af.AliasName,
+                    'SortOrder': af.SortOrder,
+                    'FiledId': af.FiledId,
+                    'DefaultValue': af.DefaultValue
+                )
+            END, ','
+        ) + ']' AS NewAdvanceFilter
+    FROM UpdatedJSON rd
+    CROSS APPLY OPENJSON(rd.AdvanceFilterJSON) WITH (
+        DisplayName NVARCHAR(100),
+        ColumnName NVARCHAR(100),
+        AliasName NVARCHAR(100),
+        SortOrder INT,
+        FiledId NVARCHAR(50),
+        DefaultValue NVARCHAR(100)
+    ) af
+    GROUP BY rd.ReportDetailsId, rd.OriginalJSON
+)
+ Preview the changes:
+SELECT 
+    ReportDetailsId,
+    OriginalJSON AS BeforeUpdate,
+    JSON_MODIFY(OriginalJSON, '$.AdvanceFilter', JSON_QUERY(NewAdvanceFilter)) AS AfterUpdate
+FROM ProcessedFilters;
+
+ --UPDATE rd
+ --SET ReportFileDetails = JSON_MODIFY(pf.OriginalJSON, '$.AdvanceFilter', JSON_QUERY(pf.NewAdvanceFilter))
+ --FROM reportdetails rd
+ --INNER JOIN ProcessedFilters pf ON rd.ReportDetailsId = pf.ReportDetailsId;
+
+
+
+ 
+WITH UpdatedJSON AS (
+    SELECT rd.ReportDetailsId
+        ,rd.ReportFileDetails
+        ,CAST(rd.ReportFileDetails AS NVARCHAR(MAX)) AS OriginalJSON
+        ,JSON_QUERY(rd.ReportFileDetails, '$.CategoryColumns') AS CategoryColumnsJSON
+    FROM reportdetails rd
+    WHERE JSON_QUERY(rd.ReportFileDetails, '$.CategoryColumns') IS NOT NULL
+        AND ReportDetailsId IN (888, 884, 878, 875, 874, 873, 863, 862, 861, 454, 451, 448, 444, 362, 361, 360, 359, 358, 357, 356, 321, 320, 319, 318)
+        -- Only process records where SchoolYear is NOT already present
+        AND NOT EXISTS (
+            SELECT 1 
+            FROM OPENJSON(rd.ReportFileDetails, '$.CategoryColumns') 
+            WHERE value = 'SchoolYear'  -- Removed quotes since value is already a string
+        )
+),
+ProcessedCategories AS (
+    SELECT 
+        rd.ReportDetailsId,
+        rd.OriginalJSON,
+        -- Create new CategoryColumns array by appending SchoolYear
+        '[' + STRING_AGG('"' + value + '"', ',') + ',"SchoolYear"]' AS NewCategoryColumns
+    FROM UpdatedJSON rd
+    CROSS APPLY OPENJSON(rd.CategoryColumnsJSON) cc
+    GROUP BY rd.ReportDetailsId, rd.OriginalJSON
+)
+-- Preview the changes:
+--SELECT 
+--    ReportDetailsId,
+--    JSON_QUERY(OriginalJSON, '$.CategoryColumns') AS BeforeCategoryColumns,
+--    NewCategoryColumns AS AfterCategoryColumns,
+--    OriginalJSON AS BeforeUpdate,
+--    JSON_MODIFY(OriginalJSON, '$.CategoryColumns', JSON_QUERY(NewCategoryColumns)) AS AfterUpdate
+--FROM ProcessedCategories;
+
+ --UPDATE rd
+ --SET ReportFileDetails = JSON_MODIFY(pc.OriginalJSON, '$.CategoryColumns', JSON_QUERY(pc.NewCategoryColumns))
+ --FROM reportdetails rd
+ --INNER JOIN ProcessedCategories pc ON rd.ReportDetailsId = pc.ReportDetailsId;
+
+
+ 
+-- Generate INSERT statements for all reports that need SchoolYear column
+WITH ReportsNeedingSchoolYear AS (
+    SELECT DISTINCT rd.ReportDetailsId, rd.TenantId, rrr.DomainRelatedViewId
+    FROM reportdetails rd
+        join rptDomainRelatedViews rrr on rrr.DomainRelatedViewId = rd.DomainRelatedViewId
+
+    WHERE rd.ReportDetailsId IN (888, 884, 878, 875, 874, 873, 863, 862, 861, 454, 451, 448, 444, 362, 361, 360, 359, 358, 357, 356, 321, 320, 319, 318)
+    -- Only include reports that don't already have SchoolYear in ReportColumns
+    AND NOT EXISTS (
+        SELECT 1 
+        FROM ReportColumns rc
+        INNER JOIN RptViewFields rvf ON rc.RptViewFieldsId = rvf.RptViewFieldsId
+        WHERE rc.ReportDetailsId = rd.ReportDetailsId 
+        AND rvf.ColumnName = '[SchoolYear]'
+    )
+    -- And have CategoryColumns that we've updated
+    AND EXISTS (
+        SELECT 1 
+        FROM OPENJSON(rd.ReportFileDetails, '$.CategoryColumns') 
+        WHERE value = 'SchoolYear'
+    )
+),
+InsertStatements AS (
+    SELECT 
+        rns.ReportDetailsId,
+        rns.TenantId,
+        rns.DomainRelatedViewId,
+        -- Generate the INSERT statement
+        'INSERT INTO ReportColumns(' +
+        'ReportDetailsId, IsAggregate, AggregateId, IsCategory, IsSeries, ' +
+        'RptViewFieldsId, FileTemplateFieldId, IsCustom, SortOrder, TenantId, ' +
+        'StatusId, CreatedBy, CreatedDate, ModifiedBy, ModifiedDate, ComboChartType) ' +
+        'VALUES (' + 
+        CAST(rns.ReportDetailsId AS VARCHAR(10)) + ', ' +    -- ReportDetailsId
+        '0, ' +                                              -- IsAggregate
+        'NULL, ' +                                           -- AggregateId  
+        '1, ' +                                              -- IsCategory (1 since it's in CategoryColumns)
+        '0, ' +                                              -- IsSeries
+        CAST(rvf.RptViewFieldsId AS VARCHAR(10)) + ', ' + -- RptViewFieldsId (use 2933 as fallback)
+        'NULL, ' +                                           -- FileTemplateFieldId
+        '0, ' +                                              -- IsCustom
+        CAST(COALESCE(maxSort.MaxSortOrder + 1, 1) AS VARCHAR(5)) + ', ' + -- SortOrder
+        CAST(rns.TenantId AS VARCHAR(10)) + ', ' +           -- TenantId
+        '1, ' +                                              -- StatusId
+        '''AnalyticVue.Admin@Clayton'', ' +                  -- CreatedBy
+        'GETDATE(), ' +                                      -- CreatedDate
+        'NULL, ' +                                           -- ModifiedBy
+        'NULL, ' +                                           -- ModifiedDate
+        'NULL);' AS InsertStatement                          -- ComboChartType
+    FROM ReportsNeedingSchoolYear rns
+    JOIN RptViewFields rvf ON rvf.ColumnName = '[SchoolYear]' and rns.DomainRelatedViewId = rvf.DomainRelatedViewId
+    JOIN (
+        -- Get the current max SortOrder for each report
+        SELECT ReportDetailsId, MAX(SortOrder) AS MaxSortOrder
+        FROM ReportColumns 
+        WHERE ReportDetailsId IN (SELECT ReportDetailsId FROM ReportsNeedingSchoolYear)
+        GROUP BY ReportDetailsId
+    ) maxSort ON maxSort.ReportDetailsId = rns.ReportDetailsId
+)
+-- Display the INSERT statements
+SELECT 
+    ReportDetailsId,
+    TenantId,
+    DomainRelatedViewId,
+    InsertStatement
+FROM InsertStatements
+ORDER BY ReportDetailsId;
+
+-- Alternative: Execute all INSERTs at once (uncomment to use)
+-- DECLARE @sql NVARCHAR(MAX) = '';
+-- SELECT @sql = @sql + InsertStatement + CHAR(13) + CHAR(10)
+-- FROM InsertStatements;
+-- EXEC sp_executesql @sql;
+
+-- Verification query to check what was inserted
+-- SELECT rc.*, rvf.FieldName, rvf.AliasName
+-- FROM ReportColumns rc
+-- INNER JOIN RptViewFields rvf ON rc.RptViewFieldsId = rvf.RptViewFieldsId
+-- WHERE rc.ReportDetailsId IN (888, 884, 878, 875, 874, 873, 863, 862, 861, 454, 451, 448, 444, 362, 361, 360, 359, 358, 357, 356, 321, 320, 319, 318)
+-- AND rvf.FieldName = 'SchoolYear'
+-- ORDER BY rc.ReportDetailsId;
+

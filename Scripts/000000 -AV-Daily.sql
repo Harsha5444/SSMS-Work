@@ -53,6 +53,28 @@ FROM
 WHERE 
     o.type IN ('V', 'P') -- V = View, P = Stored Procedure
     AND OBJECT_DEFINITION(o.object_id) LIKE '%UPDATE ss set statusid=3,ModifiedDate=GETDATE()%';
+--==================================================================================================
+
+SELECT 
+    o.type_desc AS ObjectType,
+    SCHEMA_NAME(o.schema_id) AS SchemaName,
+    o.name AS ObjectName,
+    o.create_date,
+    o.modify_date
+FROM 
+    sys.sql_expression_dependencies d
+INNER JOIN 
+    sys.objects o ON d.referencing_id = o.object_id
+INNER JOIN 
+    sys.objects ro ON d.referenced_id = ro.object_id
+WHERE 
+    ro.name = 'Clayton_SecondaryEnrollment_Programs'
+    AND ro.type = 'U' -- User tables only
+    AND o.type IN ('V', 'P', 'FN', 'IF', 'TF') -- Views, Stored Procedures, Functions
+ORDER BY 
+    o.type_desc, 
+    SchemaName, 
+    ObjectName;
 
 --==================================================================================================
 SELECT 
@@ -1040,4 +1062,103 @@ ORDER BY ReportDetailsId;
 -- WHERE rc.ReportDetailsId IN (888, 884, 878, 875, 874, 873, 863, 862, 861, 454, 451, 448, 444, 362, 361, 360, 359, 358, 357, 356, 321, 320, 319, 318)
 -- AND rvf.FieldName = 'SchoolYear'
 -- ORDER BY rc.ReportDetailsId;
+
+SELECT ds.[Monthname] AS [Monthname]
+	,cast(Avg(cast(ISNULL(ds.[Presentpercentage], 0) AS DECIMAL(15, 1))) AS DECIMAL(15, 1)) AS [Presentpercentage]
+	,cast(Avg(cast(ISNULL(ds.[AbsenteeismPercentage], 0) AS DECIMAL(15, 1))) AS DECIMAL(15, 1)) AS [AbsenteeismPercentage]
+FROM dbo.ClaytonAttendanceDateRangeDS AS ds WITH (NOLOCK)
+LEFT JOIN dbo.Clayton_MontName_SortOrder_Vw
+	ON ds.[Monthname] = dbo.Clayton_MontName_SortOrder_Vw.MonthName
+		AND ds.tenantid = dbo.Clayton_MontName_SortOrder_Vw.tenantid
+WHERE (
+		(ISNUMERIC(ISNULL(ds.[Presentpercentage], 0)) = 1)
+		AND (ISNUMERIC(ISNULL(ds.[AbsenteeismPercentage], 0)) = 1)
+		AND (ds.[SchoolYear] IN ('2025'))
+		AND (ds.TenantId = 50)
+		)
+GROUP BY ds.[Monthname]
+	,dbo.Clayton_MontName_SortOrder_Vw.SortOrder
+ORDER BY dbo.Clayton_MontName_SortOrder_Vw.SortOrder ASC
+	,ds.[Monthname] ASC;
+
+
+--CREATE VIEW [dbo].[Clayton_Attendance_Vw_DELETE]  --32819414  --33667547
+--AS
+SELECT SD.SchoolYear
+	,SD.LEAIdentifier
+	,SD.SchoolIdentifier
+	,SD.DistrictStudentId
+	,attendancedate
+	,MembershipDaysCount AS TotalDays
+	,PresentDaysCount AS TotalDaysPresent
+	,AbsentDaysCount AS TotalDaysAbsent
+	,AbsentPercentage AS AbsenteeismPercentage
+	,Presentrate AS Presentpercentage
+	,DATENAME(mm, AttendanceDate) AS 'Monthname'
+	,sdg.FirstName
+	,sdg.LastorSurname
+	,sdg.StudentFullName
+	,sdg.BirthDate
+	,sdg.LeaName
+	,sdg.SchoolName
+	,sdg.Gender
+	,sdg.Grade
+	,sdg.SchoolCategory
+	,sdg.Race
+	,sdg.GiftedandTalented
+	,sdg.ELL
+	,sdg.StateStudentId
+	,sdg.FRL
+	,sdg.DisabilityReason AS Disability
+	,sdg.SpecialEdStatus
+	,sdg.[504Status]
+	,sdg.Ethnicity
+	,sdg.HispanicLatino
+	,sdg.EllProgram
+	,sdg.TenantId
+	,NULL AS IEP
+	,sdg.AgeGroup
+	,CASE WHEN Agegroup < 6 THEN 'Students under age 6' WHEN Agegroup >= 6
+			AND Agegroup <= 15 THEN 'Students age between 6 and 15' WHEN Agegroup >= 16 THEN 'Students age 16 and over' END AS AgeCategory
+	,ca.GAA
+	,ca.EIP
+	,ca.Homeless
+	,ca.REIP
+	,CASE WHEN orr.[SchoolType] = 'Servicing School (Attending)' THEN 'No' WHEN orr.[SchoolType] = 'Zoned Home School' THEN 'Yes' ELSE NULL END AS [Override]
+	,orr.[SchoolType] AS [SchoolOverrideType]
+	,orr.[OverrideSchoolName]
+FROM [Main].[K12StudentDailyAttendance] SD
+INNER JOIN aggrptk12studentdetails SDG
+	ON SD.DistrictStudentId = SDG.DistrictStudentId
+		AND sd.LEAIdentifier = sdg.LEAIdentifier
+		AND sd.SchoolIdentifier = sdg.SchoolIdentifier
+		AND sd.SchoolYear = sdg.SchoolYear
+		AND sd.TenantId = sdg.TenantId
+LEFT JOIN Clayton_StudentProgram ca
+	ON SD.DistrictStudentId = ca.DistrictStudentId
+		AND SD.SchoolYear = ca.SchoolYear
+		AND SD.TenantId = ca.TenantId
+		AND SD.SchoolIdentifier = ca.SchoolIdentifier
+LEFT JOIN Clayton_SecondaryEnrollment_Programs orr
+	ON orr.[studentNumber] = SD.[districtstudentiD]
+		AND orr.schoolyear = SD.schoolyear
+		AND orr.tenantid = SD.tenantid
+		AND orr.schoolnumber = SD.schoolidentifier
+WHERE sdg.MembershipDaysCount IS NOT NULL
+
+select schoolyear,districtstudentid from Clayton_StudentProgram group by schoolyear , districtstudentid having count(districtstudentid)>1
+select schoolyear,studentnumber,schoolnumber from Clayton_SecondaryEnrollment_Programs group by schoolyear , studentnumber,schoolnumber having count(studentnumber)>1
+
+select * from clayton_secondaryenrollment_programs where studentnumber = '0485444' and schoolyear = 2025 
+select * from main.clayton_analyticvue_icstudents where studentnumber = '0485444' and schoolyear = 2025 
+
+select schoolyear,studentnumber,schoolnumber 
+from Clayton_SecondaryEnrollment_Programs 
+where schoolOverride is not null
+group by schoolyear , studentnumber,schoolnumber having count(studentnumber)>1
+
+select schoolyear,studentnumber 
+from Clayton_SecondaryEnrollment_Programs 
+where schoolOverride is not null
+group by schoolyear,studentnumber having count(DISTINCT schoolOverride)>1
 

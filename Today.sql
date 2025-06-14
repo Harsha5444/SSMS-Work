@@ -102,9 +102,25 @@ select count(distinct GTID) from clayton_assessment_eog where schoolyear = 2023 
 select count(distinct GTID) from clayton_assessment_eog where schoolyear = 2024  --22405
 
 
+select distinct GTID_RPT  from main.clayton_eog where schoolyear = 2022 and GTID_RPT in (
+select distinct GTID_RPT from main.clayton_eog where schoolyear = 2022
+except
+select distinct GTID from clayton_assessment_eog where schoolyear = 2022   
+)
+
+--select distinct SchCode_RPT from main.clayton_eog where SchCode_RPT is not null
+--except
+--select distinct schoolidentifier from main.k12school
+
+--select * from main.clayton_eog where SchCode_RPT is null
+
+select * from main.clayton_analyticvue_icstudents where stateid = '1690558016'
 
 
+select distinct GTID_RPT  from main.clayton_eog where schoolyear = 2024 and GTID_RPT in (
+select distinct GTID_RPT from main.clayton_eog where schoolyear = 2024
+except
+select distinct GTID from clayton_assessment_eog where schoolyear = 2024
+)
 
-
-
-
+select * from main.clayton_analyticvue_icstudents where stateid = '1690558016'

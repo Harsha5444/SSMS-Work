@@ -1,144 +1,110 @@
+-- ===========================
+-- 2022 QUERIES
+-- ===========================
 
-SELECT 
-    o.type_desc AS ObjectType,
-    SCHEMA_NAME(o.schema_id) AS SchemaName,
-    o.name AS ObjectName,
-    o.create_date,
-    o.modify_date
-FROM 
-    sys.sql_expression_dependencies d
-INNER JOIN 
-    sys.objects o ON d.referencing_id = o.object_id
-INNER JOIN 
-    sys.objects ro ON d.referenced_id = ro.object_id
-WHERE 
-    ro.name = 'Clayton_Attendance_Age_Programs'
-    AND ro.type = 'U' -- User tables only
-    AND o.type IN ('V', 'P', 'FN', 'IF', 'TF') -- Views, Stored Procedures, Functions
-ORDER BY 
-    o.type_desc, 
-    SchemaName, 
-    ObjectName;
+-- Basic EOC data for 2022
+select * from main.clayton_eoc where schoolyear = 2022 and GTID_RPT in (
+    select distinct GTID_RPT from main.clayton_eoc where schoolyear = 2022
+    except
+    select distinct GTID from dbo.clayton_assessment_eoc where schoolyear = 2022
+)
 
-Exec sp_depends Usp_Clayton_Attendance_Age_Programs_Loading
+-- Assessment EOC data for 2022
+select * from dbo.clayton_assessment_eoc where schoolyear = 2022 and GTID='1004095468'
 
-SELECT 1561 + 2450
+-- School information for 2022
+select distinct schoolname,schoolnumber from main.clayton_analyticvue_icstudents where schoolyear = 2022 and schoolname like '%elite%'
+select * from main.k12school where schoolyear = 2022 and NameofInstitution like '%elite%'
 
-SELECT *
-FROM Clayton_DashboardReportDetails
-WHERE dashboardname = 'Attendance - Override'
+-- School identifier mapping for 2022
+select distinct SchCode_RPT,schname_rpt from [Main].[Clayton_EOC] where schoolyear = 2022 and SchCode_RPT in (
+    select distinct SchCode_RPT from [Main].[Clayton_EOC] where schoolyear = 2022
+    intersect
+    select distinct SchoolIdentifier from Main.K12School where schoolyear = 2022
+)
 
-SELECT *
-FROM Clayton_Attendance_Age_Programs
-WHERE schooloverridetype LIKE '%zone%'
+select distinct SchoolIdentifier,NameofInstitutiON from Main.K12School where schoolyear = 2022 and SchoolIdentifier in (
+    select distinct SchCode_RPT from [Main].[Clayton_EOC] where schoolyear = 2022
+    intersect
+    select distinct SchoolIdentifier from Main.K12School where schoolyear = 2022
+)
 
-SELECT DISTINCT studentnumber
-FROM clayton_secondaryenrollment_programs
-WHERE schooltype LIKE '%zone%'
-	AND servicetype = 'p' --3166
+-- Complex join query for 2022
+select e.* FROM [Main].[Clayton_EOC] e WITH (NOLOCK)
+INNER JOIN (
+    SELECT * FROM (
+        SELECT *, row_number() OVER (PARTITION BY schoolyear, studentnumber ORDER BY startdate) AS rn
+        FROM main.clayton_analyticvue_icstudents
+    ) a WHERE rn = 1
+) AS s ON e.GTID_RPT = s.Stateid AND e.schoolyear = s.schoolyear
+INNER JOIN main.k12school AS k ON RIGHT('0000' + e.SchCode_RPT, 4) = k.SchoolIdentifier AND e.schoolyear = k.SchoolYear
+where e.schoolyear = 2022
 
+-- Import view query for 2022
+select * from Import_EOC_K12Studentgenericassessment_Vw_50 where schoolyear = 2022 and districtstudentid = '0428224'
 
-SELECT districtstudentid
-FROM AggRptK12StudentDetails
-WHERE schoolyear = 2025
-	AND districtstudentid IN (
-		SELECT DISTINCT studentnumber
-		FROM clayton_secondaryenrollment_programs
-		WHERE schooltype LIKE '%zone%'
-			AND servicetype = 'p'
-		)
+-- ===========================
+-- 2023 QUERIES
+-- ===========================
 
-SELECT DISTINCT studentnumber
-FROM clayton_secondaryenrollment_programs
-WHERE schooltype LIKE '%zone%'
-	AND servicetype = 'p'
-	AND studentnumber NOT IN (
-		SELECT districtstudentid
-		FROM AggRptK12StudentDetails
-		WHERE schoolyear = 2025
-			AND districtstudentid IN (
-				SELECT DISTINCT studentnumber
-				FROM clayton_secondaryenrollment_programs
-				WHERE schooltype LIKE '%zone%'
-					AND servicetype = 'p'
-				)
-		)
+-- Basic EOG and EOC data for 2023
+select * from main.clayton_eog where schoolyear = 2023
+select * from dbo.clayton_assessment_eoc where schoolyear = 2023
 
-SELECT *
-FROM main.clayton_analyticvue_icstudents
-WHERE studentnumber = '1523230'
-	AND schoolyear = 2025
+-- GTID comparison for 2023
+select distinct GTID_RPT from main.clayton_eoc where schoolyear = 2023
+except
+select distinct GTID from dbo.clayton_assessment_eoc where schoolyear = 2023
 
-SELECT *
-FROM AggRptK12StudentDetails
-WHERE districtstudentid IN (
-		SELECT DISTINCT studentnumber
-		FROM clayton_secondaryenrollment_programs
-		WHERE schooltype LIKE '%zone%'
-			AND servicetype = 'p'
-			AND studentnumber NOT IN (
-				SELECT districtstudentid
-				FROM AggRptK12StudentDetails
-				WHERE schoolyear = 2025
-					AND districtstudentid IN (
-						SELECT DISTINCT studentnumber
-						FROM clayton_secondaryenrollment_programs
-						WHERE schooltype LIKE '%zone%'
-							AND servicetype = 'p'
-						)
-				)
-		)
-	AND schoolyear = 2025
+-- ===========================
+-- 2024 QUERIES
+-- ===========================
 
+-- Stored procedure execution for 2024
+--exec [USP_Clayton_Assessment_EOC] 2024
 
-select * from main.Clayton_AnalyticVue_ICStudents
-where studentnumber in (
-		SELECT DISTINCT studentnumber
-		FROM clayton_secondaryenrollment_programs
-		WHERE schooltype LIKE '%zone%'
-			AND servicetype = 'p'
-			AND studentnumber NOT IN (
-				SELECT districtstudentid
-				FROM AggRptK12StudentDetails
-				WHERE schoolyear = 2025
-					AND districtstudentid IN (
-						SELECT DISTINCT studentnumber
-						FROM clayton_secondaryenrollment_programs
-						WHERE schooltype LIKE '%zone%'
-							AND servicetype = 'p'
-						)
-				)
-		)
-	AND schoolyear = 2025 and enddate is null
+-- ===========================
+-- MULTI-YEAR QUERIES
+-- ===========================
+
+-- School identifier intersection (all years)
+select distinct RIGHT('0000' + SchCode_RPT, 4) from [Main].[Clayton_EOC] 
+intersect
+select distinct SchoolIdentifier from Main.K12School
+
+-- Missing records across multiple years
+SELECT DISTINCT e.GTID, e.schoolyear FROM dbo.clayton_assessment_eoc e
+WHERE e.schoolyear IN (2022, 2023, 2024)
+AND NOT EXISTS (
+    SELECT 1 FROM dbo.Import_EOC_K12Studentgenericassessment_Vw_50 v
+    WHERE v.schoolyear = e.schoolyear AND v.districtstudentid = e.studentnumber
+)
+
+-- Specific record lookups
+select * from main.clayton_eoc where schoolyear = 2022 and GTID_RPT = '1004095468'
+
+---===============================================================================================
+
+select count(*) from main.clayton_eog where schoolyear = 2022  --23839
+select count(*) from main.clayton_eog where schoolyear = 2023  --23120
+select count(*) from main.clayton_eog where schoolyear = 2024  --22421
+
+select count(*) from clayton_assessment_eog where schoolyear = 2022  --59978
+select count(*) from clayton_assessment_eog where schoolyear = 2023  --58048
+select count(*) from clayton_assessment_eog where schoolyear = 2024  --56344
+
+select count(distinct GTID_RPT) from main.clayton_eog where schoolyear = 2022  --23839
+select count(distinct GTID_RPT) from main.clayton_eog where schoolyear = 2023  --23119
+select count(distinct GTID_RPT) from main.clayton_eog where schoolyear = 2024  --22419
+
+select count(distinct GTID) from clayton_assessment_eog where schoolyear = 2022  --23823
+select count(distinct GTID) from clayton_assessment_eog where schoolyear = 2023  --23119
+select count(distinct GTID) from clayton_assessment_eog where schoolyear = 2024  --22405
 
 
 
-SELECT *
-FROM main.clayton_analyticvue_icstudents
-WHERE studentnumber = '1523230'
-	AND schoolyear = 2025
-
-SELECT 2450 + 424
-	--select * from Clayton_Attendance_Age_Programs where schooloverridetype is null
-
-select * from StaffSummaryViewFields
-
-select cast(AbsentDay as date) as AbsentDay,* from main.clayton_attendancedata where studentnumber = '0334057' order by cast(AbsentDay as date)
-
-select distinct schooltype from clayton_secondaryenrollment_programs
 
 
-Servicing School (Attending) / Zoned Home School 
 
-select * from reportdetails where reportdetailsid = 1351
-
-select * from dashboard
-
-SELECT *
-FROM Clayton_DashboardReportDetails
-WHERE groupname = 'Override/Home School'
-
-
-select * from Clayton_DashboardReportDetails where GroupName='Servicing School (Attending) / Zoned Home School'
 
 

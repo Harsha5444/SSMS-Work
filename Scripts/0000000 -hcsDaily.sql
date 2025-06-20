@@ -134,3 +134,27 @@ cross apply openjson(rd.Reportfiledetails, '$.ValueColumn')
      with (Code nvarchar(100)) as vc
 where vc.Code is not null
 
+set statistics time on 
+SELECT distinct ds.[Present Percentage] as [Present Percentage]  FROM dbo.AttendanceSummary7yrsAV as ds with (nolock)   WHERE  ((ds.[SchoolYear] IN ('2025')) AND (ds.[StudentNumber] IN ('229842')) AND (ds.TenantId = 4))  
+
+SELECT Count(ds.[courseName]) as [courseName]  FROM dbo.HCSDSCOREgradingDetailSC as ds with (nolock)   WHERE  ((ds.[failingGrade] = 'True') AND (ds.[gradeLevel] IN ('01', '02', '03', '04', '05', 'KK')) AND (ds.[termName] = 'T4') AND (ds.[gradingTask] = 'Year End Average') AND (ds.[schoolYear] IN ('2025')) AND (ds.[studentNumber] IN ('229842')) AND (ds.TenantId = 4))  
+
+SELECT cast(Sum(cast(ds.[resolutionLengthSchoolDays] as decimal(15,1)))  as decimal(15,1)) as [resolutionLengthSchoolDays]  FROM dbo.HCSDSCOREBehavior7yrv2STbehRecordsOnly as ds with (nolock)   WHERE  ((ISNUMERIC(ds.[resolutionLengthSchoolDays]) = 1) AND (ds.[resolutionCodeDesc] = 'OSS') AND (ds.[schoolYear] IN ('2025')) AND (ds.[studentNumber] IN ('229842')) AND (ds.TenantId = 4))  
+
+SELECT [TestType],[TestAdministration],[ARM] From (SELECT DISTINCT  ds.[TestType] as [TestType], ds.[TestAdministration] as [TestAdministration],ds.[ARM] as [ARM],dbo.Ref_Amira_TestAdministration.SortOrder as [Ref_Amira_TestAdministration.SortOrder],ds.[TermDescription]  FROM dbo.AMIRAAVueDS as ds with (nolock)  LEFT JOIN dbo.Ref_Amira_TestAdministration ON ds.[TermDescription] = dbo.Ref_Amira_TestAdministration.TermDescription AND  ds.tenantid =dbo.Ref_Amira_TestAdministration.tenantid    WHERE  ((ds.[Language] NOT IN ('Spanish')) AND (ds.[SchoolYear] IN ('2025')) AND (ds.[StudentNumber] IN ('229842')) AND (ds.TenantId = 4))   ) as T ORDER BY T.[TestType] ASC,T.[Ref_Amira_TestAdministration.SortOrder] ASC,T.[TermDescription] ASC,T.[TestAdministration] ASC 
+
+--=============================================================================================================
+
+SELECT [courseName],[teacherName],[termName],[scoreNumeric] From (SELECT DISTINCT  ds.[courseName] as [courseName], ds.[teacherName] as [teacherName], ds.[termName] as [termName],ds.[scoreNumeric] as [scoreNumeric]  FROM dbo.HCSDSCOREgradingDetailST as ds with (nolock)   WHERE  ((ds.[gradingTask] IN ('Term Average')) AND (ds.[schoolYear] IN ('2025')) AND (ds.[studentNumber] IN ('229842')) AND (ds.TenantId = 4))   ) as T ORDER BY T.[courseName] ASC,T.[termName] ASC 
+
+SELECT [courseName],[teacherName],[termName],[scoreNumeric] From (SELECT DISTINCT  ds.[courseName] as [courseName], ds.[teacherName] as [teacherName], ds.[termName] as [termName],ds.[scoreNumeric] as [scoreNumeric]  FROM dbo.HCSDSCOREgradingDetailST as ds with (nolock)   WHERE  ((ds.[gradingTask] = 'Year End Average') AND (ds.[schoolYear] IN ('2025')) AND (ds.[studentNumber] IN ('229842')) AND (ds.TenantId = 4))   ) as T ORDER BY T.[courseName] ASC,T.[termName] ASC 
+
+Exec sp_depends AttendanceSummary7yrsAV
+Exec sp_depends HCSDSCOREgradingDetailSC
+Exec sp_depends HCSDSCOREBehavior7yrv2STbehRecordsOnly
+Exec sp_depends AMIRAAVueDS  
+Exec sp_depends HCSDSCOREgradingDetailST 
+
+
+--HCSDSCOREBehavior7yrv2STbehRecordsOnly
+

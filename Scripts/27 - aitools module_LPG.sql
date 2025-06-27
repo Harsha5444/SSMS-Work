@@ -58,15 +58,15 @@ BEGIN
 						UNION ALL 
 						SELECT 'AIT' ModuleCode, 'ADMN' AS PermissionCode
 						UNION ALL
-						SELECT 'SLP' ModuleCode, 'CRET' AS PermissionCode
+						SELECT 'WKS' ModuleCode, 'CRET' AS PermissionCode
 						UNION ALL 
-						SELECT 'SLP' ModuleCode, 'DELT' AS PermissionCode
+						SELECT 'WKS' ModuleCode, 'DELT' AS PermissionCode
 						UNION ALL 
-						SELECT 'SLP' ModuleCode, 'EDIT' AS PermissionCode
+						SELECT 'WKS' ModuleCode, 'EDIT' AS PermissionCode
 						UNION ALL 
-						SELECT 'SLP' ModuleCode, 'READ' AS PermissionCode
+						SELECT 'WKS' ModuleCode, 'READ' AS PermissionCode
 						UNION ALL 
-						SELECT 'SLP' ModuleCode, 'ADMN' AS PermissionCode	
+						SELECT 'WKS' ModuleCode, 'ADMN' AS PermissionCode	
 				) a
 
 
@@ -86,9 +86,9 @@ BEGIN
 						NULL as [IsDynamicPage],NULL as [Icon], N'AITools' as [ShortName], 1 as [IsDisplayInRoleMatrix], N'AIT' as [Code], 120 as [SortOrder], 
 						1 as [IsDefault], @TenantId as TenantId, 1 as [StatusId], N'DDAUser@DDA' as [CreatedBy],getdate() as [CreatedDate]
 						union
-						select 51 as [ModuleId], 1 as ISSecondary, N'School Improvement Plan' as [ModuleName], N'School Improvement Plan' as [ModuleDesc],  
-						50 as [ParentModuleId], N'/SchoolAnalysis/SchoolPlan' as [PageLink], 
-						NULL as [IsDynamicPage],NULL as [Icon], N'School Improvement Plan' as [ShortName], 1 as [IsDisplayInRoleMatrix], N'SLP' as [Code], 121 as [SortOrder], 
+						select 51 as [ModuleId], 1 as ISSecondary, N'WorkSheets' as [ModuleName], N'WorkSheets' as [ModuleDesc],  
+						50 as [ParentModuleId], N'/WorkSheetsAI/Worksheets' as [PageLink], 
+						NULL as [IsDynamicPage],NULL as [Icon], N'WorkSheets' as [ShortName], 1 as [IsDisplayInRoleMatrix], N'WKS' as [Code], 121 as [SortOrder], 
 						1 as [IsDefault], @TenantId as TenantId, 1 as [StatusId], N'DDAUser@DDA' as [CreatedBy],getdate() as [CreatedDate]
  
 				) a
@@ -127,7 +127,7 @@ BEGIN
 				inner join idm.Module md
 					on md.TenantId = rl.TenantId 
 				where rl.TenantId = @TenantId and rl.IsDefault = 1 and rl.Code = 'SYSADMIN' 
-				and md.code IN ('AIT','SLP')
+				and md.code IN ('AIT','WKS')
 
 				UNION ALL
 
@@ -137,7 +137,7 @@ BEGIN
 				inner join idm.Module md
 					on md.TenantId = rl.TenantId 
 				where rl.TenantId = @TenantId and rl.IsDefault = 1 and rl.Code = 'TNTADMIN'
-				and md.code IN  ('AIT','SLP')
+				and md.code IN  ('AIT','WKS')
 			) a
 			where not exists ( select 1 from IDM.RoleModule b where a.RoleId = b.RoleId and a.ModuleId = b.ModuleId and b.TenantId = @TenantId )
 		END
@@ -173,7 +173,7 @@ BEGIN
 				from idm.DDARole rl
 				inner join idm.Module md
 					on md.TenantId = rl.TenantId 
-				where rl.TenantId = @TenantId and rl.IsDefault = 1 and rl.Code = 'TNTADMIN' AND md.code IN  ('AIT','SLP')
+				where rl.TenantId = @TenantId and rl.IsDefault = 1 and rl.Code = 'TNTADMIN' AND md.code IN  ('AIT','WKS')
 					
 			) a
 			where not exists ( select 1 from IDM.RoleModule b where a.RoleId = b.RoleId and a.ModuleId = b.ModuleId and b.TenantId = @TenantId )
@@ -194,7 +194,7 @@ BEGIN
 							on a.ModuleCode = md.Code
 						inner join dbo.RefPermission rp
 							on rp.PermissionCode = a.PermissionCode
-						where rp.TenantId = @TenantId and md.TenantId = @TenantId and md.code IN ('AIT','SLP')
+						where rp.TenantId = @TenantId and md.TenantId = @TenantId and md.code IN ('AIT','WKS')
 				) a
 				where not exists ( select 1 from IDM.ModulePermission b where a.ModuleId = b.ModuleId and a.PermissionId = b.PermissionId and a.TenantId = b.TenantId )  
 
@@ -210,7 +210,7 @@ BEGIN
 						on rm.ModuleId = mp.ModuleId and rm.TenantId = mp.TenantId
 						inner join idm.DDARole rl
 						on rl.RoleId = rm.RoleId and rl.TenantId = rm.TenantId
-						where rl.IsDefault = 1 and rl.TenantId = @TenantId AND rm.ModuleId IN (SELECT ModuleId FROM idm.module WHERE code IN ('AIT','SLP'))
+						where rl.IsDefault = 1 and rl.TenantId = @TenantId AND rm.ModuleId IN (SELECT ModuleId FROM idm.module WHERE code IN ('AIT','WKS'))
 				) a
 				where not exists ( select 1 from IDM.RoleModulePermission b where a.RoleId  =b.RoleId and a.ModuleId  =b.ModuleId 
 									and a.PermissionId = b.PermissionId and a.TenantId = b.TenantId )
@@ -222,7 +222,7 @@ BEGIN
 							,1 as statusid,'DDAAdmin' as CreatedBy,Getdate() as CreatedDate
 					from idm.LicensingPackage lp
 					cross join IDM.Module m
-					where m.StatusId = 1 and lp.StatusId = 1 and m.TenantId = @TenantId and m.code IN ('AIT','SLP')
+					where m.StatusId = 1 and lp.StatusId = 1 and m.TenantId = @TenantId and m.code IN ('AIT','WKS')
 				) a
 				where not exists (select 1 from [IDM].LicensingPackageModule b where a.LicensingPackageId = b.LicensingPackageId and a.ModuleId = b.ModuleId )
 

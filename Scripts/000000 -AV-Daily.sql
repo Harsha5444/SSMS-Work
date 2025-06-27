@@ -112,7 +112,7 @@ WHERE 1=1
     AND table_name LIKE '%attendance%' 
 ORDER BY 
     TABLE_SCHEMA, 
-    table_name;
+    table_name;   hi
 --===================================================================================================
 SELECT SPID
 	,ER.percent_complete
@@ -1247,3 +1247,129 @@ select * from [Export_EOC Winter Mid Months 2023] where gtid_rpt = '6196742663'
 select * from [Export_Updated_EOC_Winter_2023] where gtid_rpt = '6196742663'
 
 
+WITH CategoryColumns AS (
+    SELECT 
+        rd.ReportDetailsId,
+        rd.DomainRelatedViewId,
+        category.value AS CategoryColumn
+    FROM reportdetails rd
+    CROSS APPLY OPENJSON(rd.ReportFileDetails, '$.CategoryColumns') AS category
+    WHERE rd.reporttypeid = 2
+    AND rd.CreatedBy = 'AnalyticVue.Admin@Clayton'
+    AND JSON_QUERY(rd.ReportFileDetails, '$.CategoryColumns') IS NOT NULL
+),
+SubGroupColumns AS (
+    SELECT 
+        rd.ReportDetailsId,
+        rd.DomainRelatedViewId,
+        subgroup.ColumnName AS SubGroupColumnName
+    FROM reportdetails rd
+    CROSS APPLY OPENJSON(rd.ReportFileDetails, '$.SubGroupColumns') WITH (
+        ColumnName nvarchar(100) '$.ColumnName'
+    ) AS subgroup
+    WHERE rd.reporttypeid = 2
+    AND rd.CreatedBy = 'AnalyticVue.Admin@Clayton'
+    AND JSON_QUERY(rd.ReportFileDetails, '$.SubGroupColumns') IS NOT NULL
+)
+,ReportsNeedingUpdate as (
+    SELECT 
+    cc.ReportDetailsId,
+    cc.DomainRelatedViewId,
+    --STRING_AGG(cc.CategoryColumn, ', ') AS CategoryColumns
+    cc.CategoryColumn AS CategoryColumns
+FROM CategoryColumns cc
+WHERE NOT EXISTS (
+    SELECT 1 
+    FROM SubGroupColumns sc 
+    WHERE sc.ReportDetailsId = cc.ReportDetailsId 
+    AND sc.SubGroupColumnName = cc.CategoryColumn
+)),
+-- Get the FieldIds for each column
+FieldIds AS (
+    SELECT 
+        rnu.ReportDetailsId,
+        rnu.CategoryColumns,
+        rv.RptViewFieldsId AS FieldId,
+        rv.DisplayName
+    FROM ReportsNeedingUpdate rnu
+    JOIN rptviewfields rv ON rnu.DomainRelatedViewId = rv.DomainRelatedViewId
+    WHERE 
+        rv.ColumnName = '[' + REPLACE(rnu.CategoryColumns, ' ', '') + ']' OR
+        rv.ColumnName = rnu.CategoryColumns OR
+        rv.DisplayName = rnu.CategoryColumns
+)
+select * from fieldids
+--GROUP BY cc.ReportDetailsId,cc.DomainRelatedViewId
+--ORDER BY cc.ReportDetailsId;
+
+
+--select * from ReportDetails where reportdetailsid = 285
+
+
+
+--select * from RptDomainRelatedViews where DomainRelatedViewId = 152
+--select * from IDM.DataSetColumn where DomainRelatedViewId = 152 and columnname = 'DistrictName'
+--select * from rptviewfields  where DomainRelatedViewId = 152 and columnname = '[DistrictName]'
+
+
+WITH CategoryColumns AS (
+    SELECT 
+        rd.ReportDetailsId,
+        rd.ReportDetailsName,
+        rd.DomainRelatedViewId,
+        category.value AS CategoryColumn
+    FROM reportdetails rd
+    CROSS APPLY OPENJSON(rd.ReportFileDetails, '$.CategoryColumns') AS category
+    WHERE rd.reporttypeid = 2
+    AND rd.CreatedBy = 'AnalyticVue.Admin@Clayton'
+    AND JSON_QUERY(rd.ReportFileDetails, '$.CategoryColumns') IS NOT NULL
+),
+SubGroupColumns AS (
+    SELECT 
+        rd.ReportDetailsId,
+        rd.DomainRelatedViewId,
+        subgroup.ColumnName AS SubGroupColumnName
+    FROM reportdetails rd
+    CROSS APPLY OPENJSON(rd.ReportFileDetails, '$.SubGroupColumns') WITH (
+        ColumnName nvarchar(100) '$.ColumnName'
+    ) AS subgroup
+    WHERE rd.reporttypeid = 2
+    AND rd.CreatedBy = 'AnalyticVue.Admin@Clayton'
+    AND JSON_QUERY(rd.ReportFileDetails, '$.SubGroupColumns') IS NOT NULL
+)
+,ReportsNeedingUpdate as (
+    SELECT 
+    cc.ReportDetailsId,
+    cc.ReportDetailsName,
+    cc.DomainRelatedViewId,
+    STRING_AGG(cc.CategoryColumn, ', ') AS CategoryColumns
+    --cc.CategoryColumn AS CategoryColumns
+FROM CategoryColumns cc
+WHERE NOT EXISTS (
+    SELECT 1 
+    FROM SubGroupColumns sc 
+    WHERE sc.ReportDetailsId = cc.ReportDetailsId 
+    AND sc.SubGroupColumnName = cc.CategoryColumn
+)
+GROUP BY cc.ReportDetailsId,cc.DomainRelatedViewId,cc.ReportDetailsName
+),
+-- Get the FieldIds for each column
+FieldIds AS (
+    SELECT 
+        rnu.ReportDetailsId,
+        rnu.CategoryColumns,
+        rv.RptViewFieldsId AS FieldId,
+        rv.DisplayName
+    FROM ReportsNeedingUpdate rnu
+    JOIN rptviewfields rv ON rnu.DomainRelatedViewId = rv.DomainRelatedViewId
+    WHERE 
+        rv.ColumnName = '[' + REPLACE(rnu.CategoryColumns, ' ', '') + ']' OR
+        rv.ColumnName = rnu.CategoryColumns OR
+        rv.DisplayName = rnu.CategoryColumns
+)
+, Final as 
+(select ReportDetailsId, ReportDetailsName, CategoryColumns, NTILE(4) OVER (ORDER BY ReportDetailsId) AS PartitionNumber from ReportsNeedingUpdate)
+select * from final
+--where PartitionNumber=1
+--order by 2
+--where ReportDetailsName not like '%map%' and  ReportDetailsName not like '%sat%'

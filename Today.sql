@@ -1,126 +1,96 @@
--- ===========================
--- 2022 QUERIES
--- ===========================
+Select top 10 * from clayton_assessment_eoc 
+Select top 10 * from clayton_assessment_eog
 
--- Basic EOC data for 2022
-select * from main.clayton_eoc where schoolyear = 2022 and GTID_RPT in (
-    select distinct GTID_RPT from main.clayton_eoc where schoolyear = 2022
-    except
-    select distinct GTID from dbo.clayton_assessment_eoc where schoolyear = 2022
-)
+select distinct testtype from Clayton_Assessment_EOC
+select distinct testtype from Clayton_Assessment_EOG
 
--- Assessment EOC data for 2022
-select * from dbo.clayton_assessment_eoc where schoolyear = 2022 and GTID='1004095468'
+select distinct testdate from Clayton_Assessment_EOC
+select distinct testdate from Clayton_Assessment_EOG
 
--- School information for 2022
-select distinct schoolname,schoolnumber from main.clayton_analyticvue_icstudents where schoolyear = 2022 and schoolname like '%elite%'
-select * from main.k12school where schoolyear = 2022 and NameofInstitution like '%elite%'
+select distinct testtakendate from Clayton_Assessment_EOC
+select distinct testtakendate from Clayton_Assessment_EOG
 
--- School identifier mapping for 2022
-select distinct SchCode_RPT,schname_rpt from [Main].[Clayton_EOC] where schoolyear = 2022 and SchCode_RPT in (
-    select distinct SchCode_RPT from [Main].[Clayton_EOC] where schoolyear = 2022
-    intersect
-    select distinct SchoolIdentifier from Main.K12School where schoolyear = 2022
-)
+select * from main.assessmentdetails where assessmentcode = 'eog' and schoolyear = 2022
 
-select distinct SchoolIdentifier,NameofInstitutiON from Main.K12School where schoolyear = 2022 and SchoolIdentifier in (
-    select distinct SchCode_RPT from [Main].[Clayton_EOC] where schoolyear = 2022
-    intersect
-    select distinct SchoolIdentifier from Main.K12School where schoolyear = 2022
-)
+select schoolyear,studentnumber,testType,testadmin,count(studentnumber) from clayton_assessment_eoc
+group by schoolyear,studentnumber,testType,testadmin
+having count(studentnumber)>1
 
--- Complex join query for 2022
-select e.* FROM [Main].[Clayton_EOC] e WITH (NOLOCK)
-INNER JOIN (
-    SELECT * FROM (
-        SELECT *, row_number() OVER (PARTITION BY schoolyear, studentnumber ORDER BY startdate) AS rn
-        FROM main.clayton_analyticvue_icstudents
-    ) a WHERE rn = 1
-) AS s ON e.GTID_RPT = s.Stateid AND e.schoolyear = s.schoolyear
-INNER JOIN main.k12school AS k ON RIGHT('0000' + e.SchCode_RPT, 4) = k.SchoolIdentifier AND e.schoolyear = k.SchoolYear
-where e.schoolyear = 2022
+select schoolyear,studentnumber,testType,testadmin,count(studentnumber) from clayton_assessment_eog
+group by schoolyear,studentnumber,testType,testadmin
+having count(studentnumber)>1
 
--- Import view query for 2022
-select * from Import_EOC_K12Studentgenericassessment_Vw_50 where schoolyear = 2022 and districtstudentid = '0428224'
+		/* select schoolyear,gtid,testType,testadmin,count(gtid) from clayton_assessment_eog
+		group by schoolyear,gtid,testType,testadmin
+		having count(gtid) > 1  --2641868288 */
 
--- ===========================
--- 2023 QUERIES
--- ===========================
+select * from clayton_assessment_eoc where schoolyear = 2022 and studentnumber = '0342093' and testType='Biology' and	testadmin='Spring'
 
--- Basic EOG and EOC data for 2023
-select * from main.clayton_eog where schoolyear = 2023
-select * from dbo.clayton_assessment_eoc where schoolyear = 2023
+select * from clayton_assessment_eog where schoolyear = 2024 and gtid = '2641868288' and testType='Sci' and testadmin='SPRING'
+--0432644
+--1511131
+select * from main.clayton_analyticvue_icstudents where studentnumber = '0432644'
+select * from main.clayton_analyticvue_icstudents where studentnumber = '1511131'
+select * from main.clayton_analyticvue_icstudents where stateid = '2641868288' and schoolyear = 2024
 
--- GTID comparison for 2023
-select distinct GTID_RPT from main.clayton_eoc where schoolyear = 2023
-except
-select distinct GTID from dbo.clayton_assessment_eoc where schoolyear = 2023
+select getdate()
 
--- ===========================
--- 2024 QUERIES
--- ===========================
+select distinct CONVERT(DATE, 
+    RIGHT(RIGHT('0' + testdate, 6), 2) + -- YY
+    LEFT(RIGHT('0' + testdate, 6), 2) + -- MM
+    SUBSTRING(RIGHT('0' + testdate, 6), 3, 2), 1) 
+from Clayton_Assessment_EOG
 
--- Stored procedure execution for 2024
---exec [USP_Clayton_Assessment_EOC] 2024
+select row_number () over (partition by schoolyear,studentnumber,testType,testadmin order by testtakendate desc) as TestTakendateRowNumber, * 
+from clayton_assessment_eoc where schoolyear = 2023 and studentnumber = '0349604' and testType='United States History' and testadmin='Spring'
 
--- ===========================
--- MULTI-YEAR QUERIES
--- ===========================
+select * from Clayton_Assessment_EOC where testtakendaterank = 2
 
--- School identifier intersection (all years)
-select distinct RIGHT('0000' + SchCode_RPT, 4) from [Main].[Clayton_EOC] 
-intersect
-select distinct SchoolIdentifier from Main.K12School
+select * from ReportDetails
 
--- Missing records across multiple years
-SELECT DISTINCT e.GTID, e.schoolyear FROM dbo.clayton_assessment_eoc e
-WHERE e.schoolyear IN (2022, 2023, 2024)
-AND NOT EXISTS (
-    SELECT 1 FROM dbo.Import_EOC_K12Studentgenericassessment_Vw_50 v
-    WHERE v.schoolyear = e.schoolyear AND v.districtstudentid = e.studentnumber
-)
+select gtid,count(distinct studentnumber) from Clayton_Assessment_EOG
+group by gtid
+having count(distinct studentnumber)>1
 
--- Specific record lookups
-select * from main.clayton_eoc where schoolyear = 2022 and GTID_RPT = '1004095468'
-
----===============================================================================================
-
-select count(*) from main.clayton_eog where schoolyear = 2022  --23839
-select count(*) from main.clayton_eog where schoolyear = 2023  --23120
-select count(*) from main.clayton_eog where schoolyear = 2024  --22421
-
-select count(*) from clayton_assessment_eog where schoolyear = 2022  --59978
-select count(*) from clayton_assessment_eog where schoolyear = 2023  --58048
-select count(*) from clayton_assessment_eog where schoolyear = 2024  --56344
-
-select count(distinct GTID_RPT) from main.clayton_eog where schoolyear = 2022  --23839
-select count(distinct GTID_RPT) from main.clayton_eog where schoolyear = 2023  --23119
-select count(distinct GTID_RPT) from main.clayton_eog where schoolyear = 2024  --22419
-
-select count(distinct GTID) from clayton_assessment_eog where schoolyear = 2022  --23823
-select count(distinct GTID) from clayton_assessment_eog where schoolyear = 2023  --23119
-select count(distinct GTID) from clayton_assessment_eog where schoolyear = 2024  --22405
+/*
+4067225449
+9518590583
+3473203987
+2641868288
+5821973421
+*/
 
 
-select distinct GTID_RPT  from main.clayton_eog where schoolyear = 2022 and GTID_RPT in (
-select distinct GTID_RPT from main.clayton_eog where schoolyear = 2022
-except
-select distinct GTID from clayton_assessment_eog where schoolyear = 2022   
-)
+/*same stateid having multiple studentnumbers*/
 
---select distinct SchCode_RPT from main.clayton_eog where SchCode_RPT is not null
---except
---select distinct schoolidentifier from main.k12school
+--no schoolyear
+select stateID,count(distinct studentnumber) from main.Clayton_AnalyticVue_ICStudents
+group by stateID
+having count(distinct studentnumber)>1
 
---select * from main.clayton_eog where SchCode_RPT is null
-
-select * from main.clayton_analyticvue_icstudents where stateid = '1690558016'
+select * from main.clayton_analyticvue_icstudents where stateid = '7033890228'
 
 
-select distinct GTID_RPT  from main.clayton_eog where schoolyear = 2024 and GTID_RPT in (
-select distinct GTID_RPT from main.clayton_eog where schoolyear = 2024
-except
-select distinct GTID from clayton_assessment_eog where schoolyear = 2024
-)
+--with schoolyear
+select schoolyear,stateID,count(distinct studentnumber) from main.Clayton_AnalyticVue_ICStudents
+group by schoolyear,stateID
+having count(distinct studentnumber)>1
 
-select * from main.clayton_analyticvue_icstudents where stateid = '1690558016'
+select * from main.clayton_analyticvue_icstudents where stateid = '3063023762'
+
+		
+		/*same studentnumber having multiple stateIDs*/
+
+		--no schoolyear
+		select studentnumber,count(distinct stateID) from main.Clayton_AnalyticVue_ICStudents
+		group by studentnumber
+		having count(distinct stateID)>1
+
+		select * from main.clayton_analyticvue_icstudents where studentnumber = '0439981'
+
+		--with schoolyear
+		select schoolyear,studentnumber,count(distinct stateID) from main.Clayton_AnalyticVue_ICStudents
+		group by schoolyear,studentnumber
+		having count(distinct stateID)>1
+
+		select * from main.clayton_analyticvue_icstudents where stateid = '0439981'

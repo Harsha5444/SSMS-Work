@@ -371,3 +371,9 @@ select distinct stateid from main.clayton_analyticvue_icstudents where schoolyea
 select distinct StateStudentId from [Clayton_AcademicProgressDES_Elem] -- from main.Clayton_StudentCaseLoad_GoIEPDueDates -- 6206
 
 --only have 3012 because this data is only for [Elementary Students]
+
+
+
+
+
+hi 

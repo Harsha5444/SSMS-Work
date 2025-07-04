@@ -372,7 +372,7 @@ select distinct StateStudentId from [Clayton_AcademicProgressDES_Elem] -- from m
 
 --only have 3012 because this data is only for [Elementary Students]
 
-
+this is pushe dby ex
 
 
 

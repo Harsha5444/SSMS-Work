@@ -2,7 +2,7 @@ IF OBJECT_ID('tempdb..#ReportMismatches') IS NOT NULL
 	DROP TABLE #ReportMismatches;
 
 CREATE TABLE #ReportMismatches (
-	ReportDetailsId INT
+	 ReportDetailsId INT
 	,ReportDetailsName NVARCHAR(255)
 	,filter_type NVARCHAR(50)
 	,column_name NVARCHAR(100)
@@ -84,134 +84,93 @@ SELECT ReportDetailsId
 	,CASE WHEN db_display_name IS NULL THEN 'Field ID not found in rptviewfields' WHEN json_display_name != db_display_name THEN 'DisplayName mismatch' ELSE 'Unknown issue' END AS mismatch_reason
 FROM FilterMismatches;
 
----- Step 3: Review the mismatches
---SELECT 
---    COUNT(*) as total_mismatches,
---    SUM(CASE WHEN filter_type = 'AdvanceFilter' THEN 1 ELSE 0 END) as advance_filter_mismatches,
---    SUM(CASE WHEN filter_type = 'SubGroupColumns' THEN 1 ELSE 0 END) as subgroup_mismatches
---FROM #ReportMismatches;
----- Show detailed mismatches
---SELECT * FROM #ReportMismatches ORDER BY ReportDetailsId, filter_type, column_name;
 WITH beforechanges
 AS (
 	SELECT rd.ReportDetailsId
 		,rd.ReportDetailsName
 		,'BEFORE' AS change_type
-		,JSON_QUERY(rd.reportfiledetails, '$.AdvanceFilter') AS current_advance_filter
-		,NULL AS new_advance_filter
+		,rd.reportfiledetails AS current_full_json
+		,NULL AS new_full_json
 	FROM reportdetails rd
 	WHERE EXISTS (
 			SELECT 1
 			FROM #ReportMismatches rm
 			WHERE rm.ReportDetailsId = rd.ReportDetailsId
-				AND rm.filter_type = 'AdvanceFilter'
 				AND rm.db_display_name IS NOT NULL
 			)
+	)
+	,UpdatedAdvanceFilter
+AS (
+	SELECT rd.ReportDetailsId
+		,'[' + STRING_AGG(CASE WHEN rm.filter_type = 'AdvanceFilter'
+					AND rm.filed_id = JSON_VALUE(af_item.[value], '$.FiledId')
+					AND rm.db_display_name IS NOT NULL THEN JSON_MODIFY(JSON_MODIFY(af_item.[value], '$.DisplayName', rm.db_display_name), '$.ColumnName', rm.db_display_name) ELSE af_item.[value] END, ',') + ']' AS updated_advance_filter
+	FROM reportdetails rd
+	CROSS APPLY OPENJSON(rd.reportfiledetails, '$.AdvanceFilter') af_item
+	LEFT JOIN #ReportMismatches rm ON rm.ReportDetailsId = rd.ReportDetailsId
+		AND rm.filter_type = 'AdvanceFilter'
+		AND rm.filed_id = JSON_VALUE(af_item.[value], '$.FiledId')
+	WHERE EXISTS (
+			SELECT 1
+			FROM #ReportMismatches rm2
+			WHERE rm2.ReportDetailsId = rd.ReportDetailsId
+				AND rm2.db_display_name IS NOT NULL
+			)
+		AND JSON_QUERY(rd.reportfiledetails, '$.AdvanceFilter') IS NOT NULL
+	GROUP BY rd.ReportDetailsId
+	)
+	,UpdatedSubGroupColumns
+AS (
+	SELECT rd.ReportDetailsId
+		,'[' + STRING_AGG(CASE WHEN rm.filter_type = 'SubGroupColumns'
+					AND rm.filed_id = JSON_VALUE(sg_item.[value], '$.FiledId')
+					AND rm.db_display_name IS NOT NULL THEN JSON_MODIFY(JSON_MODIFY(sg_item.[value], '$.DisplayName', rm.db_display_name), '$.ColumnName', rm.db_display_name) ELSE sg_item.[value] END, ',') + ']' AS updated_subgroup_columns
+	FROM reportdetails rd
+	CROSS APPLY OPENJSON(rd.reportfiledetails, '$.SubGroupColumns') sg_item
+	LEFT JOIN #ReportMismatches rm ON rm.ReportDetailsId = rd.ReportDetailsId
+		AND rm.filter_type = 'SubGroupColumns'
+		AND rm.filed_id = JSON_VALUE(sg_item.[value], '$.FiledId')
+	WHERE EXISTS (
+			SELECT 1
+			FROM #ReportMismatches rm2
+			WHERE rm2.ReportDetailsId = rd.ReportDetailsId
+				AND rm2.db_display_name IS NOT NULL
+			)
+		AND JSON_QUERY(rd.reportfiledetails, '$.SubGroupColumns') IS NOT NULL
+	GROUP BY rd.ReportDetailsId
 	)
 	,afterchanges
 AS (
 	SELECT rd.ReportDetailsId
 		,rd.ReportDetailsName
 		,'AFTER' AS change_type
-		,NULL AS current_advance_filter
-		,(
-			SELECT '[' + STRING_AGG(CASE WHEN rm.filter_type = 'AdvanceFilter'
-							AND rm.filed_id = JSON_VALUE(af_item.[value], '$.FiledId')
-							AND rm.db_display_name IS NOT NULL THEN JSON_MODIFY(af_item.[value], '$.DisplayName', rm.db_display_name) ELSE af_item.[value] END, ',') + ']'
-			FROM OPENJSON(rd.reportfiledetails, '$.AdvanceFilter') af_item
-			LEFT JOIN #ReportMismatches rm ON rm.ReportDetailsId = rd.ReportDetailsId
-				AND rm.filter_type = 'AdvanceFilter'
-				AND rm.filed_id = JSON_VALUE(af_item.[value], '$.FiledId')
-			) AS new_advance_filter
+		,NULL AS current_full_json
+		,CASE WHEN uaf.updated_advance_filter IS NOT NULL
+				AND usg.updated_subgroup_columns IS NOT NULL THEN JSON_MODIFY(JSON_MODIFY(rd.reportfiledetails, '$.AdvanceFilter', JSON_QUERY(uaf.updated_advance_filter)), '$.SubGroupColumns', JSON_QUERY(usg.updated_subgroup_columns)) WHEN uaf.updated_advance_filter IS NOT NULL THEN JSON_MODIFY(rd.reportfiledetails, '$.AdvanceFilter', JSON_QUERY(uaf.updated_advance_filter)) WHEN usg.updated_subgroup_columns IS NOT NULL THEN JSON_MODIFY(rd.reportfiledetails, '$.SubGroupColumns', JSON_QUERY(usg.updated_subgroup_columns)) ELSE rd.reportfiledetails END AS new_full_json
 	FROM reportdetails rd
+	LEFT JOIN UpdatedAdvanceFilter uaf ON uaf.ReportDetailsId = rd.ReportDetailsId
+	LEFT JOIN UpdatedSubGroupColumns usg ON usg.ReportDetailsId = rd.ReportDetailsId
 	WHERE EXISTS (
 			SELECT 1
 			FROM #ReportMismatches rm
 			WHERE rm.ReportDetailsId = rd.ReportDetailsId
-				AND rm.filter_type = 'AdvanceFilter'
 				AND rm.db_display_name IS NOT NULL
 			)
 	)
-SELECT a.ReportDetailsId
-	,a.ReportDetailsName
-	,a.change_type
-	,a.current_advance_filter
-	,b.change_type
-	,b.new_advance_filter
-FROM beforechanges a
-JOIN afterchanges b ON a.ReportDetailsId = b.ReportDetailsId
+--SELECT a.ReportDetailsId
+--	,a.ReportDetailsName
+--	,a.change_type
+--	,a.current_full_json
+--	,b.change_type
+--	,b.new_full_json
+--FROM beforechanges a
+--JOIN afterchanges b ON a.ReportDetailsId = b.ReportDetailsId
+select * from afterchanges
 
-SELECT *
-FROM ReportDetails_bkp
-WHERE reportdetailsid = 281
+--select * from #ReportMismatches where reportdetailsid = 445
 
----- Step 4: UPDATE SCRIPT - Fix AdvanceFilter DisplayName mismatches
---UPDATE rd
---SET reportfiledetails = (
---    SELECT STRING_AGG(
---        CASE 
---            WHEN rm.filter_type = 'AdvanceFilter' AND rm.filed_id = af_item.FiledId 
---                 AND rm.db_display_name IS NOT NULL
---            THEN JSON_MODIFY(af_item.[value], '$.DisplayName', rm.db_display_name)
---            ELSE af_item.[value]
---        END, 
---        ','
---    )
---    FROM OPENJSON(rd.reportfiledetails, '$.AdvanceFilter') af_item
---    LEFT JOIN #ReportMismatches rm ON rm.ReportDetailsId = rd.ReportDetailsId 
---                                   AND rm.filter_type = 'AdvanceFilter'
---                                   AND rm.filed_id = JSON_VALUE(af_item.[value], '$.FiledId')
---    FOR JSON PATH, ROOT('AdvanceFilter')
---)
---FROM reportdetails rd
---WHERE EXISTS (
---    SELECT 1 FROM #ReportMismatches rm 
---    WHERE rm.ReportDetailsId = rd.ReportDetailsId 
---    AND rm.filter_type = 'AdvanceFilter'
---    AND rm.db_display_name IS NOT NULL
---);
----- Step 5: UPDATE SCRIPT - Fix SubGroupColumns DisplayName mismatches  
---UPDATE rd
---SET reportfiledetails = (
---    SELECT STRING_AGG(
---        CASE 
---            WHEN rm.filter_type = 'SubGroupColumns' AND rm.filed_id = sg_item.FiledId 
---                 AND rm.db_display_name IS NOT NULL
---            THEN JSON_MODIFY(sg_item.[value], '$.DisplayName', rm.db_display_name)
---            ELSE sg_item.[value]
---        END, 
---        ','
---    )
---    FROM OPENJSON(rd.reportfiledetails, '$.SubGroupColumns') sg_item
---    LEFT JOIN #ReportMismatches rm ON rm.ReportDetailsId = rd.ReportDetailsId 
---                                   AND rm.filter_type = 'SubGroupColumns'
---                                   AND rm.filed_id = JSON_VALUE(sg_item.[value], '$.FiledId')
---    FOR JSON PATH, ROOT('SubGroupColumns')
---)
---FROM reportdetails rd
---WHERE EXISTS (
---    SELECT 1 FROM #ReportMismatches rm 
---    WHERE rm.ReportDetailsId = rd.ReportDetailsId 
---    AND rm.filter_type = 'SubGroupColumns'
---    AND rm.db_display_name IS NOT NULL
---);
-SELECT *
-FROM clayton_dashboardreportdetails
-WHERE ReportId IN (
-		SELECT reportdetailsid
-		FROM ReportDetails
-		WHERE ChildReportId = 281
-		)
+--select * from reportdetails where reportdetailsid = 445
 
-SELECT *
-FROM reportdetails
-WHERE reportdetailsid = 281
+--select * from rptviewfields where RptViewFieldsId = 2869
 
-SELECT reportdetailsid
-FROM ReportDetails
-WHERE ChildReportId = 281
-
-SELECT *
-FROM idm.AppErrorLog
-ORDER BY 1 DESC
-
+--select * from RptDomainRelatedViews where DomainRelatedViewId= 153

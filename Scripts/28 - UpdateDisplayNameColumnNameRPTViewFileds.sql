@@ -157,6 +157,13 @@ AS (
 				AND rm.db_display_name IS NOT NULL
 			)
 	)
+--update a
+--set a.ReportFileDetails = b.new_full_json
+--from reportdetails a 
+--join afterchanges b on a.ReportDetailsId = b.ReportDetailsId
+
+select * from afterchanges
+
 --SELECT a.ReportDetailsId
 --	,a.ReportDetailsName
 --	,a.change_type
@@ -165,7 +172,7 @@ AS (
 --	,b.new_full_json
 --FROM beforechanges a
 --JOIN afterchanges b ON a.ReportDetailsId = b.ReportDetailsId
-select * from afterchanges
+--new_full_json
 
 --select * from #ReportMismatches where reportdetailsid = 445
 

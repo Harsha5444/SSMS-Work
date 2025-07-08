@@ -12,6 +12,13 @@ select * from idm.tenant
 select * from idm.apperrorlog order by 1 desc
 
 use AnalyticVue_Hallco
+use AnalyticVue_norwood
+use AnalyticVue_district
+use AnalyticVue_obs
+use AnalyticVue_fps
+use AnalyticVue_clayton
+
+use AnalyticVue_Hallco
 select * from idm.tenant
 select * from idm.apperrorlog order by 1 desc
 
@@ -1373,3 +1380,5 @@ select * from final
 --where PartitionNumber=1
 --order by 2
 --where ReportDetailsName not like '%map%' and  ReportDetailsName not like '%sat%'
+
+--adding comment test

@@ -1,0 +1,33 @@
+SELECT '2026' AS SchoolYear, '1000000' AS LEAIdentifier, NULL AS SchoolIdentifier, NULL AS CalendarID, 'Holiday' AS EventType, '2025-09-01' AS EventDate, 'No School: Labor Day' AS EventDescription, 28 AS TenantId, 1 AS StatusId, 'DDA@DDAUSER' AS CreatedBy, GETDATE() AS CreatedDate, NULL AS ModifiedBy, NULL AS ModifiedDate
+UNION ALL SELECT '2026', '1000000', NULL, NULL, 'Holiday', '2025-09-16', 'No School: PD (P, E, M, H) / Voting Day', 28, 1, 'DDA@DDAUSER', GETDATE(), NULL, NULL
+UNION ALL SELECT '2026', '1000000', NULL, NULL, 'Holiday', '2025-09-23', 'No School: Rosh Hashanah', 28, 1, 'DDA@DDAUSER', GETDATE(), NULL, NULL
+UNION ALL SELECT '2026', '1000000', NULL, NULL, 'Holiday', '2025-10-02', 'No School: Yom Kippur', 28, 1, 'DDA@DDAUSER', GETDATE(), NULL, NULL
+UNION ALL SELECT '2026', '1000000', NULL, NULL, 'Holiday', '2025-10-13', 'No School: Indigenous Peoples'' Day', 28, 1, 'DDA@DDAUSER', GETDATE(), NULL, NULL
+UNION ALL SELECT '2026', '1000000', NULL, NULL, 'Holiday', '2025-11-04', 'No School: P, E, M, H (PC) / Voting Day', 28, 1, 'DDA@DDAUSER', GETDATE(), NULL, NULL
+UNION ALL SELECT '2026', '1000000', NULL, NULL, 'Holiday', '2025-11-11', 'No School: Veterans Day', 28, 1, 'DDA@DDAUSER', GETDATE(), NULL, NULL
+UNION ALL SELECT '2026', '1000000', NULL, NULL, 'Holiday', '2025-11-27', 'No School: Thanksgiving Recess', 28, 1, 'DDA@DDAUSER', GETDATE(), NULL, NULL
+UNION ALL SELECT '2026', '1000000', NULL, NULL, 'Holiday', '2025-11-28', 'No School: Thanksgiving Recess', 28, 1, 'DDA@DDAUSER', GETDATE(), NULL, NULL
+UNION ALL SELECT '2026', '1000000', NULL, NULL, 'Holiday', '2025-12-24', 'No School: Winter Recess', 28, 1, 'DDA@DDAUSER', GETDATE(), NULL, NULL
+UNION ALL SELECT '2026', '1000000', NULL, NULL, 'Holiday', '2025-12-25', 'No School: Winter Recess', 28, 1, 'DDA@DDAUSER', GETDATE(), NULL, NULL
+UNION ALL SELECT '2026', '1000000', NULL, NULL, 'Holiday', '2025-12-26', 'No School: Winter Recess', 28, 1, 'DDA@DDAUSER', GETDATE(), NULL, NULL
+UNION ALL SELECT '2026', '1000000', NULL, NULL, 'Holiday', '2025-12-29', 'No School: Winter Recess', 28, 1, 'DDA@DDAUSER', GETDATE(), NULL, NULL
+UNION ALL SELECT '2026', '1000000', NULL, NULL, 'Holiday', '2025-12-30', 'No School: Winter Recess', 28, 1, 'DDA@DDAUSER', GETDATE(), NULL, NULL
+UNION ALL SELECT '2026', '1000000', NULL, NULL, 'Holiday', '2025-12-31', 'No School: Winter Recess', 28, 1, 'DDA@DDAUSER', GETDATE(), NULL, NULL
+UNION ALL SELECT '2026', '1000000', NULL, NULL, 'Holiday', '2026-01-01', 'No School: Winter Recess', 28, 1, 'DDA@DDAUSER', GETDATE(), NULL, NULL
+UNION ALL SELECT '2026', '1000000', NULL, NULL, 'Holiday', '2026-01-02', 'No School: Winter Recess', 28, 1, 'DDA@DDAUSER', GETDATE(), NULL, NULL
+UNION ALL SELECT '2026', '1000000', NULL, NULL, 'Holiday', '2026-01-19', 'No School: MLK Jr. Day', 28, 1, 'DDA@DDAUSER', GETDATE(), NULL, NULL
+UNION ALL SELECT '2026', '1000000', NULL, NULL, 'Holiday', '2026-02-16', 'No School: Presidents'' Day', 28, 1, 'DDA@DDAUSER', GETDATE(), NULL, NULL
+UNION ALL SELECT '2026', '1000000', NULL, NULL, 'Holiday', '2026-02-17', 'No School: February Recess', 28, 1, 'DDA@DDAUSER', GETDATE(), NULL, NULL
+UNION ALL SELECT '2026', '1000000', NULL, NULL, 'Holiday', '2026-02-18', 'No School: February Recess', 28, 1, 'DDA@DDAUSER', GETDATE(), NULL, NULL
+UNION ALL SELECT '2026', '1000000', NULL, NULL, 'Holiday', '2026-02-19', 'No School: February Recess', 28, 1, 'DDA@DDAUSER', GETDATE(), NULL, NULL
+UNION ALL SELECT '2026', '1000000', NULL, NULL, 'Holiday', '2026-02-20', 'No School: February Recess', 28, 1, 'DDA@DDAUSER', GETDATE(), NULL, NULL
+UNION ALL SELECT '2026', '1000000', NULL, NULL, 'Holiday', '2026-03-06', 'No School: FTA PD Day', 28, 1, 'DDA@DDAUSER', GETDATE(), NULL, NULL
+UNION ALL SELECT '2026', '1000000', NULL, NULL, 'Holiday', '2026-03-20', 'No School: Eid al Fitr', 28, 1, 'DDA@DDAUSER', GETDATE(), NULL, NULL
+UNION ALL SELECT '2026', '1000000', NULL, NULL, 'Holiday', '2026-04-03', 'No School: Good Friday', 28, 1, 'DDA@DDAUSER', GETDATE(), NULL, NULL
+UNION ALL SELECT '2026', '1000000', NULL, NULL, 'Holiday', '2026-04-20', 'No School: Spring Recess', 28, 1, 'DDA@DDAUSER', GETDATE(), NULL, NULL
+UNION ALL SELECT '2026', '1000000', NULL, NULL, 'Holiday', '2026-04-21', 'No School: Spring Recess', 28, 1, 'DDA@DDAUSER', GETDATE(), NULL, NULL
+UNION ALL SELECT '2026', '1000000', NULL, NULL, 'Holiday', '2026-04-22', 'No School: Spring Recess', 28, 1, 'DDA@DDAUSER', GETDATE(), NULL, NULL
+UNION ALL SELECT '2026', '1000000', NULL, NULL, 'Holiday', '2026-04-23', 'No School: Spring Recess', 28, 1, 'DDA@DDAUSER', GETDATE(), NULL, NULL
+UNION ALL SELECT '2026', '1000000', NULL, NULL, 'Holiday', '2026-04-24', 'No School: Spring Recess', 28, 1, 'DDA@DDAUSER', GETDATE(), NULL, NULL
+UNION ALL SELECT '2026', '1000000', NULL, NULL, 'Holiday', '2026-05-25', 'No School: Memorial Day', 28, 1, 'DDA@DDAUSER', GETDATE(), NULL, NULL
+UNION ALL SELECT '2026', '1000000', NULL, NULL, 'Holiday', '2026-06-19', 'No School: Juneteenth', 28, 1, 'DDA@DDAUSER', GETDATE(), NULL, NULL

@@ -1,0 +1,33 @@
+
+SELECT '2026' AS SchoolYear, '0430011' AS LEAIdentifier, NULL AS SchoolIdentifier, NULL AS CalendarID, 'First Day of School' AS EventType, '2025-08-27' AS EventDate, 'First Day of School' AS EventDescription, 35 AS TenantId, 1 AS StatusId, 'DDA@DDAUSER' AS CreatedBy, GETDATE() AS CreatedDate, NULL AS ModifiedBy, NULL AS ModifiedDate
+UNION ALL SELECT '2026', '0430011', NULL, NULL, 'Holiday', '2025-09-01', 'Labor Day', 35, 1, 'DDA@DDAUSER', GETDATE(), NULL, NULL
+UNION ALL SELECT '2026', '0430011', NULL, NULL, 'Holiday', '2025-10-03', 'Professional Development (teachers)', 35, 1, 'DDA@DDAUSER', GETDATE(), NULL, NULL
+UNION ALL SELECT '2026', '0430011', NULL, NULL, 'Holiday', '2025-10-13', 'Indigenous Peoples'' Day', 35, 1, 'DDA@DDAUSER', GETDATE(), NULL, NULL
+UNION ALL SELECT '2026', '0430011', NULL, NULL, 'Holiday', '2025-11-04', 'Election Day/Professional
+Development (teachers)', 35, 1, 'DDA@DDAUSER', GETDATE(), NULL, NULL
+UNION ALL SELECT '2026', '0430011', NULL, NULL, 'Holiday', '2025-11-11', 'Veterans Day', 35, 1, 'DDA@DDAUSER', GETDATE(), NULL, NULL
+UNION ALL SELECT '2026', '0430011', NULL, NULL, 'Holiday', '2025-11-27', 'Thanksgiving Recess', 35, 1, 'DDA@DDAUSER', GETDATE(), NULL, NULL
+UNION ALL SELECT '2026', '0430011', NULL, NULL, 'Holiday', '2025-11-28', 'Thanksgiving Recess', 35, 1, 'DDA@DDAUSER', GETDATE(), NULL, NULL
+UNION ALL SELECT '2026', '0430011', NULL, NULL, 'Holiday', '2025-12-24', 'Observance of Christmas Eve
+and Christmas', 35, 1, 'DDA@DDAUSER', GETDATE(), NULL, NULL
+UNION ALL SELECT '2026', '0430011', NULL, NULL, 'Holiday', '2025-12-25', 'Observance of Christmas Eve
+and Christmas', 35, 1, 'DDA@DDAUSER', GETDATE(), NULL, NULL
+UNION ALL SELECT '2026', '0430011', NULL, NULL, 'Holiday', '2025-12-26', 'Holiday Recess', 35, 1, 'DDA@DDAUSER', GETDATE(), NULL, NULL
+UNION ALL SELECT '2026', '0430011', NULL, NULL, 'Holiday', '2025-12-29', 'Holiday Recess', 35, 1, 'DDA@DDAUSER', GETDATE(), NULL, NULL
+UNION ALL SELECT '2026', '0430011', NULL, NULL, 'Holiday', '2025-12-30', 'Holiday Recess', 35, 1, 'DDA@DDAUSER', GETDATE(), NULL, NULL
+UNION ALL SELECT '2026', '0430011', NULL, NULL, 'Holiday', '2025-12-31', 'Holiday Recess', 35, 1, 'DDA@DDAUSER', GETDATE(), NULL, NULL
+UNION ALL SELECT '2026', '0430011', NULL, NULL, 'Holiday', '2026-01-01', 'New Year''s Day', 35, 1, 'DDA@DDAUSER', GETDATE(), NULL, NULL
+UNION ALL SELECT '2026', '0430011', NULL, NULL, 'Holiday', '2026-01-02', 'Holiday Recess', 35, 1, 'DDA@DDAUSER', GETDATE(), NULL, NULL
+UNION ALL SELECT '2026', '0430011', NULL, NULL, 'Holiday', '2026-01-05', 'Holiday Recess', 35, 1, 'DDA@DDAUSER', GETDATE(), NULL, NULL
+UNION ALL SELECT '2026', '0430011', NULL, NULL, 'Holiday', '2026-01-06', 'Three Kings'' Day', 35, 1, 'DDA@DDAUSER', GETDATE(), NULL, NULL
+UNION ALL SELECT '2026', '0430011', NULL, NULL, 'Holiday', '2026-01-19', 'DR. MLK Jr. Day', 35, 1, 'DDA@DDAUSER', GETDATE(), NULL, NULL
+UNION ALL SELECT '2026', '0430011', NULL, NULL, 'Holiday', '2026-02-16', 'Presidents'' Day', 35, 1, 'DDA@DDAUSER', GETDATE(), NULL, NULL
+UNION ALL SELECT '2026', '0430011', NULL, NULL, 'Holiday', '2026-02-17', 'Professional Development (teachers)', 35, 1, 'DDA@DDAUSER', GETDATE(), NULL, NULL
+UNION ALL SELECT '2026', '0430011', NULL, NULL, 'Holiday', '2026-04-03', 'Good Friday', 35, 1, 'DDA@DDAUSER', GETDATE(), NULL, NULL
+UNION ALL SELECT '2026', '0430011', NULL, NULL, 'Holiday', '2026-04-13', 'Spring Recess', 35, 1, 'DDA@DDAUSER', GETDATE(), NULL, NULL
+UNION ALL SELECT '2026', '0430011', NULL, NULL, 'Holiday', '2026-04-14', 'Spring Recess', 35, 1, 'DDA@DDAUSER', GETDATE(), NULL, NULL
+UNION ALL SELECT '2026', '0430011', NULL, NULL, 'Holiday', '2026-04-15', 'Spring Recess', 35, 1, 'DDA@DDAUSER', GETDATE(), NULL, NULL
+UNION ALL SELECT '2026', '0430011', NULL, NULL, 'Holiday', '2026-04-16', 'Spring Recess', 35, 1, 'DDA@DDAUSER', GETDATE(), NULL, NULL
+UNION ALL SELECT '2026', '0430011', NULL, NULL, 'Holiday', '2026-04-17', 'Spring Recess', 35, 1, 'DDA@DDAUSER', GETDATE(), NULL, NULL
+UNION ALL SELECT '2026', '0430011', NULL, NULL, 'Holiday', '2026-05-25', 'Memorial Day', 35, 1, 'DDA@DDAUSER', GETDATE(), NULL, NULL
+UNION ALL SELECT '2026', '0430011', NULL, NULL, 'Last Day of School', '2026-06-11', 'Last Day of School', 35, 1, 'DDA@DDAUSER', GETDATE(), NULL, NULL

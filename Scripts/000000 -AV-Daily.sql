@@ -11,12 +11,13 @@ use AnalyticVue
 select * from idm.tenant
 select * from idm.apperrorlog order by 1 desc
 
-use AnalyticVue_Hallco
 use AnalyticVue_norwood
 use AnalyticVue_district
+use AnalyticVue_clayton
+use AnalyticVue_Hallco
 use AnalyticVue_obs
 use AnalyticVue_fps
-use AnalyticVue_clayton
+use demoanalyticvue_avdemo
 
 use AnalyticVue_Hallco
 select * from idm.tenant

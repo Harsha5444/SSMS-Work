@@ -1383,3 +1383,34 @@ select * from final
 --where ReportDetailsName not like '%map%' and  ReportDetailsName not like '%sat%'
 
 --adding comment test
+
+
+
+
+--INSERT INTO RoleDashboard (DashboardId, RoleId, TenantId, StatusId, CreatedBy, CreatedDate, ModifiedBy, ModifiedDate, IsDefaultDashboard)
+--SELECT 
+--    rd.DashboardId,
+--    dep.RoleId,       -- Department Supervisor role
+--    rd.TenantId,
+--    1 AS StatusId,
+--    'Analyticvue.Admin@WHPS' AS CreatedBy,
+--    GETDATE() AS CreatedDate,
+--    NULL AS ModifiedBy,
+--    NULL AS ModifiedDate,
+--    0 AS IsDefaultDashboard
+--FROM RoleDashboard rd
+--INNER JOIN IDM.DDARole dist 
+--    ON rd.RoleId = dist.RoleId 
+--    AND rd.TenantId = dist.TenantId
+--INNER JOIN IDM.DDARole dep
+--    ON dep.TenantId = dist.TenantId
+--WHERE dist.RoleName = 'District Wide'
+--  AND dep.RoleName = 'Department Supervisor'
+--  AND rd.TenantId = 38
+--  AND NOT EXISTS (
+--        SELECT 1 
+--        FROM RoleDashboard rdx
+--        WHERE rdx.DashboardId = rd.DashboardId
+--          AND rdx.RoleId = dep.RoleId
+--          AND rdx.TenantId = rd.TenantId
+--    );

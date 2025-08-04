@@ -1169,3 +1169,20 @@ JOIN CustomerLatestOrder clo ON o.CustomerID = clo.CustomerID
 PRINT 'Demo database setup complete! You can now practice with all the SQL topics.';
 PRINT 'Remember to execute sections individually for better understanding.';
 PRINT 'Use SET STATISTICS IO ON/OFF and actual execution plans for performance analysis.';
+
+
+
+
+
+
+-----------============================
+EXEC sp_addlinkedserver   
+    @server     = 'ProductsServer',        -- Friendly name you will use in queries
+    @srvproduct = '',                      -- Must be empty string, not NULL
+    @provider   = 'SQLNCLI11',             -- Or use 'MSOLEDBSQL' or 'SQLNCLI' based on what's installed
+    @datasrc    = '10.10.1.219';           -- Remote SQL Server IP
+EXEC sp_addlinkedsrvlogin  
+    @rmtsrvname = 'ProductsServer',  
+    @useself = 'true';   -- Use your current Windows credentials (no username/password)
+SELECT TOP 5 * 
+FROM [ProductsServer].[DataAnalytics_LAD].[dbo].[LessonPlan];

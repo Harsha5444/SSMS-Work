@@ -399,3 +399,45 @@ WHERE lrmf.TenantId = 38
               )
     )
 ORDER BY lrmf.ParentCode, lrmf.ParentColumnName;
+
+
+
+WITH SourceCounts AS (
+    SELECT 
+        student_number AS StudentID,
+        [SCHOOLID] as Schoolidentifier,
+        COUNT(DISTINCT CAST(ATT_DATE AS DATE)) AS SourceAbsenceCount
+    FROM [Main].[WHPS_Attendance] a
+    WHERE schoolyear = 2024
+    AND [Presence_Status_CD] <> 'Present'
+    AND [ATT_CODE] NOT IN ('T', 'T15', 'TEX', 'TUX')
+    GROUP BY student_number,[SCHOOLID]
+),
+ProductionCounts AS (
+    SELECT 
+        districtstudentid AS StudentID,
+        SchoolIdentifier,
+        COUNT(DISTINCT CAST(attendancedate AS DATE)) AS ProductionAbsenceCount
+    FROM main.K12StudentDailyAttendance
+    WHERE schoolyear = 2024
+    AND AttendanceStatusId IN (
+        SELECT AttendanceStatusId 
+        FROM refattendancestatus 
+        WHERE tenantid = 38 
+        AND AttendanceStatusDescription = 'Absent'
+    )
+    GROUP BY districtstudentid,SchoolIdentifier
+)
+SELECT 
+    s.StudentID,
+    s.Schoolidentifier,
+    ISNULL(s.SourceAbsenceCount, 0) AS SourceAbsenceCount,
+    ISNULL(p.ProductionAbsenceCount, 0) AS ProductionAbsenceCount,
+    ISNULL(s.SourceAbsenceCount, 0) - ISNULL(p.ProductionAbsenceCount, 0) AS Difference,
+    CASE 
+        WHEN s.SourceAbsenceCount = p.ProductionAbsenceCount THEN 'Match'
+        ELSE 'Mismatch'
+    END AS Status
+FROM SourceCounts s
+INNER JOIN ProductionCounts p ON s.StudentID = p.StudentID AND s.Schoolidentifier = p.SchoolIdentifier
+ORDER BY ABS(ISNULL(s.SourceAbsenceCount, 0) - ISNULL(p.ProductionAbsenceCount, 0)) , s.StudentID;

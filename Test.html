@@ -1,0 +1,450 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SQL Interview Prep - Creative Examples</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            background: rgba(255, 255, 255, 0.95);
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+        }
+        
+        h1 {
+            text-align: center;
+            color: #2c3e50;
+            margin-bottom: 30px;
+            font-size: 2.5em;
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        
+        .concept {
+            margin-bottom: 40px;
+            background: white;
+            border-radius: 15px;
+            padding: 25px;
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+            border-left: 5px solid #667eea;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+        }
+        
+        .concept:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.15);
+        }
+        
+        .concept h2 {
+            color: #2c3e50;
+            margin-bottom: 15px;
+            font-size: 1.8em;
+            display: flex;
+            align-items: center;
+        }
+        
+        .concept h2::before {
+            content: "🎯";
+            margin-right: 10px;
+            font-size: 1.2em;
+        }
+        
+        .scenario {
+            background: #f8f9fa;
+            padding: 15px;
+            border-radius: 10px;
+            margin-bottom: 15px;
+            border-left: 3px solid #e74c3c;
+        }
+        
+        .scenario h3 {
+            color: #e74c3c;
+            margin-bottom: 8px;
+            font-size: 1.2em;
+        }
+        
+        .code-block {
+            background: #2d3748;
+            color: #e2e8f0;
+            padding: 20px;
+            border-radius: 10px;
+            font-family: 'Consolas', 'Monaco', monospace;
+            font-size: 14px;
+            line-height: 1.6;
+            overflow-x: auto;
+            margin: 15px 0;
+            border: 1px solid #4a5568;
+        }
+        
+        .highlight {
+            background: rgba(255, 193, 7, 0.3);
+            padding: 2px 4px;
+            border-radius: 3px;
+            font-weight: bold;
+        }
+        
+        .tip {
+            background: linear-gradient(135deg, #84fab0 0%, #8fd3f4 100%);
+            padding: 15px;
+            border-radius: 10px;
+            margin-top: 15px;
+            color: #2c3e50;
+            font-weight: 500;
+        }
+        
+        .tip::before {
+            content: "💡 ";
+            font-size: 1.2em;
+        }
+        
+        .toggle-btn {
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 25px;
+            cursor: pointer;
+            font-size: 14px;
+            margin-top: 10px;
+            transition: all 0.3s ease;
+        }
+        
+        .toggle-btn:hover {
+            transform: scale(1.05);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+        }
+        
+        .hidden {
+            display: none;
+        }
+        
+        .join-visual {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin: 20px 0;
+        }
+        
+        .join-type {
+            background: linear-gradient(135deg, #ff9a9e 0%, #fecfef 100%);
+            padding: 15px;
+            border-radius: 10px;
+            text-align: center;
+            color: #2c3e50;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🚀 SQL Interview Mastery Guide</h1>
+        
+        <!-- Data Types -->
+        <div class="concept">
+            <h2>Data Types</h2>
+            <div class="scenario">
+                <h3>🎮 Video Game Character Database</h3>
+                <p>Imagine designing a database for a fantasy RPG game with millions of players:</p>
+            </div>
+            <div class="code-block">
+CREATE TABLE GameCharacters (
+    -- Player ID (supports 9 quintillion players!)
+    PlayerID <span class="highlight">BIGINT</span> PRIMARY KEY,
+    
+    -- Character name (exactly 20 chars, padded with spaces)
+    CharacterCode <span class="highlight">CHAR(20)</span>,
+    
+    -- Character name (variable length, efficient storage)
+    CharacterName <span class="highlight">NVARCHAR(100)</span>,
+    
+    -- Experience points (regular games: INT, but MMOs need BIGINT!)
+    ExperiencePoints <span class="highlight">BIGINT</span>,
+    
+    -- Gold coins with decimal precision (18 digits, 2 decimal places)
+    GoldCoins <span class="highlight">DECIMAL(18,2)</span>,
+    
+    -- Character creation timestamp
+    CreatedAt <span class="highlight">DATETIME2</span>,
+    
+    -- Daily login date only
+    LastLoginDate <span class="highlight">DATE</span>,
+    
+    -- Session time only
+    SessionDuration <span class="highlight">TIME</span>
+);
+            </div>
+            <div class="tip">
+                DECIMAL(18,2) for money prevents floating-point errors that could cause players to lose virtual currency! Always use DECIMAL for financial data.
+            </div>
+        </div>
+
+        <!-- Constraints -->
+        <div class="concept">
+            <h2>Constraints</h2>
+            <div class="scenario">
+                <h3>🏥 Hospital Emergency System</h3>
+                <p>Critical system where data integrity can save lives:</p>
+            </div>
+            <div class="code-block">
+CREATE TABLE Patients (
+    PatientID INT <span class="highlight">PRIMARY KEY</span> IDENTITY(1,1),
+    
+    -- Social Security must be unique
+    SSN VARCHAR(11) <span class="highlight">UNIQUE</span> NOT NULL,
+    
+    -- Emergency contact defaults to hospital
+    EmergencyContact VARCHAR(15) <span class="highlight">DEFAULT '911-HOSPITAL'</span>,
+    
+    -- Age must be realistic
+    Age INT <span class="highlight">CHECK (Age BETWEEN 0 AND 150)</span>,
+    
+    -- Priority level validation
+    Priority VARCHAR(10) <span class="highlight">CHECK (Priority IN ('LOW', 'MEDIUM', 'HIGH', 'CRITICAL'))</span>
+);
+
+CREATE TABLE MedicalRecords (
+    RecordID INT PRIMARY KEY IDENTITY(1,1),
+    PatientID INT <span class="highlight">FOREIGN KEY REFERENCES Patients(PatientID)</span>,
+    Diagnosis NVARCHAR(500)
+);
+            </div>
+            <div class="tip">
+                CHECK constraints prevent impossible data (like 200-year-old patients) and FOREIGN KEYs ensure no orphaned medical records exist!
+            </div>
+        </div>
+
+        <!-- Joins -->
+        <div class="concept">
+            <h2>Joins</h2>
+            <div class="scenario">
+                <h3>🎬 Movie Streaming Platform</h3>
+                <p>Netflix-style platform where understanding joins determines what users see:</p>
+            </div>
+            
+            <div class="join-visual">
+                <div class="join-type">INNER<br>Only watched movies</div>
+                <div class="join-type">LEFT<br>All movies + views</div>
+                <div class="join-type">RIGHT<br>All users + movies</div>
+                <div class="join-type">FULL<br>Everything!</div>
+            </div>
+            
+            <div class="code-block">
+-- INNER JOIN: Only movies that have been watched
+SELECT m.MovieTitle, u.UserName, w.WatchedMinutes
+FROM Movies m
+<span class="highlight">INNER JOIN</span> Watched w ON m.MovieID = w.MovieID
+<span class="highlight">INNER JOIN</span> Users u ON w.UserID = u.UserID;
+
+-- LEFT JOIN: All movies, show watch data if exists (find unwatched gems!)
+SELECT m.MovieTitle, u.UserName, ISNULL(w.WatchedMinutes, 0) AS Minutes
+FROM Movies m
+<span class="highlight">LEFT JOIN</span> Watched w ON m.MovieID = w.MovieID
+<span class="highlight">LEFT JOIN</span> Users u ON w.UserID = u.UserID;
+
+-- SELF JOIN: Find users who watched the same movie
+SELECT DISTINCT u1.UserName AS User1, u2.UserName AS User2, m.MovieTitle
+FROM Watched w1
+<span class="highlight">INNER JOIN</span> Watched w2 ON w1.MovieID = w2.MovieID AND w1.UserID < w2.UserID
+<span class="highlight">INNER JOIN</span> Users u1 ON w1.UserID = u1.UserID
+<span class="highlight">INNER JOIN</span> Users u2 ON w2.UserID = u2.UserID
+<span class="highlight">INNER JOIN</span> Movies m ON w1.MovieID = m.MovieID;
+            </div>
+            <div class="tip">
+                INNER = intersection, LEFT = all from left + matching right, SELF JOIN with w1.UserID < w2.UserID prevents duplicate pairs!
+            </div>
+        </div>
+
+        <!-- WHERE vs HAVING -->
+        <div class="concept">
+            <h2>WHERE vs HAVING</h2>
+            <div class="scenario">
+                <h3>🍕 Pizza Delivery Analytics</h3>
+                <p>WHERE filters individual orders, HAVING filters grouped results:</p>
+            </div>
+            <div class="code-block">
+-- WHERE: Filter individual pizza orders BEFORE grouping
+SELECT CustomerID, COUNT(*) as TotalOrders, AVG(OrderValue) as AvgValue
+FROM PizzaOrders
+<span class="highlight">WHERE OrderDate >= '2024-01-01'</span>  -- Filter individual rows first
+   AND PizzaSize IN ('Large', 'Extra Large')  -- Only big pizzas
+GROUP BY CustomerID
+<span class="highlight">HAVING COUNT(*) >= 5</span>              -- Then filter groups (loyal customers)
+   AND AVG(OrderValue) > 25.00;        -- High-value customers only
+
+-- Think of it as:
+-- 1. WHERE = "Show me only 2024 large/XL pizza orders"
+-- 2. GROUP BY = "Group these filtered orders by customer"
+-- 3. HAVING = "Of these groups, show only customers with 5+ orders averaging $25+"
+            </div>
+            <div class="tip">
+                WHERE happens BEFORE grouping (filters rows), HAVING happens AFTER grouping (filters groups). You can't use WHERE with aggregate functions!
+            </div>
+        </div>
+
+        <!-- GROUP BY & Aggregates -->
+        <div class="concept">
+            <h2>GROUP BY & Aggregates</h2>
+            <div class="scenario">
+                <h3>🎵 Spotify-Style Music Analytics</h3>
+                <p>Analyzing listening patterns across genres and artists:</p>
+            </div>
+            <div class="code-block">
+-- Multiple grouping levels: Genre > Artist > Month
+SELECT 
+    Genre,
+    Artist,
+    YEAR(ListenDate) as Year,
+    MONTH(ListenDate) as Month,
+    <span class="highlight">COUNT(*)</span> as TotalPlays,                    -- How many times played
+    <span class="highlight">COUNT(DISTINCT UserID)</span> as UniqueListeners,  -- How many different users
+    <span class="highlight">SUM(Duration)</span> as TotalMinutes,               -- Total listening time
+    <span class="highlight">AVG(Duration)</span> as AvgSongLength,              -- Average song length
+    <span class="highlight">MIN(Duration)</span> as ShortestSong,               -- Shortest track
+    <span class="highlight">MAX(Duration)</span> as LongestSong                 -- Epic ballad length
+FROM MusicStreams
+WHERE ListenDate >= '2024-01-01'
+<span class="highlight">GROUP BY Genre, Artist, YEAR(ListenDate), MONTH(ListenDate)</span>
+ORDER BY Genre, TotalPlays DESC;
+            </div>
+            <div class="tip">
+                Every column in SELECT must be either in GROUP BY or inside an aggregate function. Think "for each combination of Genre/Artist/Month, calculate these statistics"
+            </div>
+        </div>
+
+        <!-- CASE Expressions -->
+        <div class="concept">
+            <h2>CASE Expressions</h2>
+            <div class="scenario">
+                <h3>🏆 Olympic Games Scoring System</h3>
+                <p>Dynamic categorization and conditional logic for athlete performance:</p>
+            </div>
+            <div class="code-block">
+-- Complex CASE for athlete categorization and medal assignment
+SELECT 
+    AthleteName,
+    Country,
+    Score,
+    
+    -- Medal assignment based on ranking
+    <span class="highlight">CASE 
+        WHEN RANK() OVER (ORDER BY Score DESC) = 1 THEN 'GOLD 🥇'
+        WHEN RANK() OVER (ORDER BY Score DESC) = 2 THEN 'SILVER 🥈' 
+        WHEN RANK() OVER (ORDER BY Score DESC) = 3 THEN 'BRONZE 🥉'
+        ELSE 'Participant'
+    END</span> as Medal,
+    
+    -- Performance category
+    <span class="highlight">CASE 
+        WHEN Score >= 9.5 THEN 'World Record Territory'
+        WHEN Score >= 9.0 THEN 'Olympic Record Potential'
+        WHEN Score >= 8.0 THEN 'Strong Performance'
+        WHEN Score >= 7.0 THEN 'Good Effort'
+        ELSE 'Needs Improvement'
+    END</span> as PerformanceLevel,
+    
+    -- Prize money calculation
+    <span class="highlight">CASE Country
+        WHEN 'USA' THEN Score * 10000
+        WHEN 'China' THEN Score * 8000
+        WHEN 'Russia' THEN Score * 7000
+        ELSE Score * 5000
+    END</span> as PrizeMoney
+    
+FROM OlympicResults
+WHERE Event = 'Gymnastics All-Around'
+ORDER BY Score DESC;
+            </div>
+            <div class="tip">
+                CASE is like a multi-way IF statement. Use it for categorization, conditional calculations, and transforming data on the fly. Great for creating derived columns!
+            </div>
+        </div>
+
+        <!-- ORDER BY -->
+        <div class="concept">
+            <h2>ORDER BY</h2>
+            <div class="scenario">
+                <h3>📚 Library Book Recommendation Engine</h3>
+                <p>Complex sorting for book recommendations with multiple criteria:</p>
+            </div>
+            <div class="code-block">
+-- Multi-level sorting: Genre preference, then rating, then popularity, then recency
+SELECT 
+    BookTitle,
+    Author,
+    Genre,
+    Rating,
+    ReviewCount,
+    PublicationYear,
+    CASE 
+        WHEN Genre IN ('Sci-Fi', 'Fantasy') THEN 1    -- User loves these
+        WHEN Genre IN ('Mystery', 'Thriller') THEN 2  -- Secondary interest
+        ELSE 3                                         -- Other genres
+    END as GenrePreference
+    
+FROM Books
+WHERE Rating >= 4.0
+    AND ReviewCount >= 100
+    
+<span class="highlight">ORDER BY 
+    GenrePreference ASC,           -- Preferred genres first
+    Rating DESC,                   -- Highest rated within each genre preference
+    ReviewCount DESC,              -- Most reviewed within same rating
+    PublicationYear DESC,          -- Newest books if still tied
+    BookTitle ASC                  -- Alphabetical as final tiebreaker</span>
+    
+OFFSET 0 ROWS FETCH NEXT 20 ROWS ONLY;  -- Top 20 recommendations
+            </div>
+            <div class="tip">
+                ORDER BY processes in sequence - first by GenrePreference, then Rating within each preference group, etc. Mix ASC/DESC for sophisticated sorting logic!
+            </div>
+        </div>
+
+        <div style="text-align: center; margin-top: 40px; padding: 20px; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); border-radius: 15px; color: white;">
+            <h2>🎯 Interview Success Formula</h2>
+            <p style="font-size: 1.1em; margin: 10px 0;">Remember: SQL is about <strong>telling stories with data</strong>. Each query answers a business question. Practice explaining the "why" behind each concept, not just the syntax!</p>
+            <div style="margin-top: 15px;">
+                <span style="background: rgba(255,255,255,0.2); padding: 8px 15px; margin: 5px; border-radius: 20px; display: inline-block;">💡 Think Business Logic</span>
+                <span style="background: rgba(255,255,255,0.2); padding: 8px 15px; margin: 5px; border-radius: 20px; display: inline-block;">🔍 Explain Your Reasoning</span>
+                <span style="background: rgba(255,255,255,0.2); padding: 8px 15px; margin: 5px; border-radius: 20px; display: inline-block;">⚡ Optimize for Performance</span>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Add some interactivity for engagement
+        document.querySelectorAll('.concept').forEach(concept => {
+            concept.addEventListener('click', function() {
+                this.style.background = this.style.background === 'rgb(248, 249, 250)' ? 'white' : '#f8f9fa';
+            });
+        });
+
+        // Highlight code on hover
+        document.querySelectorAll('.code-block').forEach(block => {
+            block.addEventListener('mouseenter', function() {
+                this.style.boxShadow = '0 0 20px rgba(102, 126, 234, 0.3)';
+            });
+            block.addEventListener('mouseleave', function() {
+                this.style.boxShadow = '';
+            });
+        });
+    </script>
+</body>
+</html>

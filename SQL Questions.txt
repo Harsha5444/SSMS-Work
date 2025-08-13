@@ -1,0 +1,28 @@
+1) You are given the list of Facebook friends and the list of Facebook pages that users follow. Your task is to create a new recommendation system for Facebook. For each Facebook user, find pages that this user doesn't follow but at least one of their friends does. Output the user ID and the ID of the page that should be recommended to this user.
+
+Tables
+users_friends
+users_pages
+
+SELECT u.user_id
+	,p.page_id
+FROM users_friends u
+INNER JOIN users_pages p ON u.friend_id = p.user_id
+WHERE NOT EXISTS (
+		SELECT 1
+		FROM users_pages p2
+		WHERE p2.user_id = u.user_id
+			AND p2.page_id = p.page_id
+		)
+
+--=========================================================
+--=========================================================
+2) Find all posts which were reacted to with a heart. For such posts output all columns from facebook_posts table.
+
+SELECT p *
+FROM facebook_posts p
+INNER JOIN facebook_reactions r ON p.post_id = r.post_id
+WHERE r.reaction = 'heart'
+
+--=========================================================
+--=========================================================

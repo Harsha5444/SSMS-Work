@@ -1,4 +1,6 @@
-SELECT '2026' AS SchoolYear, '1000000' AS LEAIdentifier, NULL AS SchoolIdentifier, NULL AS CalendarID, 'Holiday' AS EventType, '2025-09-01' AS EventDate, 'No School: Labor Day' AS EventDescription, 28 AS TenantId, 1 AS StatusId, 'DDA@DDAUSER' AS CreatedBy, GETDATE() AS CreatedDate, NULL AS ModifiedBy, NULL AS ModifiedDate
+SELECT '2026' AS SchoolYear, '1000000' AS LEAIdentifier, NULL AS SchoolIdentifier, NULL AS CalendarID, 'First Day of School' AS EventType, '2025-08-27' AS EventDate, 'First Day (Grades 1-12), Kindergarten Screening' AS EventDescription, 28 AS TenantId, 1 AS StatusId, 'DDA@DDAUSER' AS CreatedBy, GETDATE() AS CreatedDate, NULL AS ModifiedBy, NULL AS ModifiedDate
+UNION ALL SELECT '2026', '1000000', NULL, NULL, 'Holiday', '2025-09-01', 'No School: Labor Day', 28, 1, 'DDA@DDAUSER', GETDATE(), NULL, NULL
+UNION ALL SELECT '2026', '1000000', NULL, NULL, 'First Day of School', '2025-09-02', 'First Day (Pre-K & K)', 28, 1, 'DDA@DDAUSER', GETDATE(), NULL, NULL
 UNION ALL SELECT '2026', '1000000', NULL, NULL, 'Holiday', '2025-09-16', 'No School: PD (P, E, M, H) / Voting Day', 28, 1, 'DDA@DDAUSER', GETDATE(), NULL, NULL
 UNION ALL SELECT '2026', '1000000', NULL, NULL, 'Holiday', '2025-09-23', 'No School: Rosh Hashanah', 28, 1, 'DDA@DDAUSER', GETDATE(), NULL, NULL
 UNION ALL SELECT '2026', '1000000', NULL, NULL, 'Holiday', '2025-10-02', 'No School: Yom Kippur', 28, 1, 'DDA@DDAUSER', GETDATE(), NULL, NULL
@@ -30,4 +32,6 @@ UNION ALL SELECT '2026', '1000000', NULL, NULL, 'Holiday', '2026-04-22', 'No Sch
 UNION ALL SELECT '2026', '1000000', NULL, NULL, 'Holiday', '2026-04-23', 'No School: Spring Recess', 28, 1, 'DDA@DDAUSER', GETDATE(), NULL, NULL
 UNION ALL SELECT '2026', '1000000', NULL, NULL, 'Holiday', '2026-04-24', 'No School: Spring Recess', 28, 1, 'DDA@DDAUSER', GETDATE(), NULL, NULL
 UNION ALL SELECT '2026', '1000000', NULL, NULL, 'Holiday', '2026-05-25', 'No School: Memorial Day', 28, 1, 'DDA@DDAUSER', GETDATE(), NULL, NULL
+UNION ALL SELECT '2026', '1000000', NULL, NULL, 'Last Day of School', '2026-06-18', '180th Day (No Snow Days)', 28, 1, 'DDA@DDAUSER', GETDATE(), NULL, NULL
 UNION ALL SELECT '2026', '1000000', NULL, NULL, 'Holiday', '2026-06-19', 'No School: Juneteenth', 28, 1, 'DDA@DDAUSER', GETDATE(), NULL, NULL
+UNION ALL SELECT '2026', '1000000', NULL, NULL, 'Last Day of School', '2026-06-26', '185th Day (Includes 5 Snow Days)', 28, 1, 'DDA@DDAUSER', GETDATE(), NULL, NULL

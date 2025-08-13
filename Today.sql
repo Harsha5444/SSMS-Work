@@ -84,6 +84,7 @@ order by c.sortorder
 
 select * from idm.Org where tenantid = 38
 
+
 SELECT 
     r.RoleId,
     r.RoleName,
@@ -98,8 +99,6 @@ INNER JOIN dashboard d
     AND rd.TenantId = d.TenantId
 WHERE r.TenantId = 38
 order by 1
-
-
 
 
 --INSERT INTO RoleDashboard (DashboardId, RoleId, TenantId, StatusId, CreatedBy, CreatedDate, ModifiedBy, ModifiedDate, IsDefaultDashboard)
@@ -119,8 +118,8 @@ order by 1
 --    AND rd.TenantId = dist.TenantId
 --INNER JOIN IDM.DDARole dep
 --    ON dep.TenantId = dist.TenantId
---WHERE dist.RoleName = 'Superintendent'
---  AND dep.RoleName = 'Superintendent NO H/N'
+--WHERE dist.RoleName = 'Principal'
+--  AND dep.RoleName = 'Principal ES'
 --  AND rd.TenantId = 38
 --  AND NOT EXISTS (
 --        SELECT 1 
@@ -130,6 +129,9 @@ order by 1
 --          AND rdx.TenantId = rd.TenantId
 --    );
 
+--Principal ES
+--Principal MS
+--Principal HS
 
 
 select * from reportdetails order by 1 desc

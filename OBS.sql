@@ -231,3 +231,171 @@ order by 1 desc
 --8942
 --8853
 8851
+
+
+
+select * from AggRptK12StudentDetails where 1=1 and schoolyear= 2024 and districtstudentid = '117733'
+select * from fn_dashboardreportsdetails(38) where dashboardname like '%DISTRICT%'
+
+select * FROM reportdetails where reportdetailsid = 7032
+
+select * from main.k12studentdailyattendance where tenantid = 38 and schoolyear = 2025
+
+select * from AggRptK12StudentDetails where tenantid = 38
+
+
+select * from reffiletemplates where tenantid = 38
+
+select * from main.WHPS_PeriodAttendance where tenantid = 38 and schoolyear = 2025
+select * from main.WHPS_Attendance where tenantid = 38 and schoolyear = 2024
+
+select * from Import_K12StudentDailyAttendance_Vw_38_Bkp
+select * into #TEMPK12StudentDailyAttendance2022 from Import_K12StudentDailyAttendance_Vw_38
+
+select * from RefMetric
+select * from #TEMPK12StudentDailyAttendance2022
+
+SELECT *
+    --schoolyear,
+    --COUNT(*) AS total_students,
+    --SUM(CASE WHEN presentrate <= 90.00 THEN 1 ELSE 0 END) AS chronic_absentees,
+    --CAST(SUM(CASE WHEN presentrate <= 90.00 THEN 1 ELSE 0 END) * 100.0 / COUNT(*) AS DECIMAL(10,1)) AS chronic_percentage
+FROM 
+    dbo.AggRptK12StudentDetails WITH (NOLOCK)
+WHERE 
+    TenantId = 38
+    AND Grade IN ('K', 'Grade 1', 'Grade 2', 'Grade 3', 'Grade 4', 'Grade 5', 
+                 'Grade 6', 'Grade 7', 'Grade 8', 'Grade 9', 'Grade 10', 
+                 'Grade 11', 'Grade 12', 'Grade 13')
+    AND SchoolYear in (2023)
+GROUP BY 
+    schoolyear
+ORDER BY 
+    schoolyear
+
+
+select distinct CAST(ATT_DATE AS DATE) from [Main].[WHPS_Attendance] 
+where 1=1
+and schoolyear = 2024 
+and student_number ='119366'
+and (
+		[Presence_Status_CD] <> 'Present'
+		OR [ATT_CODE] IN (
+			'T'
+			,'T15'
+			,'TEX'
+			,'TUX'
+			)
+		)
+--and [ATT_CODE] not in (
+--				'T'
+--				,'T15'
+--				,'TEX'
+--				,'TUX'
+--				)
+order by CAST(ATT_DATE AS DATE) desc
+
+select cast(attendancedate as date),schoolidentifier from main.K12StudentDailyAttendance
+where 1=1
+and schoolyear = 2024
+and districtstudentid = '119366'
+and AttendanceStatusId in (select AttendanceStatusId from refattendancestatus where tenantid = 38 and AttendanceStatusDescription='Absent')
+order by cast(attendancedate as date) desc
+
+
+
+select * from Import_K12StudentDailyAttendance_Vw_38
+where 1=1
+and schoolyear = 2024
+and districtstudentid = '119366'
+and [AttendanceStatus] in ('ABS')
+
+
+--119350
+--122517
+
+--select AttendanceStatusId from refattendancestatus where tenantid = 38 and AttendanceStatusDescription='Present'
+
+--select * from refattendancestatus where tenantid = 38
+
+
+WITH SourceCounts AS (
+    SELECT 
+        student_number AS StudentID,
+        [SCHOOLID] as Schoolidentifier,
+        COUNT(DISTINCT CAST(ATT_DATE AS DATE)) AS SourceAbsenceCount
+    FROM [Main].[WHPS_Attendance] a
+    WHERE schoolyear = 2024
+    AND [Presence_Status_CD] <> 'Present'
+    AND [ATT_CODE] NOT IN ('T', 'T15', 'TEX', 'TUX')
+    GROUP BY student_number,[SCHOOLID]
+),
+ProductionCounts AS (
+    SELECT 
+        districtstudentid AS StudentID,
+        SchoolIdentifier,
+        COUNT(DISTINCT CAST(attendancedate AS DATE)) AS ProductionAbsenceCount
+    FROM main.K12StudentDailyAttendance
+    WHERE schoolyear = 2024
+    AND AttendanceStatusId IN (
+        SELECT AttendanceStatusId 
+        FROM refattendancestatus 
+        WHERE tenantid = 38 
+        AND AttendanceStatusDescription = 'Absent'
+    )
+    GROUP BY districtstudentid,SchoolIdentifier
+),
+AllStudents AS (
+    SELECT DISTINCT student_number AS StudentID,[SCHOOLID] as Schoolidentifier
+    FROM [Main].[WHPS_Attendance]
+    WHERE schoolyear = 2024
+    
+    UNION
+    
+    SELECT DISTINCT districtstudentid AS StudentID,Schoolidentifier
+    FROM main.K12StudentDailyAttendance
+    WHERE schoolyear = 2024
+)
+SELECT 
+    a.StudentID,
+    ISNULL(s.SourceAbsenceCount, 0) AS SourceAbsenceCount,
+    ISNULL(p.ProductionAbsenceCount, 0) AS ProductionAbsenceCount,
+    ISNULL(s.SourceAbsenceCount, 0) - ISNULL(p.ProductionAbsenceCount, 0) AS Difference,
+    CASE 
+        WHEN s.SourceAbsenceCount IS NULL THEN 'Missing in Source'
+        WHEN p.ProductionAbsenceCount IS NULL THEN 'Missing in Production'
+        WHEN s.SourceAbsenceCount = p.ProductionAbsenceCount THEN 'Match'
+        ELSE 'Mismatch'
+    END AS Status
+FROM AllStudents a
+LEFT JOIN SourceCounts s ON a.StudentID = s.StudentID and a.Schoolidentifier = s.Schoolidentifier
+LEFT JOIN ProductionCounts p ON a.StudentID = p.StudentID and s.Schoolidentifier = p.Schoolidentifier and a.Schoolidentifier = p.Schoolidentifier
+ORDER BY ABS(ISNULL(s.SourceAbsenceCount, 0) - ISNULL(p.ProductionAbsenceCount, 0)) DESC, a.StudentID;
+
+
+
+SELECT *
+FROM LinkedReportMappedFileds lrmf
+WHERE lrmf.TenantId = 38
+  AND EXISTS (
+        SELECT 1
+        FROM LinkedReportMappedFileds sub
+        WHERE sub.TenantId = lrmf.TenantId
+          AND sub.ReportDetailsId = lrmf.ReportDetailsId
+          AND sub.ChildColumnName = lrmf.ParentColumnName
+          AND lrmf.IsValueField = 1
+    )
+  or EXISTS (
+        SELECT 1
+        FROM LinkedReportMappedFileds sub
+        WHERE sub.TenantId = lrmf.TenantId
+          AND sub.ReportDetailsId = lrmf.ReportDetailsId
+          AND sub.ParentCode = lrmf.ParentCode
+          AND sub.ParentColumnName = lrmf.ParentColumnName
+          AND (
+                sub.IsValueField = 0
+                OR sub.ChildReportId IS NOT NULL
+                OR sub.ChildColumnName IS NOT NULL
+              )
+    )
+ORDER BY lrmf.ParentCode, lrmf.ParentColumnName;

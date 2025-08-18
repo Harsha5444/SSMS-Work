@@ -22,23 +22,23 @@ BEGIN
 			IF NOT EXISTS (
 					SELECT 1
 					FROM INFORMATION_SCHEMA.TABLES
-					WHERE TABLE_NAME = 'AggrptMCASItemAnalysis'
+					WHERE TABLE_NAME = @TenantCode +'_AggrptMCASItemAnalysis'
 					)
 			BEGIN
 				SET @Tbl1 = 
-					' CREATE TABLE [dbo].[AggrptMCASItemAnalysis] (  [SchoolYear] [varchar](20) NULL,[LEAIdentifier] [varchar](200) NULL,[SchoolIdentifier] [varchar](200) NULL,[AssessmentCode] [varchar](200) NULL,[ItemId] [varchar](200) NULL ,[ItemMaxScore] [varchar](200) NULL,[Itemtext] [varchar](2000) NULL,[ItemMinScore] [varchar](200) NULL,[SubjectAreaCode] [varchar](200) NULL,[ItemTypeCode] [varchar](200) NULL,[IsPublished] [varchar](20) NULL,[IsAdaptive] [varchar](200) NULL,[Grade] [varchar](200) NULL,[AssessmentItemCode] [varchar](200) NULL,[Reporting_Category] [varchar](200) NULL,[Reporting_Category_Number] [varchar](200) NULL,[MA_Curriculum_Framework] [varchar](2000) NULL,[Correct_Answer] [varchar](200) NULL,[State_Percent_Possible] [varchar](200) NULL,[District_Percent_Possible] [varchar](200) NULL,[School_Percent_Possible] [varchar](20) NULL,[School_State_Diff] [varchar](200) NULL,[School_Average_Points] [varchar](200) NULL,[District_Average_Points] [varchar](200) NULL,[State_Average_Points] [varchar](200) NULL,[TenantId] [int] NULL,[GradeDescription] [varchar](200) NULL,[LeaName] [varchar](200) NULL,[SchoolName] [varchar](200) NULL,[Avg_Correct] [varchar](200) NULL,[Diff_From_State] [varchar](200) NULL,[SubjectAreaDescription] [varchar](20) NULL,[SortOrder] [int] NULL,[ItemTypeDescription] [varchar](200) NULL,[Avg_School_Correct] [int] NULL 	) ON [PRIMARY]  ; '
+					' CREATE TABLE [dbo].['+@TenantCode+'_AggrptMCASItemAnalysis] (  [SchoolYear] [varchar](20) NULL,[LEAIdentifier] [varchar](200) NULL,[SchoolIdentifier] [varchar](200) NULL,[AssessmentCode] [varchar](200) NULL,[ItemId] [varchar](200) NULL ,[ItemMaxScore] [varchar](200) NULL,[Itemtext] [varchar](2000) NULL,[ItemMinScore] [varchar](200) NULL,[SubjectAreaCode] [varchar](200) NULL,[ItemTypeCode] [varchar](200) NULL,[IsPublished] [varchar](20) NULL,[IsAdaptive] [varchar](200) NULL,[Grade] [varchar](200) NULL,[AssessmentItemCode] [varchar](200) NULL,[Reporting_Category] [varchar](200) NULL,[Reporting_Category_Number] [varchar](200) NULL,[MA_Curriculum_Framework] [varchar](2000) NULL,[Correct_Answer] [varchar](200) NULL,[State_Percent_Possible] [varchar](200) NULL,[District_Percent_Possible] [varchar](200) NULL,[School_Percent_Possible] [varchar](20) NULL,[School_State_Diff] [varchar](200) NULL,[School_Average_Points] [varchar](200) NULL,[District_Average_Points] [varchar](200) NULL,[State_Average_Points] [varchar](200) NULL,[TenantId] [int] NULL,[GradeDescription] [varchar](200) NULL,[LeaName] [varchar](200) NULL,[SchoolName] [varchar](200) NULL,[Avg_Correct] [varchar](200) NULL,[Diff_From_State] [varchar](200) NULL,[SubjectAreaDescription] [varchar](20) NULL,[SortOrder] [int] NULL,[ItemTypeDescription] [varchar](200) NULL,[Avg_School_Correct] [int] NULL 	) ON [PRIMARY]  ; '
 
 				EXEC (@Tbl1)
 			END
-
+			--print @Tbl1;
 			IF NOT EXISTS (
 					SELECT 1
 					FROM INFORMATION_SCHEMA.TABLES
-					WHERE TABLE_NAME = 'AggrptMCASItemStudentResults'
+					WHERE TABLE_NAME = @TenantCode +'_AggrptMCASItemStudentResults'
 					)
 			BEGIN
 				SET @Tbl2 = 
-					' CREATE TABLE [dbo].[AggrptMCASItemStudentResults] ( [LEAIdentifier] [varchar](200) NULL,[SchoolIdentifier] [varchar](200) NULL,[SchoolYear] [varchar](20) NULL,[AssessmentCode] [varchar](200) NULL,[ItemId] [varchar](200) NULL,[ItemMaxScore] [varchar](200) NULL,[Itemtext] [varchar](2000) NULL,[StudentScore] [varchar](200) NULL,[DistrictStudentId] [varchar](200) NULL,[ItemTypeCode] [varchar](200) NULL,[SubjectAreaCode] [varchar](200) NULL,[Reporting_Category] [varchar](200) NULL,[Reporting_Category_Number] [varchar](200) NULL,[MA_Curriculum_Framework] [varchar](2000) NULL,[Correct_Answer] [varchar](200) NULL,[State_Percent_Possible] [varchar](200) NULL,[District_Percent_Possible] [varchar](200) NULL,[School_Percent_Possible] [varchar](200) NULL,[School_State_Diff] [varchar](200) NULL,[School_Average_Points] [varchar](200) NULL,[District_Average_Points] [varchar](200) NULL,[State_Average_Points] [varchar](200) NULL,[grade] [varchar](200) NULL,[TenantId] [int] NULL,[gender] [varchar](200) NULL,[race] [Nvarchar] (200) NULL,[StudentName] [varchar](200) NULL,[FRL] [varchar](200) NULL,[DisabilityStatus] [varchar](200) NULL,[ELL] [varchar](200) NULL,[GradeDescription] [varchar](200) NULL,[LeaName] [varchar](200) NULL,[SchoolName] [varchar](200) NULL,[SubjectAreaDescription] [varchar](200) NULL,[IsCorrect] [varchar](200) NULL,[Avg_Correct] [varchar](200) NULL,[SortOrder] [int] NULL,[HighNeeds] [varchar](200) NULL,[ItemTypeDescription] [varchar](200) NULL,[Avg_School_Correct] [int] NULL,[HR_Teacher] [varchar](500) NULL,[DistrictStaffId] [varchar](500) NULL,[AggrptMCASItemStudentResultsId] [bigint] IDENTITY(1,1) NOT NULL, 	) ON [PRIMARY]  ; '
+					' CREATE TABLE [dbo].['+@TenantCode+'_AggrptMCASItemStudentResults] ( [LEAIdentifier] [varchar](200) NULL,[SchoolIdentifier] [varchar](200) NULL,[SchoolYear] [varchar](20) NULL,[AssessmentCode] [varchar](200) NULL,[ItemId] [varchar](200) NULL,[ItemMaxScore] [varchar](200) NULL,[Itemtext] [varchar](2000) NULL,[StudentScore] [varchar](200) NULL,[DistrictStudentId] [varchar](200) NULL,[ItemTypeCode] [varchar](200) NULL,[SubjectAreaCode] [varchar](200) NULL,[Reporting_Category] [varchar](200) NULL,[Reporting_Category_Number] [varchar](200) NULL,[MA_Curriculum_Framework] [varchar](2000) NULL,[Correct_Answer] [varchar](200) NULL,[State_Percent_Possible] [varchar](200) NULL,[District_Percent_Possible] [varchar](200) NULL,[School_Percent_Possible] [varchar](200) NULL,[School_State_Diff] [varchar](200) NULL,[School_Average_Points] [varchar](200) NULL,[District_Average_Points] [varchar](200) NULL,[State_Average_Points] [varchar](200) NULL,[grade] [varchar](200) NULL,[TenantId] [int] NULL,[gender] [varchar](200) NULL,[race] [Nvarchar] (200) NULL,[StudentName] [varchar](200) NULL,[FRL] [varchar](200) NULL,[DisabilityStatus] [varchar](200) NULL,[ELL] [varchar](200) NULL,[GradeDescription] [varchar](200) NULL,[LeaName] [varchar](200) NULL,[SchoolName] [varchar](200) NULL,[SubjectAreaDescription] [varchar](200) NULL,[IsCorrect] [varchar](200) NULL,[Avg_Correct] [varchar](200) NULL,[SortOrder] [int] NULL,[HighNeeds] [varchar](200) NULL,[ItemTypeDescription] [varchar](200) NULL,[Avg_School_Correct] [int] NULL,[HR_Teacher] [varchar](500) NULL,[DistrictStaffId] [varchar](500) NULL,[AggrptMCASItemStudentResultsId] [bigint] IDENTITY(1,1) NOT NULL, 	) ON [PRIMARY]  ; '
 
 				EXEC (@Tbl2)
 			END
@@ -69,43 +69,49 @@ BEGIN
 			IF EXISTS (
 					SELECT 1
 					FROM INFORMATION_SCHEMA.TABLES
-					WHERE TABLE_NAME = 'AggrptMCASItemStudentResults'
+					WHERE TABLE_NAME = @TenantCode + '_AggrptMCASItemStudentResults'
 					)
 			BEGIN
 				IF NOT EXISTS (
 						SELECT 1
 						FROM sys.indexes
-						WHERE name = 'NCIDX_AggrptMCASItemStudentResults_SubjectAreaCode_Reporting_Category'
-							AND object_id = OBJECT_ID('dbo.AggrptMCASItemStudentResults')
+						WHERE name = 'NCIDX_' + @TenantCode + '_AggrptMCASItemStudentResults_SubjectAreaCode_Reporting_Category'
+							AND object_id = OBJECT_ID('dbo.' + @TenantCode + '_AggrptMCASItemStudentResults')
 						)
 				BEGIN
-					CREATE NONCLUSTERED INDEX [NCIDX_AggrptMCASItemStudentResults_SubjectAreaCode_Reporting_Category] ON [dbo].[AggrptMCASItemStudentResults] (
-						[SubjectAreaCode]
-						,[TenantId]
-						,[DistrictStudentId]
-						,[Reporting_Category]
+					EXEC('
+						CREATE NONCLUSTERED INDEX [NCIDX_' + @TenantCode + '_AggrptMCASItemStudentResults_SubjectAreaCode_Reporting_Category] 
+						ON [dbo].[' + @TenantCode + '_AggrptMCASItemStudentResults] (
+							[SubjectAreaCode]
+							,[TenantId]
+							,[DistrictStudentId]
+							,[Reporting_Category]
 						) INCLUDE (
-						[IsCorrect]
-						,[ItemTypeDescription]
+							[IsCorrect]
+							,[ItemTypeDescription]
 						);
+					');
 				END
 
 				IF NOT EXISTS (
 						SELECT 1
 						FROM sys.indexes
-						WHERE name = 'NCIDX_AggrptMCASItemStudentResults_Reporting_Category'
-							AND object_id = OBJECT_ID('dbo.AggrptMCASItemStudentResults')
+						WHERE name = 'NCIDX_' + @TenantCode + '_AggrptMCASItemStudentResults_Reporting_Category'
+							AND object_id = OBJECT_ID('dbo.' + @TenantCode + '_AggrptMCASItemStudentResults')
 						)
 				BEGIN
-					CREATE NONCLUSTERED INDEX [NCIDX_AggrptMCASItemStudentResults_Reporting_Category] ON [dbo].[AggrptMCASItemStudentResults] (
-						[SubjectAreaCode]
-						,[TenantId]
-						,[DistrictStudentId]
+					EXEC('
+						CREATE NONCLUSTERED INDEX [NCIDX_' + @TenantCode + '_AggrptMCASItemStudentResults_Reporting_Category] 
+						ON [dbo].[' + @TenantCode + '_AggrptMCASItemStudentResults] (
+							[SubjectAreaCode]
+							,[TenantId]
+							,[DistrictStudentId]
 						) INCLUDE (
-						[Reporting_Category]
-						,[IsCorrect]
-						,[ItemTypeDescription]
+							[Reporting_Category]
+							,[IsCorrect]
+							,[ItemTypeDescription]
 						);
+					');
 				END
 			END
 		END
@@ -157,507 +163,885 @@ GO
 CREATE OR ALTER PROCEDURE [dbo].[USP_CreateMCASItemAnalysis_Views] (@TenantId INT)
 AS
 BEGIN
-	SET XACT_ABORT ON;
-	SET NOCOUNT ON
+    SET XACT_ABORT ON;
+    SET NOCOUNT ON;
 
-	BEGIN TRY
-		DECLARE @TenantCode VARCHAR(MAX);
+    BEGIN TRY
+        DECLARE @TenantCode VARCHAR(MAX);
 
-		SET @TenantCode = (
-				SELECT TenantCode
-				FROM idm.Tenant
-				WHERE TenantId = @TenantId
-				);
+        SELECT @TenantCode = TenantCode
+        FROM idm.Tenant
+        WHERE TenantId = @TenantId;
 
-		DECLARE @Tbl1 NVARCHAR(MAX)
-			,@Tbl2 NVARCHAR(MAX)
-			,@Tbl3 NVARCHAR(MAX)
-			,@Tbl4 NVARCHAR(MAX)
+        DECLARE @Tbl1 NVARCHAR(MAX),
+                @Tbl2 NVARCHAR(MAX),
+                @Tbl3 NVARCHAR(MAX),
+                @Tbl4 NVARCHAR(MAX);
 
-		IF NOT EXISTS (
-				SELECT 1
-				FROM INFORMATION_SCHEMA.VIEWS
-				WHERE TABLE_NAME = @TenantCode + '_MCASItemStudentTeacherResults_Maths_View'
-				)
-		BEGIN
-			SET @Tbl1 = '
-    CREATE OR ALTER VIEW [dbo].[' + @TenantCode + 
-				'_MCASItemStudentTeacherResults_Maths_View] AS
-    SELECT a.LEAIdentifier,a.SchoolIdentifier,a.SchoolYear,a.AssessmentCode,a.ItemId,a.ItemMaxScore,a.Itemtext,a.StudentScore,a.DistrictStudentId,a.ItemTypeCode,a.SubjectAreaCode,a.Reporting_Category,a.Reporting_Category_Number,a.MA_Curriculum_Framework,a.Correct_Answer,CAST(a.State_Percent_Possible AS INT) AS State_Percent_Possible,a.District_Percent_Possible,a.School_Percent_Possible,a.School_State_Diff,a.School_Average_Points,a.District_Average_Points,a.State_Average_Points,a.GradeDescription AS Grade,a.GradeDescription,a.TenantId,a.gender,a.race,a.StudentName,a.FRL,a.DisabilityStatus,a.ELL,a.LeaName,a.SchoolName,a.SubjectAreaDescription,CASE WHEN a.IsCorrect = 1 THEN ''Correct'' ELSE ''Incorrect'' END AS IsCorrect,CAST(a.Avg_Correct AS INT) AS Avg_Correct,a.SortOrder,a.HighNeeds,a.ItemTypeDescription,a.Avg_School_Correct,ISNULL(a.HR_Teacher, ''NA'') AS TeacherName,ISNULL(a.DistrictStaffId, ''NA'') AS DistrictStaffId  FROM AggrptMCASItemStudentResults a WITH (NOLOCK)  WHERE a.TenantId = ' 
-				+ cast(@TenantId AS VARCHAR) + ' AND a.SubjectAreaCode = ''MATH''   '
+        -- =====================================
+        -- Maths View
+        -- =====================================
+        IF NOT EXISTS (
+            SELECT 1
+            FROM INFORMATION_SCHEMA.VIEWS
+            WHERE TABLE_NAME = @TenantCode + '_MCASItemStudentTeacherResults_Maths_View'
+        )
+        BEGIN
+            SET @Tbl1 = '
+CREATE OR ALTER VIEW [dbo].[' + @TenantCode + '_MCASItemStudentTeacherResults_Maths_View] AS
+SELECT 
+    a.LEAIdentifier,
+    a.SchoolIdentifier,
+    a.SchoolYear,
+    a.AssessmentCode,
+    a.ItemId,
+    a.ItemMaxScore,
+    a.Itemtext,
+    a.StudentScore,
+    a.DistrictStudentId,
+    a.ItemTypeCode,
+    a.SubjectAreaCode,
+    a.Reporting_Category,
+    a.Reporting_Category_Number,
+    a.MA_Curriculum_Framework,
+    a.Correct_Answer,
+    CAST(a.State_Percent_Possible AS INT) AS State_Percent_Possible,
+    a.District_Percent_Possible,
+    a.School_Percent_Possible,
+    a.School_State_Diff,
+    a.School_Average_Points,
+    a.District_Average_Points,
+    a.State_Average_Points,
+    a.GradeDescription AS Grade,
+    a.GradeDescription,
+    a.TenantId,
+    a.gender,
+    a.race,
+    a.StudentName,
+    a.FRL,
+    a.DisabilityStatus,
+    a.ELL,
+    a.LeaName,
+    a.SchoolName,
+    a.SubjectAreaDescription,
+    CASE WHEN a.IsCorrect = 1 THEN ''Correct'' ELSE ''Incorrect'' END AS IsCorrect,
+    CAST(a.Avg_Correct AS INT) AS Avg_Correct,
+    a.SortOrder,
+    a.HighNeeds,
+    a.ItemTypeDescription,
+    a.Avg_School_Correct,
+    ISNULL(a.HR_Teacher, ''NA'') AS TeacherName,
+    ISNULL(a.DistrictStaffId, ''NA'') AS DistrictStaffId
+FROM [' + @TenantCode + '_AggrptMCASItemStudentResults] a WITH (NOLOCK)
+WHERE a.TenantId = ' + CAST(@TenantId AS VARCHAR) + '
+  AND a.SubjectAreaCode = ''MATH'';';
 
-			EXEC (@Tbl1)
-		END
+            EXEC (@Tbl1);
+        END;
 
-		IF NOT EXISTS (
-				SELECT 1
-				FROM INFORMATION_SCHEMA.VIEWS
-				WHERE TABLE_NAME = @TenantCode + '_MCASItemStudentTeacherResults_Science_View'
-				)
-		BEGIN
-			SET @Tbl2 = '
-        CREATE OR ALTER VIEW [dbo].[' + @TenantCode + 
-				'_MCASItemStudentTeacherResults_Science_View] AS
-        SELECT a.LEAIdentifier,a.SchoolIdentifier,a.SchoolYear,a.AssessmentCode,a.ItemId,a.ItemMaxScore,a.Itemtext,a.StudentScore,a.DistrictStudentId, a.ItemTypeCode,a.SubjectAreaCode,a.Reporting_Category,a.Reporting_Category_Number,a.MA_Curriculum_Framework,a.Correct_Answer, CAST(a.State_Percent_Possible AS INT) AS State_Percent_Possible, a.District_Percent_Possible,a.School_Percent_Possible,a.School_State_Diff,a.School_Average_Points,a.District_Average_Points,a.State_Average_Points, a.GradeDescription AS Grade,a.TenantId,a.Gender,a.Race,a.StudentName,a.FRL,a.DisabilityStatus,a.ELL,a.GradeDescription,a.LeaName,a.SchoolName,a.SubjectAreaDescription, CASE WHEN a.IsCorrect = 1 THEN ''Correct'' ELSE ''Incorrect'' END AS IsCorrect, CAST(a.Avg_Correct AS INT) AS Avg_Correct, a.SortOrder,a.HighNeeds,a.ItemTypeDescription,a.Avg_School_Correct, ISNULL(a.HR_Teacher, ''NA'') AS TeacherName,ISNULL(a.DistrictStaffId, ''NA'') AS DistrictStaffId  FROM AggrptMCASItemStudentResults a WITH (NOLOCK)  WHERE a.TenantId = ' 
-				+ CAST(@TenantId AS VARCHAR) + ' AND a.SubjectAreaCode = ''Science''    '
+        -- =====================================
+        -- Science View
+        -- =====================================
+        IF NOT EXISTS (
+            SELECT 1
+            FROM INFORMATION_SCHEMA.VIEWS
+            WHERE TABLE_NAME = @TenantCode + '_MCASItemStudentTeacherResults_Science_View'
+        )
+        BEGIN
+            SET @Tbl2 = '
+CREATE OR ALTER VIEW [dbo].[' + @TenantCode + '_MCASItemStudentTeacherResults_Science_View] AS
+SELECT 
+    a.LEAIdentifier,
+    a.SchoolIdentifier,
+    a.SchoolYear,
+    a.AssessmentCode,
+    a.ItemId,
+    a.ItemMaxScore,
+    a.Itemtext,
+    a.StudentScore,
+    a.DistrictStudentId,
+    a.ItemTypeCode,
+    a.SubjectAreaCode,
+    a.Reporting_Category,
+    a.Reporting_Category_Number,
+    a.MA_Curriculum_Framework,
+    a.Correct_Answer,
+    CAST(a.State_Percent_Possible AS INT) AS State_Percent_Possible,
+    a.District_Percent_Possible,
+    a.School_Percent_Possible,
+    a.School_State_Diff,
+    a.School_Average_Points,
+    a.District_Average_Points,
+    a.State_Average_Points,
+    a.GradeDescription AS Grade,
+    a.TenantId,
+    a.Gender,
+    a.Race,
+    a.StudentName,
+    a.FRL,
+    a.DisabilityStatus,
+    a.ELL,
+    a.GradeDescription,
+    a.LeaName,
+    a.SchoolName,
+    a.SubjectAreaDescription,
+    CASE WHEN a.IsCorrect = 1 THEN ''Correct'' ELSE ''Incorrect'' END AS IsCorrect,
+    CAST(a.Avg_Correct AS INT) AS Avg_Correct,
+    a.SortOrder,
+    a.HighNeeds,
+    a.ItemTypeDescription,
+    a.Avg_School_Correct,
+    ISNULL(a.HR_Teacher, ''NA'') AS TeacherName,
+    ISNULL(a.DistrictStaffId, ''NA'') AS DistrictStaffId
+FROM [' + @TenantCode + '_AggrptMCASItemStudentResults] a WITH (NOLOCK)
+WHERE a.TenantId = ' + CAST(@TenantId AS VARCHAR) + '
+  AND a.SubjectAreaCode = ''Science'';';
 
-			EXEC (@Tbl2)
-		END
+            EXEC (@Tbl2);
+        END;
 
-		IF NOT EXISTS (
-				SELECT 1
-				FROM INFORMATION_SCHEMA.VIEWS
-				WHERE TABLE_NAME = @TenantCode + '_MCASItemStudentTeacherResults_ELA_View'
-				)
-		BEGIN
-			SET @Tbl3 = '
-    CREATE OR ALTER VIEW [dbo].[' + @TenantCode + 
-				'_MCASItemStudentTeacherResults_ELA_View] AS  
-    SELECT  a.LEAIdentifier,a.SchoolIdentifier,a.SchoolYear,AssessmentCode,ItemId,ItemMaxScore,Itemtext,StudentScore,a.DistrictStudentId,  ItemTypeCode,SubjectAreaCode,Reporting_Category,Reporting_Category_Number,MA_Curriculum_Framework,Correct_Answer,  CAST([State_Percent_Possible] AS INT) AS State_Percent_Possible,  District_Percent_Possible,School_Percent_Possible,School_State_Diff,School_Average_Points,District_Average_Points,State_Average_Points,  GradeDescription AS grade,a.TenantId,gender,race,StudentName,FRL,DisabilityStatus,ELL,GradeDescription,LeaName,SchoolName,SubjectAreaDescription,  CASE WHEN [IsCorrect] = 1 THEN ''Correct'' ELSE ''Incorrect'' END AS IsCorrect,  CAST(Avg_Correct AS INT) AS Avg_Correct,  SortOrder,HighNeeds,ItemTypeDescription,Avg_School_Correct, ISNULL(a.HR_Teacher, ''NA'') AS TeacherName,ISNULL(DistrictStaffId, ''NA'') AS DistrictStaffId  FROM AggrptMCASItemStudentResults a WITH (NOLOCK) WHERE a.TenantId = ' 
-				+ CAST(@TenantId AS VARCHAR) + '   AND a.SubjectAreaCode = ''ELA''  AND a.Reporting_Category <> ''Language, Writing''   '
+        -- =====================================
+        -- ELA View
+        -- =====================================
+        IF NOT EXISTS (
+            SELECT 1
+            FROM INFORMATION_SCHEMA.VIEWS
+            WHERE TABLE_NAME = @TenantCode + '_MCASItemStudentTeacherResults_ELA_View'
+        )
+        BEGIN
+            SET @Tbl3 = '
+CREATE OR ALTER VIEW [dbo].[' + @TenantCode + '_MCASItemStudentTeacherResults_ELA_View] AS
+SELECT  
+    a.LEAIdentifier,
+    a.SchoolIdentifier,
+    a.SchoolYear,
+    AssessmentCode,
+    ItemId,
+    ItemMaxScore,
+    Itemtext,
+    StudentScore,
+    a.DistrictStudentId,
+    ItemTypeCode,
+    SubjectAreaCode,
+    Reporting_Category,
+    Reporting_Category_Number,
+    MA_Curriculum_Framework,
+    Correct_Answer,
+    CAST(State_Percent_Possible AS INT) AS State_Percent_Possible,
+    District_Percent_Possible,
+    School_Percent_Possible,
+    School_State_Diff,
+    School_Average_Points,
+    District_Average_Points,
+    State_Average_Points,
+    GradeDescription AS Grade,
+    a.TenantId,
+    gender,
+    race,
+    StudentName,
+    FRL,
+    DisabilityStatus,
+    ELL,
+    GradeDescription,
+    LeaName,
+    SchoolName,
+    SubjectAreaDescription,
+    CASE WHEN IsCorrect = 1 THEN ''Correct'' ELSE ''Incorrect'' END AS IsCorrect,
+    CAST(Avg_Correct AS INT) AS Avg_Correct,
+    SortOrder,
+    HighNeeds,
+    ItemTypeDescription,
+    Avg_School_Correct,
+    ISNULL(a.HR_Teacher, ''NA'') AS TeacherName,
+    ISNULL(DistrictStaffId, ''NA'') AS DistrictStaffId
+FROM [' + @TenantCode + '_AggrptMCASItemStudentResults] a WITH (NOLOCK)
+WHERE a.TenantId = ' + CAST(@TenantId AS VARCHAR) + '
+  AND a.SubjectAreaCode = ''ELA''
+  AND a.Reporting_Category <> ''Language, Writing'';';
 
-			EXEC (@Tbl3)
-		END
+            EXEC (@Tbl3);
+        END;
 
-		IF NOT EXISTS (
-				SELECT 1
-				FROM INFORMATION_SCHEMA.VIEWS
-				WHERE TABLE_NAME = @TenantCode + '_AggrptMCASItemAnalysis_School_View'
-				)
-		BEGIN
-			SET @Tbl4 = '
-CREATE OR ALTER VIEW [dbo].[' + @TenantCode + 
-				'_AggrptMCASItemAnalysis_School_View] AS 
-SELECT DISTINCT  a.SchoolYear, a.AssessmentCode,a.ItemId,a.ItemMaxScore,a.ItemText,a.ItemMinScore,a.SubjectAreaCode,a.SubjectAreaDescription,a.ItemTypeCode,a.Grade AS GradeDescription,a.AssessmentItemCode,a.Reporting_Category,a.Reporting_Category_Number,a.MA_Curriculum_Framework,a.Correct_Answer,CAST(a.State_Percent_Possible AS VARCHAR) AS State_Percent_Possible,a.District_Percent_Possible,a.School_Percent_Possible,a.School_State_Diff,a.School_Average_Points,a.District_Average_Points,a.State_Average_Points,a.TenantId,a.GradeDescription AS Grade,CAST(a.Avg_Correct AS INT) AS Avg_Correct,a.Avg_School_Correct,CAST(a.Diff_From_State AS INT) AS Diff_From_State,a.Avg_School_Correct - CAST(a.Avg_Correct AS INT) AS Diff_From_District,a.Avg_School_Correct - CAST(REPLACE(a.State_Percent_Possible, ''%'', '''') AS INT) AS Diff_From_School_State,a.SortOrder,a.ItemTypeDescription,a.LEAIdentifier,a.LeaName,a.SchoolIdentifier,a.SchoolName,b.ItemLink  FROM [dbo].[AggrptMCASItemAnalysis] a WITH (NOLOCK)LEFT JOIN [dbo].[' 
-				+ @TenantCode + '_MCAS_Item_Links] b WITH (NOLOCK)   ON a.SchoolYear = b.[Year]  AND a.ItemId = CASE  WHEN b.Subject = ''ELA'' THEN ''eitem'' + CAST(b.[ItemNumber] AS VARCHAR(100))  WHEN b.Subject = ''Math'' THEN ''mitem'' + CAST(b.[ItemNumber] AS VARCHAR(100)) WHEN b.Subject = ''Science'' THEN ''sitem'' + CAST(b.[ItemNumber] AS VARCHAR(100))  END  AND a.SubjectAreaCode = b.[Subject]  AND REPLACE(a.GradeDescription, '' '', ''_'') = b.Grade ; ';
+        -- =====================================
+        -- School View
+        -- =====================================
+        IF NOT EXISTS (
+            SELECT 1
+            FROM INFORMATION_SCHEMA.VIEWS
+            WHERE TABLE_NAME = @TenantCode + '_AggrptMCASItemAnalysis_School_View'
+        )
+        BEGIN
+            SET @Tbl4 = '
+CREATE OR ALTER VIEW [dbo].[' + @TenantCode + '_AggrptMCASItemAnalysis_School_View] AS
+SELECT DISTINCT  
+    a.SchoolYear,
+    a.AssessmentCode,
+    a.ItemId,
+    a.ItemMaxScore,
+    a.ItemText,
+    a.ItemMinScore,
+    a.SubjectAreaCode,
+    a.SubjectAreaDescription,
+    a.ItemTypeCode,
+    a.Grade AS GradeDescription,
+    a.AssessmentItemCode,
+    a.Reporting_Category,
+    a.Reporting_Category_Number,
+    a.MA_Curriculum_Framework,
+    a.Correct_Answer,
+    CAST(a.State_Percent_Possible AS VARCHAR) AS State_Percent_Possible,
+    a.District_Percent_Possible,
+    a.School_Percent_Possible,
+    a.School_State_Diff,
+    a.School_Average_Points,
+    a.District_Average_Points,
+    a.State_Average_Points,
+    a.TenantId,
+    a.GradeDescription AS Grade,
+    CAST(a.Avg_Correct AS INT) AS Avg_Correct,
+    a.Avg_School_Correct,
+    CAST(a.Diff_From_State AS INT) AS Diff_From_State,
+    a.Avg_School_Correct - CAST(a.Avg_Correct AS INT) AS Diff_From_District,
+    a.Avg_School_Correct - CAST(REPLACE(a.State_Percent_Possible, ''%'', '''') AS INT) AS Diff_From_School_State,
+    a.SortOrder,
+    a.ItemTypeDescription,
+    a.LEAIdentifier,
+    a.LeaName,
+    a.SchoolIdentifier,
+    a.SchoolName,
+    b.ItemLink
+FROM [dbo].[' + @TenantCode + '_AggrptMCASItemAnalysis] a WITH (NOLOCK)
+LEFT JOIN [dbo].[' + @TenantCode + '_MCAS_Item_Links] b WITH (NOLOCK)
+       ON a.SchoolYear = b.[Year]
+      AND a.ItemId = CASE  
+                        WHEN b.Subject = ''ELA'' THEN ''eitem'' + CAST(b.ItemNumber AS VARCHAR(100))
+                        WHEN b.Subject = ''Math'' THEN ''mitem'' + CAST(b.ItemNumber AS VARCHAR(100))
+                        WHEN b.Subject = ''Science'' THEN ''sitem'' + CAST(b.ItemNumber AS VARCHAR(100))
+                     END
+      AND a.SubjectAreaCode = b.Subject
+      AND REPLACE(a.GradeDescription, '' '', ''_'') = b.Grade
+WHERE a.TenantId = ' + CAST(@TenantId AS VARCHAR) + ';';
 
-			EXEC (@Tbl4)
-		END
-	END TRY
+            EXEC (@Tbl4);
+        END;
+    END TRY
 
-	BEGIN CATCH
-		-- Test whether the transaction is uncommittable.                         
-		IF XACT_STATE() = - 1
-		BEGIN
-			ROLLBACK TRAN;
-		END;
+    BEGIN CATCH
+        IF XACT_STATE() = -1
+        BEGIN
+            ROLLBACK TRAN;
+        END;
 
-		--Comment it if SP contains only SELECT statement                                             
-		DECLARE @ErrorFromProc VARCHAR(500);
-		DECLARE @ProcErrorMessage VARCHAR(1000);
-		DECLARE @SeverityLevel INT;
-		DECLARE @ErrorNumber INT = ERROR_NUMBER();
+        DECLARE @ErrorFromProc VARCHAR(500),
+                @ProcErrorMessage VARCHAR(1000),
+                @SeverityLevel INT,
+                @ErrorNumber INT = ERROR_NUMBER();
 
-		SELECT @ErrorFromProc = '[dbo].[USP_CreateMCASItemAnalysis_Views]'
-			,@ProcErrorMessage = ERROR_MESSAGE()
-			,@SeverityLevel = ERROR_SEVERITY();
+        SELECT @ErrorFromProc = '[dbo].[USP_CreateMCASItemAnalysis_Views]',
+               @ProcErrorMessage = ERROR_MESSAGE(),
+               @SeverityLevel = ERROR_SEVERITY();
 
-		INSERT INTO dbo.[errorlogforusp] (
-			ErrorFromProc
-			,errormessage
-			,severitylevel
-			,datetimestamp
-			,TenantId
-			)
-		VALUES (
-			@ErrorFromProc
-			,@ProcErrorMessage
-			,@SeverityLevel
-			,GETDATE()
-			,@Tenantid
-			);
+        INSERT INTO dbo.[errorlogforusp] (
+            ErrorFromProc,
+            errormessage,
+            severitylevel,
+            datetimestamp,
+            TenantId
+        )
+        VALUES (
+            @ErrorFromProc,
+            @ProcErrorMessage,
+            @SeverityLevel,
+            GETDATE(),
+            @TenantId
+        );
 
-		RAISERROR (
-				'Error Number-%d : Error Message-%s'
-				,16
-				,1
-				,@ErrorNumber
-				,@ProcErrorMessage
-				)
-	END CATCH;
+        RAISERROR (
+            'Error Number-%d : Error Message-%s',
+            16,
+            1,
+            @ErrorNumber,
+            @ProcErrorMessage
+        );
+    END CATCH;
 END
 GO
 
 CREATE OR ALTER PROCEDURE [dbo].[USP_CreateMCASItemAnalysis_Dataset] (@TenantId INT)
 AS
 BEGIN
-	SET XACT_ABORT ON;
-	SET NOCOUNT ON
+    SET XACT_ABORT ON;
+    SET NOCOUNT ON;
 
-	BEGIN TRY
-		DECLARE @TenantCode VARCHAR(MAX);
+    BEGIN TRY
+        DECLARE @TenantCode VARCHAR(MAX);
 
-		SET @TenantCode = (
-				SELECT TenantCode
-				FROM idm.Tenant
-				WHERE TenantId = @TenantId
-				);
+        SELECT @TenantCode = TenantCode
+        FROM idm.Tenant
+        WHERE TenantId = @TenantId;
 
-		DECLARE @Tbl1 NVARCHAR(MAX)
-			,@Tbl2 NVARCHAR(MAX)
-			,@Tbl3 NVARCHAR(MAX)
-			,@Tbl4 NVARCHAR(MAX)
-			,@Tbl5 NVARCHAR(MAX)
-			,@Tbl6 NVARCHAR(MAX)
+        DECLARE @Tbl1 NVARCHAR(MAX),
+                @Tbl2 NVARCHAR(MAX),
+                @Tbl3 NVARCHAR(MAX),
+                @Tbl4 NVARCHAR(MAX),
+                @Tbl5 NVARCHAR(MAX),
+                @Tbl6 NVARCHAR(MAX);
 
-		IF NOT EXISTS (
-				SELECT 1
-				FROM INFORMATION_SCHEMA.VIEWS
-				WHERE TABLE_NAME = @TenantCode + 'MCASItemStudentTeacherResultsMathsDS'
-				)
-		BEGIN
-			SET @Tbl1 = '
-CREATE Or alter VIEW [dbo].[' + @TenantCode + 
-				'MCASItemStudentTeacherResultsMathsDS] AS
-Select [IsCorrect] AS [IsCorrect],[TeacherName] AS [TeacherName],[DistrictStaffId] AS [DistrictStaffId],[Avg_Correct] AS [Avg_Correct],[SortOrder] AS [SortOrder],[HighNeeds] AS [HighNeeds],[ItemTypeDescription] AS [ItemTypeDescription],[Avg_School_Correct] AS [Avg_School_Correct],[LEAIdentifier] AS [LEAIdentifier],[SchoolIdentifier] AS [SchoolIdentifier],[SchoolYear] AS [SchoolYear],[AssessmentCode] AS [AssessmentCode],[ItemId] AS [ItemId],[ItemMaxScore] AS [ItemMaxScore],[Itemtext] AS [Itemtext],[StudentScore] AS [StudentScore],[DistrictStudentId] AS [DistrictStudentId],[ItemTypeCode] AS [ItemTypeCode],[SubjectAreaCode] AS [SubjectAreaCode],[Reporting_Category] AS [Reporting_Category],[Reporting_Category_Number] AS [Reporting_Category_Number],[MA_Curriculum_Framework] AS [MA_Curriculum_Framework],[Correct_Answer] AS [Correct_Answer],[State_Percent_Possible] AS [State_Percent_Possible],[District_Percent_Possible] AS [District_Percent_Possible],[School_Percent_Possible] AS [School_Percent_Possible],[School_State_Diff] AS [School_State_Diff],[School_Average_Points] AS [School_Average_Points],[District_Average_Points] AS [District_Average_Points],[State_Average_Points] AS [State_Average_Points],[grade] AS [grade],[gender] AS [gender],[race] AS [race],[StudentName] AS [StudentName],[FRL] AS [FRL],[DisabilityStatus] AS [DisabilityStatus],[ELL] AS [ELL],[GradeDescription] AS [GradeDescription],[LeaName] AS [LeaName],[SchoolName] AS [SchoolName],[SubjectAreaDescription] AS [SubjectAreaDescription] ,TenantId FROM  dbo.' 
-				+ @TenantCode + '_MCASItemStudentTeacherResults_Maths_View where TenantId=' + CAST(@TenantId AS VARCHAR) + '     '
+        /*-------------------------------------------------
+          1. Maths View
+        ---------------------------------------------------*/
+        IF NOT EXISTS (
+            SELECT 1
+            FROM INFORMATION_SCHEMA.VIEWS
+            WHERE TABLE_NAME = @TenantCode + 'MCASItemStudentTeacherResultsMathsDS'
+        )
+        BEGIN
+            SET @Tbl1 = N'
+CREATE OR ALTER VIEW [dbo].[' + @TenantCode + 'MCASItemStudentTeacherResultsMathsDS] AS
+SELECT 
+    [IsCorrect], [TeacherName], [DistrictStaffId], [Avg_Correct], [SortOrder], [HighNeeds],
+    [ItemTypeDescription], [Avg_School_Correct], [LEAIdentifier], [SchoolIdentifier],
+    [SchoolYear], [AssessmentCode], [ItemId], [ItemMaxScore], [Itemtext], [StudentScore],
+    [DistrictStudentId], [ItemTypeCode], [SubjectAreaCode], [Reporting_Category],
+    [Reporting_Category_Number], [MA_Curriculum_Framework], [Correct_Answer],
+    [State_Percent_Possible], [District_Percent_Possible], [School_Percent_Possible],
+    [School_State_Diff], [School_Average_Points], [District_Average_Points],
+    [State_Average_Points], [grade], [gender], [race], [StudentName], [FRL],
+    [DisabilityStatus], [ELL], [GradeDescription], [LeaName], [SchoolName],
+    [SubjectAreaDescription], TenantId
+FROM dbo.' + @TenantCode + '_MCASItemStudentTeacherResults_Maths_View
+WHERE TenantId = ' + CAST(@TenantId AS VARCHAR) + ';';
+            EXEC (@Tbl1);  print @Tbl1;
+        END
 
-			EXEC (@Tbl1)
-		END
-
-		IF NOT EXISTS (
-				SELECT 1
-				FROM INFORMATION_SCHEMA.VIEWS
-				WHERE TABLE_NAME = @TenantCode + 'MCASItemStudentTeacherResultsScienceDS'
-				)
-		BEGIN
-			SET @Tbl2 = '
+        /*-------------------------------------------------
+          2. Science View
+        ---------------------------------------------------*/
+        IF NOT EXISTS (
+            SELECT 1
+            FROM INFORMATION_SCHEMA.VIEWS
+            WHERE TABLE_NAME = @TenantCode + 'MCASItemStudentTeacherResultsScienceDS'
+        )
+        BEGIN
+            SET @Tbl2 = N'
 CREATE OR ALTER VIEW [dbo].[' + @TenantCode + 'MCASItemStudentTeacherResultsScienceDS] AS
-SELECT  [IsCorrect],[TeacherName],[DistrictStaffId],[Avg_Correct],[SortOrder],[HighNeeds],[ItemTypeDescription],[Avg_School_Correct],[LEAIdentifier],[SchoolIdentifier],[SchoolYear],[AssessmentCode],[ItemId],[ItemMaxScore],[Itemtext],[StudentScore],[DistrictStudentId],[ItemTypeCode],[SubjectAreaCode],[Reporting_Category],[Reporting_Category_Number],[MA_Curriculum_Framework],[Correct_Answer],[State_Percent_Possible],[District_Percent_Possible],[School_Percent_Possible],[School_State_Diff],[School_Average_Points],[District_Average_Points],[State_Average_Points],[Grade],[Gender],[Race],[StudentName],[FRL],[DisabilityStatus],[ELL],[GradeDescription],[LeaName],[SchoolName],[SubjectAreaDescription],[TenantId] FROM dbo.' + @TenantCode + '_MCASItemStudentTeacherResults_Science_View WHERE TenantId = ' + CAST(@TenantId AS VARCHAR) + ' '
+SELECT  
+    [IsCorrect], [TeacherName], [DistrictStaffId], [Avg_Correct], [SortOrder], [HighNeeds],
+    [ItemTypeDescription], [Avg_School_Correct], [LEAIdentifier], [SchoolIdentifier],
+    [SchoolYear], [AssessmentCode], [ItemId], [ItemMaxScore], [Itemtext], [StudentScore],
+    [DistrictStudentId], [ItemTypeCode], [SubjectAreaCode], [Reporting_Category],
+    [Reporting_Category_Number], [MA_Curriculum_Framework], [Correct_Answer],
+    [State_Percent_Possible], [District_Percent_Possible], [School_Percent_Possible],
+    [School_State_Diff], [School_Average_Points], [District_Average_Points],
+    [State_Average_Points], [Grade], [Gender], [Race], [StudentName], [FRL],
+    [DisabilityStatus], [ELL], [GradeDescription], [LeaName], [SchoolName],
+    [SubjectAreaDescription], [TenantId]
+FROM dbo.' + @TenantCode + '_MCASItemStudentTeacherResults_Science_View
+WHERE TenantId = ' + CAST(@TenantId AS VARCHAR) + ';';
+            EXEC (@Tbl2);
+        END
 
-			EXEC (@Tbl2)
-		END
+        /*-------------------------------------------------
+          3. ELA View
+        ---------------------------------------------------*/
+        IF NOT EXISTS (
+            SELECT 1
+            FROM INFORMATION_SCHEMA.VIEWS
+            WHERE TABLE_NAME = @TenantCode + 'MCASItemStudentTeacherResultsELADS'
+        )
+        BEGIN
+            SET @Tbl3 = N'
+CREATE OR ALTER VIEW [dbo].[' + @TenantCode + 'MCASItemStudentTeacherResultsELADS] AS
+SELECT 
+    IsCorrect, TeacherName, DistrictStaffId, Avg_Correct, SortOrder, HighNeeds,
+    ItemTypeDescription, Avg_School_Correct, LEAIdentifier, SchoolIdentifier,
+    SchoolYear, AssessmentCode, ItemId, ItemMaxScore, Itemtext, StudentScore,
+    DistrictStudentId, ItemTypeCode, SubjectAreaCode, Reporting_Category,
+    Reporting_Category_Number, MA_Curriculum_Framework, Correct_Answer,
+    State_Percent_Possible, District_Percent_Possible, School_Percent_Possible,
+    School_State_Diff, School_Average_Points, District_Average_Points,
+    State_Average_Points, grade, gender, race, StudentName, FRL,
+    DisabilityStatus, ELL, GradeDescription, LeaName, SchoolName,
+    SubjectAreaDescription, TenantId
+FROM dbo.' + @TenantCode + '_MCASItemStudentTeacherResults_ELA_View
+WHERE TenantId = ' + CAST(@TenantId AS NVARCHAR) + ';';
+            EXEC sp_executesql @Tbl3;
+        END
 
-		IF NOT EXISTS (
-				SELECT 1
-				FROM INFORMATION_SCHEMA.VIEWS
-				WHERE TABLE_NAME = @TenantCode + 'MCASItemStudentTeacherResultsELADS'
-				)
-		BEGIN
-			SET @Tbl3 = ' CREATE OR ALTER VIEW [dbo].[' + @TenantCode + 'MCASItemStudentTeacherResultsELADS] AS
-SELECT IsCorrect,TeacherName,DistrictStaffId,Avg_Correct,SortOrder,HighNeeds,ItemTypeDescription,Avg_School_Correct,LEAIdentifier,SchoolIdentifier,SchoolYear,AssessmentCode,ItemId,ItemMaxScore,Itemtext,StudentScore,DistrictStudentId,ItemTypeCode,SubjectAreaCode,Reporting_Category,Reporting_Category_Number,MA_Curriculum_Framework,Correct_Answer,State_Percent_Possible,District_Percent_Possible,School_Percent_Possible,School_State_Diff,School_Average_Points,District_Average_Points,State_Average_Points,grade,gender,race,StudentName,FRL,DisabilityStatus,ELL,GradeDescription,LeaName,SchoolName,SubjectAreaDescription,TenantId FROM dbo.' + @TenantCode + '_MCASItemStudentTeacherResults_ELA_View WHERE TenantId = ' + CAST(@TenantId AS NVARCHAR) + ' '
+        /*-------------------------------------------------
+          4. Aggregated Item Analysis
+        ---------------------------------------------------*/
+        IF NOT EXISTS (
+            SELECT 1
+            FROM INFORMATION_SCHEMA.VIEWS
+            WHERE TABLE_NAME = @TenantCode + 'AggrptMCASItemAnalysisDS'
+        )
+        BEGIN
+            SET @Tbl4 = N'
+CREATE OR ALTER VIEW [dbo].[' + @TenantCode + 'AggrptMCASItemAnalysisDS] AS
+SELECT  
+    [SchoolYear], [AssessmentCode], [ItemId], [ItemMaxScore], [Itemtext], [ItemMinScore],
+    [SubjectAreaCode], [SubjectAreaDescription], [ItemTypeCode], [GradeDescription],
+    [AssessmentItemCode], [Reporting_Category], [Reporting_Category_Number],
+    [MA_Curriculum_Framework], [Correct_Answer], [State_Percent_Possible],
+    [District_Percent_Possible], [School_Percent_Possible], [School_State_Diff],
+    [School_Average_Points], [District_Average_Points], [State_Average_Points],
+    [Grade], [Avg_Correct], [Avg_School_Correct], [Diff_From_State],
+    [Diff_From_District], [Diff_From_School_State], [SortOrder], [ItemTypeDescription],
+    [LEAIdentifier], [LeaName], [SchoolIdentifier], [SchoolName], [itemlink], TenantId
+FROM dbo.' + @TenantCode + '_AggrptMCASItemAnalysis_School_View
+WHERE TenantId = ' + CAST(@TenantId AS NVARCHAR) + ';';
+            EXEC (@Tbl4);
+        END
 
-			EXEC sp_executesql @Tbl3
-		END
+        /*-------------------------------------------------
+          5. Mathematics-specific Analysis
+        ---------------------------------------------------*/
+        IF NOT EXISTS (
+            SELECT 1
+            FROM INFORMATION_SCHEMA.VIEWS
+            WHERE TABLE_NAME = @TenantCode + 'MCASItemAnalysisMathematicsDS'
+        )
+        BEGIN
+            SET @Tbl5 = N'
+CREATE OR ALTER VIEW [dbo].[' + @TenantCode + 'MCASItemAnalysisMathematicsDS] AS 
+SELECT  
+    [SchoolYear], [AssessmentCode], [ItemId], [ItemMaxScore], [Itemtext], [ItemMinScore],
+    [SubjectAreaCode], [SubjectAreaDescription], [ItemTypeCode], [GradeDescription],
+    [AssessmentItemCode], [Reporting_Category], [Reporting_Category_Number],
+    [MA_Curriculum_Framework], [Correct_Answer], [State_Percent_Possible],
+    [District_Percent_Possible], [School_Percent_Possible], [School_State_Diff],
+    [School_Average_Points], [District_Average_Points], [State_Average_Points],
+    [Grade], [Avg_Correct], [Avg_School_Correct], [Diff_From_State],
+    [Diff_From_District], [Diff_From_School_State], [SortOrder], [ItemTypeDescription],
+    [LEAIdentifier], [LeaName], [SchoolIdentifier], [SchoolName], TenantId
+FROM dbo.' + @TenantCode + '_AggrptMCASItemAnalysis_School_View
+WHERE SubjectAreaCode = ''MATH''
+  AND TenantId = ' + CAST(@TenantId AS NVARCHAR) + ';';
+            EXEC (@Tbl5);
+        END
 
-		IF NOT EXISTS (
-				SELECT 1
-				FROM INFORMATION_SCHEMA.VIEWS
-				WHERE TABLE_NAME = @TenantCode + 'AggrptMCASItemAnalysisDS'
-				)
-		BEGIN
-			SET @Tbl4 = ' CREATE OR ALTER VIEW [dbo].[' + @TenantCode + 'AggrptMCASItemAnalysisDS] AS
-SELECT  [SchoolYear],[AssessmentCode],[ItemId],[ItemMaxScore],[Itemtext],[ItemMinScore],[SubjectAreaCode],[SubjectAreaDescription],[ItemTypeCode],[GradeDescription],[AssessmentItemCode],[Reporting_Category],[Reporting_Category_Number],[MA_Curriculum_Framework],[Correct_Answer],[State_Percent_Possible],[District_Percent_Possible],[School_Percent_Possible],[School_State_Diff],[School_Average_Points],[District_Average_Points],[State_Average_Points],[Grade],[Avg_Correct],[Avg_School_Correct],[Diff_From_State],[Diff_From_District],[Diff_From_School_State],[SortOrder],[ItemTypeDescription],[LEAIdentifier],[LeaName],[SchoolIdentifier],[SchoolName],[itemlink],TenantId FROM dbo.' + @TenantCode + '_AggrptMCASItemAnalysis_School_View WHERE TenantId = ' + CAST(@TenantId AS NVARCHAR) + ' '
+        /*-------------------------------------------------
+          6. Sort Order View
+        ---------------------------------------------------*/
+        IF NOT EXISTS (
+            SELECT 1
+            FROM INFORMATION_SCHEMA.VIEWS
+            WHERE TABLE_NAME = @TenantCode + '_MCAS_Item_SortOrder_Vw'
+        )
+        BEGIN
+            SET @Tbl6 = N'
+CREATE OR ALTER VIEW ' + @TenantCode + '_MCAS_Item_SortOrder_Vw AS
+SELECT DISTINCT 
+    itemid,
+    CASE 
+        WHEN itemid LIKE ''eitem%'' THEN CAST(SUBSTRING(itemid, 6, LEN(itemid)-5) AS INT)  
+        WHEN itemid LIKE ''mitem%'' THEN 32 + CAST(SUBSTRING(itemid, 6, LEN(itemid)-5) AS INT)  
+        WHEN itemid LIKE ''sitem%'' THEN 74 + CAST(SUBSTRING(itemid, 6, LEN(itemid)-5) AS INT)  
+        ELSE NULL
+    END AS SortOrder,
+    TenantId
+FROM [dbo].[' + @TenantCode + '_AggrptMCASItemAnalysis_School_View]
+WHERE TenantId = ' + CAST(@TenantId AS NVARCHAR) + ';';
+            EXEC (@Tbl6);
+        END
+    END TRY
 
-			EXEC (@Tbl4)
-		END
+    BEGIN CATCH
+        IF XACT_STATE() = -1
+            ROLLBACK TRAN;
 
-		IF NOT EXISTS (
-				SELECT 1
-				FROM INFORMATION_SCHEMA.VIEWS
-				WHERE TABLE_NAME = @TenantCode + 'MCASItemAnalysisMathematicsDS'
-				)
-		BEGIN
-			SET @Tbl5 = ' CREATE OR ALTER VIEW [dbo].[' + @TenantCode + 'MCASItemAnalysisMathematicsDS] AS 
-SELECT  [SchoolYear],[AssessmentCode],[ItemId],[ItemMaxScore],[Itemtext],[ItemMinScore],[SubjectAreaCode],[SubjectAreaDescription],[ItemTypeCode],[GradeDescription],[AssessmentItemCode],[Reporting_Category],[Reporting_Category_Number],[MA_Curriculum_Framework],[Correct_Answer],[State_Percent_Possible],[District_Percent_Possible],[School_Percent_Possible],[School_State_Diff],[School_Average_Points],[District_Average_Points],[State_Average_Points],[Grade],[Avg_Correct],[Avg_School_Correct],[Diff_From_State],[Diff_From_District],[Diff_From_School_State],[SortOrder],[ItemTypeDescription],[LEAIdentifier],[LeaName],[SchoolIdentifier],[SchoolName],TenantId FROM dbo.' + @TenantCode + '_AggrptMCASItemAnalysis_School_View WHERE SubjectAreaCode = ''MATH'' AND TenantId = ' + CAST(@TenantId AS NVARCHAR) + ' '
+        DECLARE @ErrorFromProc VARCHAR(500),
+                @ProcErrorMessage VARCHAR(1000),
+                @SeverityLevel INT,
+                @ErrorNumber INT = ERROR_NUMBER();
 
-			EXEC (@Tbl5);
-		END
+        SELECT @ErrorFromProc = '[dbo].[USP_CreateMCASItemAnalysis_Dataset]',
+               @ProcErrorMessage = ERROR_MESSAGE(),
+               @SeverityLevel = ERROR_SEVERITY();
 
-		IF NOT EXISTS (
-				SELECT 1
-				FROM INFORMATION_SCHEMA.VIEWS
-				WHERE TABLE_NAME = @TenantCode + '_MCAS_Item_SortOrder_Vw'
-				)
-		BEGIN
-			SET @Tbl6 = ' CREATE Or Alter View ' + @TenantCode + '_MCAS_Item_SortOrder_Vw  
-as 
-SELECT Distinct itemid,CASE WHEN itemid LIKE ''eitem%'' THEN CAST(SUBSTRING(itemid, 6, LEN(itemid)-5) AS INT)  WHEN itemid LIKE ''mitem%'' THEN 32 + CAST(SUBSTRING(itemid, 6, LEN(itemid)-5) AS INT)  WHEN itemid LIKE ''sitem%'' THEN 74 + CAST(SUBSTRING(itemid, 6, LEN(itemid)-5) AS INT)  ELSE NULL  END AS SortOrder,TenantId  FROM  [dbo].[' + @TenantCode + '_AggrptMCASItemAnalysis_School_View] '
+        INSERT INTO dbo.[errorlogforusp] (
+            ErrorFromProc, errormessage, severitylevel, datetimestamp, TenantId
+        )
+        VALUES (
+            @ErrorFromProc, @ProcErrorMessage, @SeverityLevel, GETDATE(), @Tenantid
+        );
 
-			EXEC (@Tbl6)
-		END
-	END TRY
-
-	BEGIN CATCH
-		-- Test whether the transaction is uncommittable.                         
-		IF XACT_STATE() = - 1
-		BEGIN
-			ROLLBACK TRAN;
-		END;
-
-		--Comment it if SP contains only SELECT statement                                             
-		DECLARE @ErrorFromProc VARCHAR(500);
-		DECLARE @ProcErrorMessage VARCHAR(1000);
-		DECLARE @SeverityLevel INT;
-		DECLARE @ErrorNumber INT = ERROR_NUMBER();
-
-		SELECT @ErrorFromProc = '[dbo].[USP_CreateMCASItemAnalysis_Dataset]'
-			,@ProcErrorMessage = ERROR_MESSAGE()
-			,@SeverityLevel = ERROR_SEVERITY();
-
-		INSERT INTO dbo.[errorlogforusp] (
-			ErrorFromProc
-			,errormessage
-			,severitylevel
-			,datetimestamp
-			,TenantId
-			)
-		VALUES (
-			@ErrorFromProc
-			,@ProcErrorMessage
-			,@SeverityLevel
-			,GETDATE()
-			,@Tenantid
-			);
-
-		RAISERROR (
-				'Error Number-%d : Error Message-%s'
-				,16
-				,1
-				,@ErrorNumber
-				,@ProcErrorMessage
-				)
-	END CATCH;
+        RAISERROR (
+            'Error Number-%d : Error Message-%s',
+            16, 1,
+            @ErrorNumber, @ProcErrorMessage
+        );
+    END CATCH;
 END
 GO
 
 CREATE OR ALTER PROCEDURE [dbo].[USP_MCAS_ItemAnalysis_Links_Math_ELA_Science_Loading] (@TenantId INT)
 AS
 BEGIN
-	SET XACT_ABORT ON;
-	SET NOCOUNT ON
+    SET XACT_ABORT ON;
+    SET NOCOUNT ON;
 
-	BEGIN TRY
-		DECLARE @TenantCode VARCHAR(MAX);
+    BEGIN TRY
+        DECLARE @TenantCode VARCHAR(MAX);
+        DECLARE @SQL NVARCHAR(MAX), @SQL1 NVARCHAR(MAX);
 
-		SET @TenantCode = (
-				SELECT TenantCode
-				FROM idm.Tenant
-				WHERE TenantId = @TenantId
-				);
+        -- Get Tenant Code
+        SELECT @TenantCode = TenantCode
+        FROM idm.Tenant
+        WHERE TenantId = @TenantId;
 
-		DECLARE @SQL NVARCHAR(MAX)
-			,@SQL1 NVARCHAR(MAX);
+        -- Insert into _MCAS_Item_Links if table exists
+        IF EXISTS (
+            SELECT 1 
+            FROM INFORMATION_SCHEMA.TABLES
+            WHERE TABLE_NAME = @TenantCode + '_MCAS_Item_Links'
+        )
+        BEGIN
+            SET @SQL = N'
+                INSERT INTO [dbo].' + QUOTENAME(@TenantCode + '_MCAS_Item_Links') + N'
+                SELECT * 
+                FROM (
+                    SELECT 
+                        [ItemIdentifier], [Year], [ItemType], [ItemDescription], [ReportingCategory],
+                        [Subject], [Grade], [ItemNumber], [URL], [Itemlink], [ItemIdentifier1], [Year1],
+                        [ItemType1], [ItemDescription1], [ReportingCategory1], [Subject1], [Grade1],
+                        ' + CAST(@TenantID AS VARCHAR(100)) + ' AS TenantId, [ItemLink1]
+                    FROM AnalyticVue.dbo.MCASItemLinks a
+                ) a
+                WHERE NOT EXISTS (
+                    SELECT 1
+                    FROM [dbo].' + QUOTENAME(@TenantCode + '_MCAS_Item_Links') + N' b
+                    WHERE a.[Year] = b.[Year] 
+                      AND a.[ItemIdentifier] = b.[ItemIdentifier] 
+                      AND a.[Tenantid] = b.[Tenantid]
+                );';
+            EXEC sp_executesql @SQL;
+        END
 
-		IF EXISTS (
-				SELECT 1
-				FROM INFORMATION_SCHEMA.TABLES
-				WHERE TABLE_NAME = @TenantCode + '_MCAS_Item_Links'
-				)
-		BEGIN
-			SET @SQL = N'  INSERT INTO [dbo].' + QUOTENAME(@TenantCode + '_MCAS_Item_Links') + N'
-Select * from (SELECT [ItemIdentifier],[Year],[ItemType],[ItemDescription],[ReportingCategory],[Subject],[Grade],[ItemNumber],[URL],[Itemlink],[ItemIdentifier1],[Year1],[ItemType1],[ItemDescription1],[ReportingCategory1],[Subject1],[Grade1],' + Cast(@TenantID AS VARCHAR(100)) + ' as TenantId,[ItemLink1]
-FROM AnalyticVue.dbo.MCASItemLinks a ) a  WHERE NOT EXISTS (  SELECT 1 FROM [dbo].' + QUOTENAME(@TenantCode + '_MCAS_Item_Links') + N' b where a.[Year]=b.[Year] and a.[ItemIdentifier]=b.[ItemIdentifier] and  a.[Tenantid]=b.[Tenantid] )  ;'
+        -- Insert into _MCAS_ItemAnalysis_Math_ELA_Science if table exists
+        IF EXISTS (
+            SELECT 1 
+            FROM INFORMATION_SCHEMA.TABLES
+            WHERE TABLE_NAME = @TenantCode + '_MCAS_ItemAnalysis_Math_ELA_Science'
+        )
+        BEGIN
+            SET @SQL = N'
+                INSERT INTO [dbo].' + QUOTENAME(@TenantCode + '_MCAS_ItemAnalysis_Math_ELA_Science') + N'
+                SELECT * 
+                FROM (
+                    SELECT 
+                        Item_Number, Reporting_Category, MA_Curriculum_Framework, Practice_Category, 
+                        Item_Type, Item_Description, Correct_Answer, Release_Status, Max_Points, 
+                        School_Average_Points, District_Average_Points, State_Average_Points, 
+                        School_Percent_Possible, District_Percent_Possible, State_Percent_Possible, 
+                        School_State_Diff, Grade, Reporting_Category_Number, Subject, SchoolYear, 
+                        ' + CAST(@TenantId AS VARCHAR) + ' AS [TenantId]
+                    FROM AnalyticVue.dbo.MCASItemAnalysisReportingCategory a
+                ) a
+                WHERE NOT EXISTS (
+                    SELECT 1
+                    FROM [dbo].' + QUOTENAME(@TenantCode + '_MCAS_ItemAnalysis_Math_ELA_Science') + N' b
+                    WHERE ISNULL(a.Item_Number, '''') = ISNULL(b.Item_Number, '''')
+                      AND ISNULL(a.[Subject], '''') = ISNULL(b.[Subject], '''')
+                      AND ISNULL(a.Item_Type, '''') = ISNULL(b.Item_Type, '''')
+                      AND ISNULL(a.SchoolYear, '''') = ISNULL(b.SchoolYear, '''')
+                      AND a.TenantId = b.TenantId
+                );';
+            EXEC sp_executesql @SQL;
 
-			EXEC sp_executesql @SQL;
-		END
+            -- Update Grade
+            SET @SQL1 = N'
+                UPDATE ms
+                SET Grade = GradeCode
+                FROM [dbo].' + QUOTENAME(@TenantCode + '_MCAS_ItemAnalysis_Math_ELA_Science') + N' ms
+                JOIN RefGrade rg 
+                    ON ms.Tenantid = rg.TenantId 
+                    AND (
+                        (CASE WHEN ms.Grade IN (''1'',''2'',''3'',''4'',''5'',''6'',''7'',''8'',''9'') 
+                              THEN ''0'' + ms.Grade ELSE ms.Grade END) = rg.GradeCode
+                        OR
+                        (CASE WHEN ms.Grade IN (''01'',''02'',''03'',''04'',''05'',''06'',''07'',''08'',''09'') 
+                              THEN REPLACE(ms.Grade, ''0'', '''') ELSE ms.Grade END) = rg.GradeCode
+                    );';
+            EXEC sp_executesql @SQL1;
+        END
+    END TRY
 
-		IF EXISTS (
-				SELECT 1
-				FROM INFORMATION_SCHEMA.TABLES
-				WHERE TABLE_NAME = @TenantCode + '_MCAS_ItemAnalysis_Math_ELA_Science'
-				)
-		BEGIN
-			SET @SQL = N' INSERT INTO [dbo].' + QUOTENAME(@TenantCode + '_MCAS_ItemAnalysis_Math_ELA_Science') + N'
-SELECT * FROM (SELECT Item_Number,Reporting_Category,MA_Curriculum_Framework,Practice_Category,Item_Type,Item_Description,Correct_Answer,Release_Status,Max_Points,School_Average_Points,District_Average_Points,State_Average_Points,School_Percent_Possible,District_Percent_Possible,State_Percent_Possible,School_State_Diff,Grade,Reporting_Category_Number,Subject,SchoolYear,' + cast(@TenantId AS VARCHAR) + '[TenantId] 
-FROM AnalyticVue.dbo.MCASItemAnalysisReportingCategory a ) a WHERE NOT EXISTS ( SELECT 1 FROM [dbo].' + QUOTENAME(@TenantCode + '_MCAS_ItemAnalysis_Math_ELA_Science') + N' b  WHERE Isnull(a.Item_Number,'''') = isnull(b.Item_Number,'''')  AND Isnull(a.[Subject],'''') = Isnull(b.[Subject],'''') AND Isnull(a.Item_Type,'''') = isnull(b.Item_Type,'''') AND isnull(a.SchoolYear,'''') = isnull(b.SchoolYear,'''') AND a.TenantId = b.TenantId ) ; ';
+    BEGIN CATCH
+        -- Rollback if transaction is uncommittable
+        IF XACT_STATE() = -1
+            ROLLBACK TRAN;
 
-			EXEC sp_executesql @SQL;
+        DECLARE @ErrorFromProc VARCHAR(500),
+                @ProcErrorMessage VARCHAR(1000),
+                @SeverityLevel INT,
+                @ErrorNumber INT = ERROR_NUMBER();
 
-			SET @SQL1 = N' Update ms set Grade=GradeCode from [dbo].' + QUOTENAME(@TenantCode + '_MCAS_ItemAnalysis_Math_ELA_Science') + N'  ms 
-		Join RefGrade rg On ms.Tenantid=rg.TenantId and ((case when ms.Grade in (''1'',''2'',''3'',''4'',''5'',''6'',''7'',''8'',''9'') Then ''0''+ms.Grade	Else ms.Grade end) =rg.GradeCode or (case when ms.Grade in (''01'',''02'',''03'',''04'',''05'',''06'',''07'',''08'',''09'') Then replace(ms.Grade,''0'','''') Else ms.Grade end ) = rg.GradeCode  ) ;'
+        SELECT @ErrorFromProc = '[dbo].[USP_MCAS_ItemAnalysis_Links_Math_ELA_Science_Loading]',
+               @ProcErrorMessage = ERROR_MESSAGE(),
+               @SeverityLevel = ERROR_SEVERITY();
 
-			EXEC sp_executesql @SQL1;
-		END
-	END TRY
+        INSERT INTO dbo.[errorlogforusp] (
+            ErrorFromProc, errormessage, severitylevel, datetimestamp, TenantId
+        )
+        VALUES (
+            @ErrorFromProc, @ProcErrorMessage, @SeverityLevel, GETDATE(), @Tenantid
+        );
 
-	BEGIN CATCH
-		-- Test whether the transaction is uncommittable.                         
-		IF XACT_STATE() = - 1
-		BEGIN
-			ROLLBACK TRAN;
-		END;
-
-		--Comment it if SP contains only SELECT statement                                             
-		DECLARE @ErrorFromProc VARCHAR(500);
-		DECLARE @ProcErrorMessage VARCHAR(1000);
-		DECLARE @SeverityLevel INT;
-		DECLARE @ErrorNumber INT = ERROR_NUMBER();
-
-		SELECT @ErrorFromProc = '[dbo].[USP_MCAS_ItemAnalysis_Links_Math_ELA_Science_Loading]'
-			,@ProcErrorMessage = ERROR_MESSAGE()
-			,@SeverityLevel = ERROR_SEVERITY();
-
-		INSERT INTO dbo.[errorlogforusp] (
-			ErrorFromProc
-			,errormessage
-			,severitylevel
-			,datetimestamp
-			,TenantId
-			)
-		VALUES (
-			@ErrorFromProc
-			,@ProcErrorMessage
-			,@SeverityLevel
-			,GETDATE()
-			,@Tenantid
-			);
-
-		RAISERROR (
-				'Error Number-%d : Error Message-%s'
-				,16
-				,1
-				,@ErrorNumber
-				,@ProcErrorMessage
-				)
-	END CATCH;
+        RAISERROR (
+            'Error Number-%d : Error Message-%s', 16, 1, @ErrorNumber, @ProcErrorMessage
+        );
+    END CATCH;
 END
 GO
 
 CREATE OR ALTER PROCEDURE [dbo].[USP_MCASItemAnalysis_Reporting_CategoryUpdation] (@TenantId INT)
 AS
 BEGIN
-	SET XACT_ABORT ON;
-	SET NOCOUNT ON
+    SET XACT_ABORT ON;
+    SET NOCOUNT ON;
 
-	BEGIN TRY
-		DECLARE @TenantCode VARCHAR(MAX);
+    BEGIN TRY
+        DECLARE @TenantCode VARCHAR(MAX);
 
-		SET @TenantCode = (
-				SELECT TenantCode
-				FROM idm.Tenant
-				WHERE TenantId = @TenantId
-				);
+        SET @TenantCode = (
+            SELECT TenantCode
+            FROM idm.Tenant
+            WHERE TenantId = @TenantId
+        );
 
-		BEGIN
-			IF EXISTS (
-					SELECT 1
-					FROM INFORMATION_SCHEMA.TABLES
-					WHERE TABLE_NAME = @TenantCode + '_MCAS_ItemAnalysis_Math_ELA_Science'
-					)
-			BEGIN
-				DECLARE @SQL NVARCHAR(MAX);
-				DECLARE @Grade3To10 VARCHAR(MAX)
-					,@Grade3To5 VARCHAR(MAX)
-					,@Grade5To8 VARCHAR(MAX);
-				DECLARE @DynamicSQL NVARCHAR(MAX);
+        BEGIN
+            IF EXISTS (
+                SELECT 1
+                FROM INFORMATION_SCHEMA.TABLES
+                WHERE TABLE_NAME = @TenantCode + '_MCAS_ItemAnalysis_Math_ELA_Science'
+            )
+            BEGIN
+                DECLARE @SQL NVARCHAR(MAX);
+                DECLARE @Grade3To10 VARCHAR(MAX),
+                        @Grade3To5  VARCHAR(MAX),
+                        @Grade5To8  VARCHAR(MAX);
+                DECLARE @DynamicSQL NVARCHAR(MAX);
 
-				SET @DynamicSQL = '
-            SELECT @Grade3To5_OUT = STRING_AGG(QUOTENAME(Grade, ''''''''), '','')
-            FROM (SELECT DISTINCT Grade FROM dbo.' + QUOTENAME(@TenantCode + '_MCAS_ItemAnalysis_Math_ELA_Science') + ' WHERE Grade IN (''3'',''4'',''5'',''03'',''04'',''05'')  ) a;
+                -- Build dynamic SQL to fetch grade lists
+                SET @DynamicSQL = '
+                    SELECT @Grade3To5_OUT = STRING_AGG(QUOTENAME(Grade, ''''''''), '','')
+                    FROM (
+                        SELECT DISTINCT Grade 
+                        FROM dbo.' + QUOTENAME(@TenantCode + '_MCAS_ItemAnalysis_Math_ELA_Science') + ' 
+                        WHERE Grade IN (''3'',''4'',''5'',''03'',''04'',''05'')
+                    ) a;
 
-            SELECT @Grade5To8_OUT = STRING_AGG(QUOTENAME(Grade, ''''''''), '','')  FROM (SELECT DISTINCT Grade FROM dbo.' + QUOTENAME(@TenantCode + '_MCAS_ItemAnalysis_Math_ELA_Science') + ' WHERE Grade IN (''5'',''6'',''7'',''8'',''05'',''06'',''07'',''08'')   ) a;
+                    SELECT @Grade5To8_OUT = STRING_AGG(QUOTENAME(Grade, ''''''''), '','')
+                    FROM (
+                        SELECT DISTINCT Grade 
+                        FROM dbo.' + QUOTENAME(@TenantCode + '_MCAS_ItemAnalysis_Math_ELA_Science') + ' 
+                        WHERE Grade IN (''5'',''6'',''7'',''8'',''05'',''06'',''07'',''08'')
+                    ) a;
 
-            SELECT @Grade3To10_OUT = STRING_AGG(QUOTENAME(Grade, ''''''''), '','') FROM (SELECT DISTINCT Grade FROM dbo.' + QUOTENAME(@TenantCode + '_MCAS_ItemAnalysis_Math_ELA_Science') + '  WHERE Grade IN (''3'',''4'',''5'',''6'',''7'',''8'',''9'',''10'',''03'',''04'',''05'',''06'',''07'',''08'',''09'',''10'') ) a;
-            ';
+                    SELECT @Grade3To10_OUT = STRING_AGG(QUOTENAME(Grade, ''''''''), '','')
+                    FROM (
+                        SELECT DISTINCT Grade 
+                        FROM dbo.' + QUOTENAME(@TenantCode + '_MCAS_ItemAnalysis_Math_ELA_Science') + '  
+                        WHERE Grade IN (
+                            ''3'',''4'',''5'',''6'',''7'',''8'',''9'',''10'',
+                            ''03'',''04'',''05'',''06'',''07'',''08'',''09'',''10''
+                        )
+                    ) a;
+                ';
 
-				EXEC sp_executesql @DynamicSQL
-					,N'@Grade3To5_OUT VARCHAR(MAX) OUTPUT, @Grade5To8_OUT VARCHAR(MAX) OUTPUT, @Grade3To10_OUT VARCHAR(MAX) OUTPUT'
-					,@Grade3To5_OUT = @Grade3To5 OUTPUT
-					,@Grade5To8_OUT = @Grade5To8 OUTPUT
-					,@Grade3To10_OUT = @Grade3To10 OUTPUT;
+                EXEC sp_executesql 
+                    @DynamicSQL,
+                    N'@Grade3To5_OUT VARCHAR(MAX) OUTPUT, 
+                      @Grade5To8_OUT VARCHAR(MAX) OUTPUT, 
+                      @Grade3To10_OUT VARCHAR(MAX) OUTPUT',
+                    @Grade3To5_OUT  = @Grade3To5 OUTPUT,
+                    @Grade5To8_OUT  = @Grade5To8 OUTPUT,
+                    @Grade3To10_OUT = @Grade3To10 OUTPUT;
 
-				SET @SQL = 'UPDATE a SET Reporting_Category_Number = NULL  FROM dbo.' + QUOTENAME(@TenantCode + '_MCAS_ItemAnalysis_Math_ELA_Science') + ' a;';
+                -- Reset Reporting Category Number
+                SET @SQL = '
+                    UPDATE a 
+                    SET Reporting_Category_Number = NULL  
+                    FROM dbo.' + QUOTENAME(@TenantCode + '_MCAS_ItemAnalysis_Math_ELA_Science') + ' a;
+                ';
+                EXEC sp_executesql @SQL;
 
-				EXEC sp_executesql @SQL;
+                -- ELA updates
+                SET @SQL = '
+                    UPDATE a 
+                    SET Reporting_Category_Number = ''Reporting Category 1'' 
+                    FROM dbo.' + QUOTENAME(@TenantCode + '_MCAS_ItemAnalysis_Math_ELA_Science') + ' a  
+                    WHERE a.Subject = ''ELA'' 
+                      AND a.Grade IN (' + @Grade3To10 + ') 
+                      AND a.Reporting_Category = ''Reading'';
+                ';
+                EXEC sp_executesql @SQL;
 
-				SET @SQL = 'UPDATE a SET Reporting_Category_Number = ''Reporting Category 1'' FROM dbo.' + QUOTENAME(@TenantCode + '_MCAS_ItemAnalysis_Math_ELA_Science') + ' a  WHERE a.Subject = ''ELA'' AND a.Grade IN (' + @Grade3To10 + ') AND a.Reporting_Category = ''Reading'';';
+                SET @SQL = '
+                    UPDATE a 
+                    SET Reporting_Category_Number = ''Reporting Category 2'' 
+                    FROM dbo.' + QUOTENAME(@TenantCode + '_MCAS_ItemAnalysis_Math_ELA_Science') + ' a 
+                    WHERE a.Subject = ''ELA'' 
+                      AND a.Grade IN (' + @Grade3To10 + ') 
+                      AND a.Reporting_Category = ''Language'';
+                ';
+                EXEC sp_executesql @SQL;
 
-				EXEC sp_executesql @SQL;
+                SET @SQL = '
+                    UPDATE a 
+                    SET Reporting_Category_Number = ''Reporting Category 3''  
+                    FROM dbo.' + QUOTENAME(@TenantCode + '_MCAS_ItemAnalysis_Math_ELA_Science') + ' a 
+                    WHERE a.Subject = ''ELA'' 
+                      AND a.Grade IN (' + @Grade3To10 + ') 
+                      AND a.Reporting_Category = ''Language, Writing'';
+                ';
+                EXEC sp_executesql @SQL;
 
-				SET @SQL = 'UPDATE a SET Reporting_Category_Number = ''Reporting Category 2'' FROM dbo.' + QUOTENAME(@TenantCode + '_MCAS_ItemAnalysis_Math_ELA_Science') + ' a WHERE a.Subject = ''ELA'' AND a.Grade IN (' + @Grade3To10 + ') AND a.Reporting_Category = ''Language'';';
+                -- Math updates (Grades 3-5)
+                SET @SQL = '
+                    UPDATE a 
+                    SET Reporting_Category_Number = ''Reporting Category 1'' 
+                    FROM dbo.' + QUOTENAME(@TenantCode + '_MCAS_ItemAnalysis_Math_ELA_Science') + ' a 
+                    WHERE a.Subject = ''MATH'' 
+                      AND a.Grade IN (' + @Grade3To5 + ') 
+                      AND a.Reporting_Category = ''Operations and Algebraic Thinking'';
+                ';
+                EXEC sp_executesql @SQL;
 
-				EXEC sp_executesql @SQL;
+                SET @SQL = '
+                    UPDATE a 
+                    SET Reporting_Category_Number = ''Reporting Category 2'' 
+                    FROM dbo.' + QUOTENAME(@TenantCode + '_MCAS_ItemAnalysis_Math_ELA_Science') + ' a 
+                    WHERE a.Subject = ''MATH'' 
+                      AND a.Grade IN (' + @Grade3To5 + ') 
+                      AND a.Reporting_Category = ''Number and Operations in Base Ten'';
+                ';
+                EXEC sp_executesql @SQL;
 
-				SET @SQL = 'UPDATE a SET Reporting_Category_Number = ''Reporting Category 3''  FROM dbo.' + QUOTENAME(@TenantCode + '_MCAS_ItemAnalysis_Math_ELA_Science') + ' a WHERE a.Subject = ''ELA'' AND a.Grade IN (' + @Grade3To10 + ') AND a.Reporting_Category = ''Language, Writing'';';
+                SET @SQL = '
+                    UPDATE a 
+                    SET Reporting_Category_Number = ''Reporting Category 3'' 
+                    FROM dbo.' + QUOTENAME(@TenantCode + '_MCAS_ItemAnalysis_Math_ELA_Science') + ' a 
+                    WHERE a.Subject = ''MATH'' 
+                      AND a.Grade IN (' + @Grade3To5 + ') 
+                      AND a.Reporting_Category = ''Number and Operations-Fractions'';
+                ';
+                EXEC sp_executesql @SQL;
 
-				EXEC sp_executesql @SQL;
+                SET @SQL = '
+                    UPDATE a 
+                    SET Reporting_Category_Number = ''Reporting Category 4'' 
+                    FROM dbo.' + QUOTENAME(@TenantCode + '_MCAS_ItemAnalysis_Math_ELA_Science') + ' a 
+                    WHERE a.Subject = ''MATH'' 
+                      AND a.Grade IN (' + @Grade3To5 + ') 
+                      AND a.Reporting_Category = ''Measurement and Data'';
+                ';
+                EXEC sp_executesql @SQL;
 
-				-- Math updates
-				SET @SQL = 'UPDATE a SET Reporting_Category_Number = ''Reporting Category 1'' FROM dbo.' + QUOTENAME(@TenantCode + '_MCAS_ItemAnalysis_Math_ELA_Science') + ' a WHERE a.Subject = ''MATH'' AND a.Grade IN ( ' + @Grade3To5 + ' ) AND a.Reporting_Category = ''Operations and Algebraic Thinking'';';
+                SET @SQL = '
+                    UPDATE a 
+                    SET Reporting_Category_Number = ''Reporting Category 5'' 
+                    FROM dbo.' + QUOTENAME(@TenantCode + '_MCAS_ItemAnalysis_Math_ELA_Science') + ' a 
+                    WHERE a.Subject = ''MATH'' 
+                      AND a.Grade IN (' + @Grade3To5 + ') 
+                      AND a.Reporting_Category = ''Geometry'';
+                ';
+                EXEC sp_executesql @SQL;
 
-				EXEC sp_executesql @SQL;
+                -- Science updates (Grades 5-8)
+                SET @SQL = '
+                    UPDATE a 
+                    SET Reporting_Category_Number = ''Reporting Category 1'' 
+                    FROM dbo.' + QUOTENAME(@TenantCode + '_MCAS_ItemAnalysis_Math_ELA_Science') + ' a 
+                    WHERE a.Subject = ''Science'' 
+                      AND a.Grade IN (' + @Grade5To8 + ') 
+                      AND a.Reporting_Category = ''Earth and Space Science'';
+                ';
+                EXEC sp_executesql @SQL;
 
-				SET @SQL = 'UPDATE a SET Reporting_Category_Number = ''Reporting Category 2'' FROM dbo.' + QUOTENAME(@TenantCode + '_MCAS_ItemAnalysis_Math_ELA_Science') + ' a WHERE a.Subject = ''MATH'' AND a.Grade IN ( ' + @Grade3To5 + ' ) AND a.Reporting_Category = ''Number and Operations in Base Ten'';';
+                SET @SQL = '
+                    UPDATE a 
+                    SET Reporting_Category_Number = ''Reporting Category 2'' 
+                    FROM dbo.' + QUOTENAME(@TenantCode + '_MCAS_ItemAnalysis_Math_ELA_Science') + ' a 
+                    WHERE a.Subject = ''Science'' 
+                      AND a.Grade IN (' + @Grade5To8 + ')  
+                      AND a.Reporting_Category = ''Life Science'';
+                ';
+                EXEC sp_executesql @SQL;
 
-				EXEC sp_executesql @SQL;
+                SET @SQL = '
+                    UPDATE a 
+                    SET Reporting_Category = ''Physical Sciences'' 
+                    FROM dbo.' + QUOTENAME(@TenantCode + '_MCAS_ItemAnalysis_Math_ELA_Science') + ' a 
+                    WHERE a.Subject = ''Science'' 
+                      AND a.Grade IN (' + @Grade5To8 + ') 
+                      AND a.Reporting_Category = ''Physical Science'';
+                ';
+                EXEC sp_executesql @SQL;
 
-				SET @SQL = 'UPDATE a SET Reporting_Category_Number = ''Reporting Category 3'' FROM dbo.' + QUOTENAME(@TenantCode + '_MCAS_ItemAnalysis_Math_ELA_Science') + ' a WHERE a.Subject = ''MATH'' AND a.Grade IN ( ' + @Grade3To5 + ' ) AND a.Reporting_Category = ''Number and Operations-Fractions'';';
+                SET @SQL = '
+                    UPDATE a 
+                    SET Reporting_Category_Number = ''Reporting Category 3'' 
+                    FROM dbo.' + QUOTENAME(@TenantCode + '_MCAS_ItemAnalysis_Math_ELA_Science') + ' a  
+                    WHERE a.Subject = ''Science'' 
+                      AND a.Grade IN (' + @Grade5To8 + ')  
+                      AND a.Reporting_Category = ''Physical Sciences'';
+                ';
+                EXEC sp_executesql @SQL;
 
-				EXEC sp_executesql @SQL;
+                SET @SQL = '
+                    UPDATE a 
+                    SET Reporting_Category_Number = ''Reporting Category 4''  
+                    FROM dbo.' + QUOTENAME(@TenantCode + '_MCAS_ItemAnalysis_Math_ELA_Science') + ' a  
+                    WHERE a.Subject = ''Science'' 
+                      AND a.Grade IN (' + @Grade5To8 + ')  
+                      AND a.Reporting_Category = ''Technology/Engineering'';
+                ';
+                EXEC sp_executesql @SQL;
+            END
+        END
+    END TRY
 
-				SET @SQL = 'UPDATE a SET Reporting_Category_Number = ''Reporting Category 4'' FROM dbo.' + QUOTENAME(@TenantCode + '_MCAS_ItemAnalysis_Math_ELA_Science') + ' a WHERE a.Subject = ''MATH'' AND a.Grade IN ( ' + @Grade3To5 + ' ) AND a.Reporting_Category = ''Measurement and Data'';';
+    BEGIN CATCH
+        IF XACT_STATE() = -1
+        BEGIN
+            ROLLBACK TRAN;
+        END;
 
-				EXEC sp_executesql @SQL;
+        DECLARE @ErrorFromProc VARCHAR(500),
+                @ProcErrorMessage VARCHAR(1000),
+                @SeverityLevel INT,
+                @ErrorNumber INT = ERROR_NUMBER();
 
-				SET @SQL = 'UPDATE a SET Reporting_Category_Number = ''Reporting Category 5'' FROM dbo.' + QUOTENAME(@TenantCode + '_MCAS_ItemAnalysis_Math_ELA_Science') + ' a WHERE a.Subject = ''MATH'' AND a.Grade IN ( ' + @Grade3To5 + ' ) AND a.Reporting_Category = ''Geometry'';';
+        SELECT @ErrorFromProc = '[dbo].[USP_MCASItemAnalysis_Reporting_CategoryUpdation]',
+               @ProcErrorMessage = ERROR_MESSAGE(),
+               @SeverityLevel = ERROR_SEVERITY();
 
-				EXEC sp_executesql @SQL;
+        INSERT INTO dbo.[errorlogforusp] (
+            ErrorFromProc,
+            errormessage,
+            severitylevel,
+            datetimestamp,
+            TenantId
+        )
+        VALUES (
+            @ErrorFromProc,
+            @ProcErrorMessage,
+            @SeverityLevel,
+            GETDATE(),
+            @Tenantid
+        );
 
-				-- Science updates
-				SET @SQL = 'UPDATE a SET Reporting_Category_Number = ''Reporting Category 1'' FROM dbo.' + QUOTENAME(@TenantCode + '_MCAS_ItemAnalysis_Math_ELA_Science') + ' a WHERE a.Subject = ''Science'' AND a.Grade IN ( ' + @Grade5To8 + ' ) AND a.Reporting_Category = ''Earth and Space Science'';';
-
-				EXEC sp_executesql @SQL;
-
-				SET @SQL = 'UPDATE a SET Reporting_Category_Number = ''Reporting Category 2'' FROM dbo.' + QUOTENAME(@TenantCode + '_MCAS_ItemAnalysis_Math_ELA_Science') + ' a WHERE a.Subject = ''Science'' AND a.Grade IN ( ' + @Grade5To8 + ')  AND a.Reporting_Category = ''Life Science'';';
-
-				EXEC sp_executesql @SQL;
-
-				SET @SQL = 'UPDATE a SET Reporting_Category = ''Physical Sciences'' FROM dbo.' + QUOTENAME(@TenantCode + '_MCAS_ItemAnalysis_Math_ELA_Science') + ' a WHERE a.Subject = ''Science'' AND a.Grade IN ( ' + @Grade5To8 + ') AND a.Reporting_Category = ''Physical Science'';';
-
-				EXEC sp_executesql @SQL;
-
-				SET @SQL = 'UPDATE a SET Reporting_Category_Number = ''Reporting Category 3'' FROM dbo.' + QUOTENAME(@TenantCode + '_MCAS_ItemAnalysis_Math_ELA_Science') + ' a  WHERE a.Subject = ''Science'' AND a.Grade IN ( ' + @Grade5To8 + ')  AND a.Reporting_Category = ''Physical Sciences'';';
-
-				EXEC sp_executesql @SQL;
-
-				SET @SQL = 'UPDATE a SET Reporting_Category_Number = ''Reporting Category 4''  FROM dbo.' + QUOTENAME(@TenantCode + '_MCAS_ItemAnalysis_Math_ELA_Science') + ' a  WHERE a.Subject = ''Science'' AND a.Grade IN ( ' + @Grade5To8 + ')  AND a.Reporting_Category = ''Technology/Engineering'';';
-
-				EXEC sp_executesql @SQL;
-			END
-		END
-	END TRY
-
-	BEGIN CATCH
-		-- Test whether the transaction is uncommittable.                         
-		IF XACT_STATE() = - 1
-		BEGIN
-			ROLLBACK TRAN;
-		END;
-
-		--Comment it if SP contains only SELECT statement                                             
-		DECLARE @ErrorFromProc VARCHAR(500);
-		DECLARE @ProcErrorMessage VARCHAR(1000);
-		DECLARE @SeverityLevel INT;
-		DECLARE @ErrorNumber INT = ERROR_NUMBER();
-
-		SELECT @ErrorFromProc = '[dbo].[USP_MCASItemAnalysis_Reporting_CategoryUpdation]'
-			,@ProcErrorMessage = ERROR_MESSAGE()
-			,@SeverityLevel = ERROR_SEVERITY();
-
-		INSERT INTO dbo.[errorlogforusp] (
-			ErrorFromProc
-			,errormessage
-			,severitylevel
-			,datetimestamp
-			,TenantId
-			)
-		VALUES (
-			@ErrorFromProc
-			,@ProcErrorMessage
-			,@SeverityLevel
-			,GETDATE()
-			,@Tenantid
-			);
-
-		RAISERROR (
-				'Error Number-%d : Error Message-%s'
-				,16
-				,1
-				,@ErrorNumber
-				,@ProcErrorMessage
-				)
-	END CATCH;
+        RAISERROR (
+            'Error Number-%d : Error Message-%s',
+            16,
+            1,
+            @ErrorNumber,
+            @ProcErrorMessage
+        );
+    END CATCH;
 END
 GO
 
@@ -713,66 +1097,438 @@ BEGIN
 
 		WHILE @@FETCH_STATUS = 0
 		BEGIN
-			SET @SQL5 = N'   
-IF EXISTS (SELECT 1 FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_NAME = ''' + @TenantCode + '_MCAS_' + @CurrentYear + ''')
+			SET @SQL5 = N'
+IF EXISTS (
+    SELECT 1
+    FROM INFORMATION_SCHEMA.TABLES
+    WHERE TABLE_NAME = ''' + @TenantCode + '_MCAS_' + @CurrentYear + '''
+)
 BEGIN
-Update m set m.DistrictStudentId=st.DistrictStudentId from Main.' + @TenantCode + '_MCAS_' + @CurrentYear + ' m  Join AggRptK12StudentDetails st On m.sasid=st.StateStudentId  and m.Tenantid=st.Tenantid where m.SchoolYear= ' + @CurrentYear + ' and m.DistrictStudentId is null 
-End 
-'
+    UPDATE m
+    SET m.DistrictStudentId = st.DistrictStudentId
+    FROM Main.' + @TenantCode + '_MCAS_' + @CurrentYear + ' m
+    JOIN AggRptK12StudentDetails st 
+        ON m.sasid = st.StateStudentId
+       AND m.Tenantid = st.Tenantid
+    WHERE m.SchoolYear = ' + @CurrentYear + '
+      AND m.DistrictStudentId IS NULL
+END
+';
 
-			EXEC sp_executesql @SQL5
+			EXEC sp_executesql @SQL5;
 
 			SET @SQL = N'
-IF EXISTS (SELECT 1 FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_NAME = ''' + @TenantCode + '_MCAS_' + @CurrentYear + ''')
+IF EXISTS (
+    SELECT 1
+    FROM INFORMATION_SCHEMA.TABLES
+    WHERE TABLE_NAME = ''' + @TenantCode + '_MCAS_' + @CurrentYear + '''
+)
 BEGIN
-insert into AggrptMCASItemAnalysis (SchoolYear,LEAIdentifier,SchoolIdentifier,AssessmentCode,ItemId,ItemMaxScore,Itemtext,ItemMinScore,SubjectAreaCode,ItemTypeCode,IsPublished,IsAdaptive,Grade,AssessmentItemCode,Reporting_Category,Reporting_Category_Number,MA_Curriculum_Framework,Correct_Answer,State_Percent_Possible,District_Percent_Possible,School_Percent_Possible,School_State_Diff,School_Average_Points,District_Average_Points,State_Average_Points,TenantId,SortOrder,SubjectAreaDescription)
-select DISTINCT SchoolYear,''' + @LEAIdentifier + 
-				''' as LEAIdentifier,SchoolIdentifier,AssessmentCode,ItemId,ItemMaxScore,Itemtext,ItemMinScore,SubjectAreaCode,ItemTypeCode,[IsPublished],[IsAdaptive],Grade,AssessmentItemCode ,Reporting_Category,Reporting_Category_Number,[Standard],Correct_Answer,State_Percent_Possible,District_Percent_Possible,School_Percent_Possible,School_State_Diff,School_Average_Points,District_Average_Points,State_Average_Points,TenantId,SortOrder	,SubjectAreaDescription
-from ( 	SELECT DISTINCT T.SchoolYear,LEAIdentifier,SchoolIdentifier,AssessmentCode	,ItemId1 ItemId,ss.max_points ItemMaxScore,ss.item_Description Itemtext,ItemMinScore,SubjectAreaCode,ss.item_Type ItemTypeCode,1 [IsPublished],0 [IsAdaptive],T.Grade,AssessmentItemCode ,ss.Reporting_Category,ss.Reporting_Category_Number,ss.MA_Curriculum_Framework [Standard],ss.Correct_Answer	,Replace(ss.State_Percent_Possible,''%'','''')as State_Percent_Possible  ,ss.District_Percent_Possible,ss.School_Percent_Possible,ss.School_State_Diff	,ss.School_Average_Points,ss.District_Average_Points,ss.State_Average_Points,T.TenantId,[ItemId] SortOrder	,case when SubjectAreaCode=''MATH'' then ''Mathematics'' else SubjectAreaCode end as SubjectAreaDescription
-		from (	select	DISTINCT adminyear SchoolYear,[LEAIdentifier],[SchoolIdentifier],''MCAS'' AssessmentCode,Item [ItemId1],Item AssessmentItemCode	,CASE WHEN substring(Item,1,5)=''mitem'' THEN substring(Item,6,10) ELSE Item END [ItemId],CASE WHEN substring(Item,1,5)=''mitem'' THEN substring(Item,6,10) ELSE Item END [Itemtext]	,grade,TenantId,NULL [ItemMinScore],''MATH'' [SubjectAreaCode]
-			from	( '
+    INSERT INTO ' + @TenantCode + '_AggrptMCASItemAnalysis (
+        SchoolYear, LEAIdentifier, SchoolIdentifier, AssessmentCode, ItemId, ItemMaxScore, Itemtext, 
+        ItemMinScore, SubjectAreaCode, ItemTypeCode, IsPublished, IsAdaptive, Grade, AssessmentItemCode, 
+        Reporting_Category, Reporting_Category_Number, MA_Curriculum_Framework, Correct_Answer, 
+        State_Percent_Possible, District_Percent_Possible, School_Percent_Possible, School_State_Diff, 
+        School_Average_Points, District_Average_Points, State_Average_Points, TenantId, SortOrder, SubjectAreaDescription
+    )
+    SELECT DISTINCT 
+        SchoolYear, ''' + @LEAIdentifier + 
+				''' AS LEAIdentifier, SchoolIdentifier, AssessmentCode, ItemId, ItemMaxScore, 
+        Itemtext, ItemMinScore, SubjectAreaCode, ItemTypeCode, [IsPublished], [IsAdaptive], Grade, AssessmentItemCode, 
+        Reporting_Category, Reporting_Category_Number, [Standard], Correct_Answer, State_Percent_Possible, 
+        District_Percent_Possible, School_Percent_Possible, School_State_Diff, School_Average_Points, 
+        District_Average_Points, State_Average_Points, TenantId, SortOrder, SubjectAreaDescription
+    FROM (
+        SELECT DISTINCT 
+            T.SchoolYear, LEAIdentifier, SchoolIdentifier, AssessmentCode, ItemId1 AS ItemId, 
+            ss.max_points AS ItemMaxScore, ss.item_Description AS Itemtext, ItemMinScore, SubjectAreaCode, 
+            ss.item_Type AS ItemTypeCode, 1 AS [IsPublished], 0 AS [IsAdaptive], T.Grade, AssessmentItemCode, 
+            ss.Reporting_Category, ss.Reporting_Category_Number, ss.MA_Curriculum_Framework AS [Standard], 
+            ss.Correct_Answer, Replace(ss.State_Percent_Possible, ''%'', '''') AS State_Percent_Possible,  
+            ss.District_Percent_Possible, ss.School_Percent_Possible, ss.School_State_Diff, ss.School_Average_Points, 
+            ss.District_Average_Points, ss.State_Average_Points, T.TenantId, [ItemId] AS SortOrder, 
+            CASE WHEN SubjectAreaCode = ''MATH'' THEN ''Mathematics'' ELSE SubjectAreaCode END AS SubjectAreaDescription
+        FROM (
+            SELECT DISTINCT 
+                adminyear AS SchoolYear, [LEAIdentifier], [SchoolIdentifier], ''MCAS'' AS AssessmentCode, 
+                Item AS [ItemId1], Item AS AssessmentItemCode, 
+                CASE WHEN SUBSTRING(Item, 1, 5) = ''mitem'' THEN SUBSTRING(Item, 6, 10) ELSE Item END AS [ItemId],
+                CASE WHEN SUBSTRING(Item, 1, 5) = ''mitem'' THEN SUBSTRING(Item, 6, 10) ELSE Item END AS [Itemtext],
+                grade, TenantId, NULL AS [ItemMinScore], ''MATH'' AS [SubjectAreaCode]
+            FROM ('
+				;
 			SET @SQL1 = 
-				N'  select	distinct 	st.adminyear,st.grade,st.TenantId,sc.LEAIdentifier,	sc.SchoolIdentifier	,isnull([mitem1],-1) [mitem1],isnull([mitem2],-1) [mitem2],isnull([mitem3],-1) [mitem3],isnull([mitem4],-1) [mitem4],isnull([mitem5],-1) [mitem5],isnull([mitem6],-1) [mitem6],isnull([mitem7],-1) [mitem7]	,isnull([mitem8],-1) [mitem8],isnull([mitem9],-1) [mitem9],isnull([mitem10],-1) [mitem10],isnull([mitem11],-1) [mitem11],isnull([mitem12],-1) [mitem12],isnull([mitem13],-1) [mitem13],isnull([mitem14],-1) [mitem14],isnull([mitem15],-1) [mitem15],isnull([mitem16],-1) [mitem16],isnull([mitem17],-1) [mitem17],isnull([mitem18],-1) [mitem18],isnull([mitem19],-1) [mitem19],isnull([mitem20],-1) [mitem20],isnull([mitem21],-1) [mitem21],isnull([mitem22],-1) [mitem22],isnull([mitem23],-1) [mitem23],isnull([mitem24],-1) [mitem24],isnull([mitem25],-1) [mitem25],isnull([mitem26],-1) [mitem26],isnull([mitem27],-1) [mitem27],isnull([mitem28],-1) [mitem28],isnull([mitem29],-1) [mitem29],isnull([mitem30],-1) [mitem30],isnull([mitem31],0) [mitem31],isnull([mitem32],-1) [mitem32],isnull([mitem33],-1) [mitem33],isnull([mitem34],-1) [mitem34],isnull([mitem35],-1) [mitem35],isnull([mitem36],-1) [mitem36],isnull([mitem37],-1) [mitem37],isnull([mitem38],-1) [mitem38],isnull([mitem39],-1) [mitem39],isnull([mitem40],-1) [mitem40],isnull([mitem41],-1) [mitem41],isnull([mitem42],-1) [mitem42]
-						from Main.' 
-				+ @TenantCode + '_MCAS_' + @CurrentYear + ' st
-				left join main.k12school sc on (st.testschoolname=sc.NameofInstitution or st.testschoolcode=sc.SchoolIdentifier) and st.TenantId=sc.TenantId	) T   
-			 UNPIVOT	(orders FOR Item IN	([mitem1],[mitem2],[mitem3],[mitem4],[mitem5],[mitem6],[mitem7],[mitem8],[mitem9],[mitem10],[mitem11],[mitem12],[mitem13],[mitem14],[mitem15],[mitem16],[mitem17],[mitem18],[mitem19],[mitem20],[mitem21],[mitem22],[mitem23],[mitem24],[mitem25],[mitem26],[mitem27],[mitem28],[mitem29],[mitem30],[mitem31],	[mitem32],[mitem33],[mitem34],[mitem35],[mitem36],[mitem37],[mitem38],[mitem39],[mitem40],[mitem41],[mitem42])
-			) AS unpvt where orders<>''''	) T
-		join	dbo.' + @TenantCode + 
-				'_MCAS_ItemAnalysis_Math_ELA_Science	ss on ss.item_Number=T.ItemId and ss.Subject=T.Subjectareacode	and (Case when ss.Grade not in (''10'',''11'',''12'',''PK'',''KF'') Then Replace(ss.Grade,''0'','''') Else ss.Grade end) =(Case when t.Grade not in (''10'',''11'',''12'',''PK'',''KF'') Then Replace(t.Grade,''0'','''') Else t.Grade end)  and ss.TenantId=T.TenantId
-		where ss.Subject=''MATH''
-		UNION  '
+				N'
+                SELECT DISTINCT 
+                    st.adminyear,
+                    st.grade,
+                    st.TenantId,
+                    sc.LEAIdentifier,
+                    sc.SchoolIdentifier,
+                    ISNULL([mitem1], -1)  AS [mitem1],
+                    ISNULL([mitem2], -1)  AS [mitem2],
+                    ISNULL([mitem3], -1)  AS [mitem3],
+                    ISNULL([mitem4], -1)  AS [mitem4],
+                    ISNULL([mitem5], -1)  AS [mitem5],
+                    ISNULL([mitem6], -1)  AS [mitem6],
+                    ISNULL([mitem7], -1)  AS [mitem7],
+                    ISNULL([mitem8], -1)  AS [mitem8],
+                    ISNULL([mitem9], -1)  AS [mitem9],
+                    ISNULL([mitem10], -1) AS [mitem10],
+                    ISNULL([mitem11], -1) AS [mitem11],
+                    ISNULL([mitem12], -1) AS [mitem12],
+                    ISNULL([mitem13], -1) AS [mitem13],
+                    ISNULL([mitem14], -1) AS [mitem14],
+                    ISNULL([mitem15], -1) AS [mitem15],
+                    ISNULL([mitem16], -1) AS [mitem16],
+                    ISNULL([mitem17], -1) AS [mitem17],
+                    ISNULL([mitem18], -1) AS [mitem18],
+                    ISNULL([mitem19], -1) AS [mitem19],
+                    ISNULL([mitem20], -1) AS [mitem20],
+                    ISNULL([mitem21], -1) AS [mitem21],
+                    ISNULL([mitem22], -1) AS [mitem22],
+                    ISNULL([mitem23], -1) AS [mitem23],
+                    ISNULL([mitem24], -1) AS [mitem24],
+                    ISNULL([mitem25], -1) AS [mitem25],
+                    ISNULL([mitem26], -1) AS [mitem26],
+                    ISNULL([mitem27], -1) AS [mitem27],
+                    ISNULL([mitem28], -1) AS [mitem28],
+                    ISNULL([mitem29], -1) AS [mitem29],
+                    ISNULL([mitem30], -1) AS [mitem30],
+                    ISNULL([mitem31], 0)  AS [mitem31],
+                    ISNULL([mitem32], -1) AS [mitem32],
+                    ISNULL([mitem33], -1) AS [mitem33],
+                    ISNULL([mitem34], -1) AS [mitem34],
+                    ISNULL([mitem35], -1) AS [mitem35],
+                    ISNULL([mitem36], -1) AS [mitem36],
+                    ISNULL([mitem37], -1) AS [mitem37],
+                    ISNULL([mitem38], -1) AS [mitem38],
+                    ISNULL([mitem39], -1) AS [mitem39],
+                    ISNULL([mitem40], -1) AS [mitem40],
+                    ISNULL([mitem41], -1) AS [mitem41],
+                    ISNULL([mitem42], -1) AS [mitem42]
+                FROM Main.'+ @TenantCode + '_MCAS_' + @CurrentYear +' st
+                LEFT JOIN main.k12school sc 
+                    ON (st.testschoolname = sc.NameofInstitution 
+                        OR st.testschoolcode = sc.SchoolIdentifier)
+                    AND st.TenantId = sc.TenantId
+            ) T
+            UNPIVOT (
+                orders FOR Item IN (
+                    [mitem1],[mitem2],[mitem3],[mitem4],[mitem5],[mitem6],[mitem7],[mitem8],[mitem9],
+                    [mitem10],[mitem11],[mitem12],[mitem13],[mitem14],[mitem15],[mitem16],[mitem17],
+                    [mitem18],[mitem19],[mitem20],[mitem21],[mitem22],[mitem23],[mitem24],[mitem25],
+                    [mitem26],[mitem27],[mitem28],[mitem29],[mitem30],[mitem31],[mitem32],[mitem33],
+                    [mitem34],[mitem35],[mitem36],[mitem37],[mitem38],[mitem39],[mitem40],[mitem41],
+                    [mitem42]
+                )
+            ) AS unpvt
+            WHERE orders <> ''''
+            ) T
+            JOIN dbo.'+@TenantCode+'_MCAS_ItemAnalysis_Math_ELA_Science ss
+                ON ss.item_Number = T.ItemId
+               AND ss.Subject = T.Subjectareacode
+               AND (
+                    CASE 
+                        WHEN ss.Grade NOT IN (''10'',''11'',''12'',''PK'',''KF'') 
+                            THEN REPLACE(ss.Grade, ''0'', '''') 
+                        ELSE ss.Grade 
+                    END
+                ) = (
+                    CASE 
+                        WHEN t.Grade NOT IN (''10'',''11'',''12'',''PK'',''KF'') 
+                            THEN REPLACE(t.Grade, ''0'', '''') 
+                        ELSE t.Grade 
+                    END
+                )
+               AND ss.TenantId = T.TenantId
+            WHERE ss.Subject = ''MATH''
+            UNION  
+            ';
 			SET @SQL2 = 
-				N' SELECT DISTINCT T.SchoolYear,LEAIdentifier,SchoolIdentifier,AssessmentCode,ItemId1 ItemId,ss.max_points ItemMaxScore,ss.item_Description Itemtext,ItemMinScore,SubjectAreaCode,ss.item_Type ItemTypeCode,1 [IsPublished],0 [IsAdaptive],T.Grade,AssessmentItemCode ,ss.Reporting_Category,ss.Reporting_Category_Number,ss.MA_Curriculum_Framework [Standard],ss.Correct_Answer	,Replace(ss.State_Percent_Possible,''%'','''')as State_Percent_Possible ,ss.District_Percent_Possible,ss.School_Percent_Possible,ss.School_State_Diff,ss.School_Average_Points,ss.District_Average_Points,ss.State_Average_Points,T.TenantId,[ItemId] SortOrder	,SubjectAreaCode as SubjectAreaDescription
-			from (	select	distinct adminyear SchoolYear,[LEAIdentifier],[SchoolIdentifier],''MCAS'' AssessmentCode,Item [ItemId1],Item AssessmentItemCode,CASE WHEN substring(Item,1,5)=''eitem'' THEN substring(Item,6,10) ELSE Item END [ItemId],CASE WHEN substring(Item,1,5)=''eitem'' THEN substring(Item,6,10) ELSE Item END [Itemtext]	,grade,TenantId,''0'' [ItemMinScore], ''ELA'' [SubjectAreaCode]
-			from	(	select	st.adminyear,st.grade,st.TenantId,sc.LEAIdentifier,	sc.SchoolIdentifier	,isnull([eitem1],-1) [eitem1],isnull([eitem2],-1) [eitem2],isnull([eitem3],-1) [eitem3],isnull([eitem4],-1) [eitem4],isnull([eitem5],-1) [eitem5],isnull([eitem6],-1) [eitem6],isnull([eitem7],-1) [eitem7]	,isnull([eitem8],-1) [eitem8],isnull([eitem9],-1) [eitem9],isnull([eitem10],-1) [eitem10],isnull([eitem11],-1) [eitem11],isnull([eitem12],-1) [eitem12],isnull([eitem13],-1) [eitem13],isnull([eitem14],-1) [eitem14],isnull([eitem15],-1) [eitem15],isnull([eitem16],-1) [eitem16],isnull([eitem17],-1) [eitem17],isnull([eitem18],-1) [eitem18],isnull([eitem19],-1) [eitem19],isnull([eitem20],-1) [eitem20],isnull([eitem21],-1) [eitem21],isnull([eitem22],-1) [eitem22],isnull([eitem23],-1) [eitem23],isnull([eitem24],-1) [eitem24],isnull([eitem25],-1) [eitem25],isnull([eitem26],-1) [eitem26],isnull([eitem27],-1) [eitem27],isnull([eitem28],-1) [eitem28],isnull([eitem29],-1) [eitem29],isnull([eitem30],-1) [eitem30],isnull([eitem31],-1) [eitem31],isnull([eitem32],-1) [eitem32]
-				from Main.' 
-				+ @TenantCode + '_MCAS_' + @CurrentYear + ' st
-				left join main.k12school sc on (st.testschoolname=sc.NameofInstitution or st.testschoolcode=sc.SchoolIdentifier) and st.TenantId=sc.TenantId	) T
-			UNPIVOT	(orders FOR Item IN	([eitem1],[eitem2],[eitem3],[eitem4],[eitem5],[eitem6],[eitem7],[eitem8],[eitem9],[eitem10],[eitem11],[eitem12],[eitem13],[eitem14],[eitem15],[eitem16],[eitem17],[eitem18],[eitem19],[eitem20],[eitem21],[eitem22],[eitem23],[eitem24],[eitem25],[eitem26],[eitem27],[eitem28],[eitem29],[eitem30],[eitem31],	[eitem32] 
-				)	) AS unpvt where orders<>''''	) T
-		join	dbo.' + @TenantCode + 
-				'_MCAS_ItemAnalysis_Math_ELA_Science	ss	on ss.item_Number=T.ItemId and ss.Subject=T.Subjectareacode	and (Case when ss.Grade not in (''10'',''11'',''12'',''PK'',''KF'') Then Replace(ss.Grade,''0'','''') Else ss.Grade end) =(Case when t.Grade not in (''10'',''11'',''12'',''PK'',''KF'') Then Replace(t.Grade,''0'','''') Else t.Grade end)  and ss.TenantId=T.TenantId
-		where Subject=''ELA'' 
-		union  '
+				N'
+                SELECT DISTINCT 
+                    T.SchoolYear,
+                    LEAIdentifier,
+                    SchoolIdentifier,
+                    AssessmentCode,
+                    ItemId1 AS ItemId,
+                    ss.max_points AS ItemMaxScore,
+                    ss.item_Description AS Itemtext,
+                    ItemMinScore,
+                    SubjectAreaCode,
+                    ss.item_Type AS ItemTypeCode,
+                    1 AS [IsPublished],
+                    0 AS [IsAdaptive],
+                    T.Grade,
+                    AssessmentItemCode,
+                    ss.Reporting_Category,
+                    ss.Reporting_Category_Number,
+                    ss.MA_Curriculum_Framework AS [Standard],
+                    ss.Correct_Answer,
+                    Replace(ss.State_Percent_Possible, ''%'', '''') AS State_Percent_Possible,
+                    ss.District_Percent_Possible,
+                    ss.School_Percent_Possible,
+                    ss.School_State_Diff,
+                    ss.School_Average_Points,
+                    ss.District_Average_Points,
+                    ss.State_Average_Points,
+                    T.TenantId,
+                    [ItemId] AS SortOrder,
+                    SubjectAreaCode AS SubjectAreaDescription
+                FROM (
+                    SELECT DISTINCT 
+                        adminyear AS SchoolYear,
+                        [LEAIdentifier],
+                        [SchoolIdentifier],
+                        ''MCAS'' AS AssessmentCode,
+                        Item AS [ItemId1],
+                        Item AS AssessmentItemCode,
+                        CASE 
+                            WHEN SUBSTRING(Item, 1, 5) = ''eitem'' 
+                                THEN SUBSTRING(Item, 6, 10) 
+                            ELSE Item 
+                        END AS [ItemId],
+                        CASE 
+                            WHEN SUBSTRING(Item, 1, 5) = ''eitem'' 
+                                THEN SUBSTRING(Item, 6, 10) 
+                            ELSE Item 
+                        END AS [Itemtext],
+                        grade,
+                        TenantId,
+                        ''0'' AS [ItemMinScore],
+                        ''ELA'' AS [SubjectAreaCode]
+                    FROM (
+                        SELECT 
+                            st.adminyear,
+                            st.grade,
+                            st.TenantId,
+                            sc.LEAIdentifier,
+                            sc.SchoolIdentifier,
+                            ISNULL([eitem1], -1)  AS [eitem1],
+                            ISNULL([eitem2], -1)  AS [eitem2],
+                            ISNULL([eitem3], -1)  AS [eitem3],
+                            ISNULL([eitem4], -1)  AS [eitem4],
+                            ISNULL([eitem5], -1)  AS [eitem5],
+                            ISNULL([eitem6], -1)  AS [eitem6],
+                            ISNULL([eitem7], -1)  AS [eitem7],
+                            ISNULL([eitem8], -1)  AS [eitem8],
+                            ISNULL([eitem9], -1)  AS [eitem9],
+                            ISNULL([eitem10], -1) AS [eitem10],
+                            ISNULL([eitem11], -1) AS [eitem11],
+                            ISNULL([eitem12], -1) AS [eitem12],
+                            ISNULL([eitem13], -1) AS [eitem13],
+                            ISNULL([eitem14], -1) AS [eitem14],
+                            ISNULL([eitem15], -1) AS [eitem15],
+                            ISNULL([eitem16], -1) AS [eitem16],
+                            ISNULL([eitem17], -1) AS [eitem17],
+                            ISNULL([eitem18], -1) AS [eitem18],
+                            ISNULL([eitem19], -1) AS [eitem19],
+                            ISNULL([eitem20], -1) AS [eitem20],
+                            ISNULL([eitem21], -1) AS [eitem21],
+                            ISNULL([eitem22], -1) AS [eitem22],
+                            ISNULL([eitem23], -1) AS [eitem23],
+                            ISNULL([eitem24], -1) AS [eitem24],
+                            ISNULL([eitem25], -1) AS [eitem25],
+                            ISNULL([eitem26], -1) AS [eitem26],
+                            ISNULL([eitem27], -1) AS [eitem27],
+                            ISNULL([eitem28], -1) AS [eitem28],
+                            ISNULL([eitem29], -1) AS [eitem29],
+                            ISNULL([eitem30], -1) AS [eitem30],
+                            ISNULL([eitem31], -1) AS [eitem31],
+                            ISNULL([eitem32], -1) AS [eitem32]
+                        FROM Main.'+ @TenantCode + '_MCAS_' + @CurrentYear +' st
+                        LEFT JOIN main.k12school sc 
+                            ON (st.testschoolname = sc.NameofInstitution 
+                                OR st.testschoolcode = sc.SchoolIdentifier)
+                            AND st.TenantId = sc.TenantId
+                    ) T
+                    UNPIVOT (
+                        orders FOR Item IN (
+                            [eitem1],[eitem2],[eitem3],[eitem4],[eitem5],[eitem6],[eitem7],[eitem8],[eitem9],
+                            [eitem10],[eitem11],[eitem12],[eitem13],[eitem14],[eitem15],[eitem16],[eitem17],
+                            [eitem18],[eitem19],[eitem20],[eitem21],[eitem22],[eitem23],[eitem24],[eitem25],
+                            [eitem26],[eitem27],[eitem28],[eitem29],[eitem30],[eitem31],[eitem32]
+                        )
+                    ) AS unpvt
+                    WHERE orders <> ''''
+                ) T
+                JOIN dbo.'+ @TenantCode +'_MCAS_ItemAnalysis_Math_ELA_Science ss
+                    ON ss.item_Number = T.ItemId
+                   AND ss.Subject = T.Subjectareacode
+                   AND (
+                        CASE 
+                            WHEN ss.Grade NOT IN (''10'',''11'',''12'',''PK'',''KF'') 
+                                THEN REPLACE(ss.Grade, ''0'', '''') 
+                            ELSE ss.Grade 
+                        END
+                    ) = (
+                        CASE 
+                            WHEN t.Grade NOT IN (''10'',''11'',''12'',''PK'',''KF'') 
+                                THEN REPLACE(t.Grade, ''0'', '''') 
+                            ELSE t.Grade 
+                        END
+                    )
+                   AND ss.TenantId = T.TenantId
+                WHERE Subject = ''ELA''
+            UNION  
+            ';
 			SET @SQL3 = 
-				N'  SELECT DISTINCT T.SchoolYear,LEAIdentifier,SchoolIdentifier,AssessmentCode,ItemId1 ItemId,ss.max_points ItemMaxScore,ss.item_Description Itemtext,ItemMinScore,SubjectAreaCode,ss.item_Type ItemTypeCode,1 [IsPublished],0 [IsAdaptive],T.Grade,AssessmentItemCode ,ss.Reporting_Category,ss.Reporting_Category_Number,ss.MA_Curriculum_Framework [Standard],ss.Correct_Answer	,ss.State_Percent_Possible,ss.District_Percent_Possible,ss.School_Percent_Possible,ss.School_State_Diff	,ss.School_Average_Points,ss.District_Average_Points,ss.State_Average_Points,T.TenantId,[ItemId] SortOrder,SubjectAreaCode as SubjectAreaDescription
-		from (	select	distinct adminyear SchoolYear,[LEAIdentifier],[SchoolIdentifier],''MCAS'' AssessmentCode,Item [ItemId1],Item AssessmentItemCode,CASE WHEN substring(Item,1,5)=''sitem'' THEN substring(Item,6,10) ELSE Item END [ItemId],CASE WHEN substring(Item,1,5)=''sitem'' THEN substring(Item,6,10) ELSE Item END [Itemtext]	,grade,TenantId,'''' [ItemMinScore], ''Science'' SubjectAreaCode
-			from ( select 	distinct 	st.adminyear,st.grade,st.TenantId,sc.LEAIdentifier,	sc.SchoolIdentifier	,isnull([sitem1],-1) [sitem1],isnull([sitem2],-1) [sitem2],isnull([sitem3],-1) [sitem3],isnull([sitem4],-1) [sitem4],isnull([sitem5],-1) [sitem5],isnull([sitem6],-1) [sitem6],isnull([sitem7],-1) [sitem7],isnull([sitem8],-1) [sitem8],isnull([sitem9],-1) [sitem9],isnull([sitem10],-1) [sitem10],isnull([sitem11],-1) [sitem11],isnull([sitem12],-1) [sitem12],isnull([sitem13],-1) [sitem13],isnull([sitem14],-1) [sitem14],isnull([sitem15],-1) [sitem15],isnull([sitem16],-1) [sitem16],isnull([sitem17],-1) [sitem17],isnull([sitem18],-1) [sitem18],isnull([sitem19],-1) [sitem19],isnull([sitem20],-1) [sitem20],isnull([sitem21],-1) [sitem21],isnull([sitem22],-1) [sitem22],isnull([sitem23],-1) [sitem23],isnull([sitem24],-1) [sitem24],isnull([sitem25],-1) [sitem25],isnull([sitem26],-1) [sitem26],isnull([sitem27],-1) [sitem27],isnull([sitem28],-1) [sitem28],isnull([sitem29],-1) [sitem29],isnull([sitem30],-1) [sitem30],isnull([sitem31],-1) [sitem31],isnull([sitem32],-1) [sitem32],isnull([sitem33],-1) [sitem33],isnull([sitem34],-1) [sitem34],isnull([sitem35],-1) [sitem35],isnull([sitem36],-1) [sitem36],isnull([sitem37],-1) [sitem37],isnull([sitem38],-1) [sitem38],isnull([sitem39],-1) [sitem39],isnull([sitem40],-1) [sitem40],isnull([sitem41],-1) [sitem41],isnull([sitem42],-1) [sitem42],isnull([sitem43],-1) [sitem43],isnull([sitem44],-1) [sitem44],isnull([sitem45],-1) [sitem45]
-					from Main.' 
-				+ @TenantCode + '_MCAS_' + @CurrentYear + ' st
-				left join main.k12school sc on (st.testschoolname=sc.NameofInstitution or st.testschoolcode=sc.SchoolIdentifier) and st.TenantId=sc.TenantId
-			) T
-			UNPIVOT
-			(orders FOR Item IN	(	[sitem1],[sitem2],[sitem3],[sitem4],[sitem5],[sitem6],[sitem7],[sitem8],[sitem9],[sitem10],[sitem11],[sitem12],[sitem13],[sitem14],[sitem15],[sitem16],	[sitem17],[sitem18],[sitem19],[sitem20],[sitem21],[sitem22],[sitem23],[sitem24],[sitem25],[sitem26],[sitem27],[sitem28],[sitem29],[sitem30],[sitem31],	[sitem32],[sitem33],[sitem34],[sitem35],[sitem36],[sitem37],[sitem38],[sitem39],[sitem40],[sitem41],[sitem42],[sitem43],[sitem44],[sitem45])
-			) AS unpvt where orders<>''''	) T
-		join dbo.' + @TenantCode + 
-				'_MCAS_ItemAnalysis_Math_ELA_Science	ss	on ss.item_Number=T.ItemId and ss.Subject=T.Subjectareacode and (Case when ss.Grade not in (''10'',''11'',''12'',''PK'',''KF'') Then Replace(ss.Grade,''0'','''') Else ss.Grade end) =(Case when t.Grade not in (''10'',''11'',''12'',''PK'',''KF'') Then Replace(t.Grade,''0'','''') Else t.Grade end)  and ss.TenantId=T.TenantId
-		where ss.Subject=''Science'' ) a '
+				N'
+            SELECT DISTINCT 
+                T.SchoolYear,
+                LEAIdentifier,
+                SchoolIdentifier,
+                AssessmentCode,
+                ItemId1 AS ItemId,
+                ss.max_points AS ItemMaxScore,
+                ss.item_Description AS Itemtext,
+                ItemMinScore,
+                SubjectAreaCode,
+                ss.item_Type AS ItemTypeCode,
+                1 AS [IsPublished],
+                0 AS [IsAdaptive],
+                T.Grade,
+                AssessmentItemCode,
+                ss.Reporting_Category,
+                ss.Reporting_Category_Number,
+                ss.MA_Curriculum_Framework AS [Standard],
+                ss.Correct_Answer,
+                ss.State_Percent_Possible,
+                ss.District_Percent_Possible,
+                ss.School_Percent_Possible,
+                ss.School_State_Diff,
+                ss.School_Average_Points,
+                ss.District_Average_Points,
+                ss.State_Average_Points,
+                T.TenantId,
+                [ItemId] AS SortOrder,
+                SubjectAreaCode AS SubjectAreaDescription
+            FROM (
+                SELECT DISTINCT 
+                    adminyear AS SchoolYear,
+                    [LEAIdentifier],
+                    [SchoolIdentifier],
+                    ''MCAS'' AS AssessmentCode,
+                    Item AS [ItemId1],
+                    Item AS AssessmentItemCode,
+                    CASE 
+                        WHEN SUBSTRING(Item, 1, 5) = ''sitem'' THEN SUBSTRING(Item, 6, 10) 
+                        ELSE Item 
+                    END AS [ItemId],
+                    CASE 
+                        WHEN SUBSTRING(Item, 1, 5) = ''sitem'' THEN SUBSTRING(Item, 6, 10) 
+                        ELSE Item 
+                    END AS [Itemtext],
+                    grade,
+                    TenantId,
+                    '''' AS [ItemMinScore],
+                    ''Science'' AS SubjectAreaCode
+                FROM (
+                    SELECT DISTINCT 
+                        st.adminyear,
+                        st.grade,
+                        st.TenantId,
+                        sc.LEAIdentifier,
+                        sc.SchoolIdentifier,
+                        ISNULL([sitem1], -1)  AS [sitem1],
+                        ISNULL([sitem2], -1)  AS [sitem2],
+                        ISNULL([sitem3], -1)  AS [sitem3],
+                        ISNULL([sitem4], -1)  AS [sitem4],
+                        ISNULL([sitem5], -1)  AS [sitem5],
+                        ISNULL([sitem6], -1)  AS [sitem6],
+                        ISNULL([sitem7], -1)  AS [sitem7],
+                        ISNULL([sitem8], -1)  AS [sitem8],
+                        ISNULL([sitem9], -1)  AS [sitem9],
+                        ISNULL([sitem10], -1) AS [sitem10],
+                        ISNULL([sitem11], -1) AS [sitem11],
+                        ISNULL([sitem12], -1) AS [sitem12],
+                        ISNULL([sitem13], -1) AS [sitem13],
+                        ISNULL([sitem14], -1) AS [sitem14],
+                        ISNULL([sitem15], -1) AS [sitem15],
+                        ISNULL([sitem16], -1) AS [sitem16],
+                        ISNULL([sitem17], -1) AS [sitem17],
+                        ISNULL([sitem18], -1) AS [sitem18],
+                        ISNULL([sitem19], -1) AS [sitem19],
+                        ISNULL([sitem20], -1) AS [sitem20],
+                        ISNULL([sitem21], -1) AS [sitem21],
+                        ISNULL([sitem22], -1) AS [sitem22],
+                        ISNULL([sitem23], -1) AS [sitem23],
+                        ISNULL([sitem24], -1) AS [sitem24],
+                        ISNULL([sitem25], -1) AS [sitem25],
+                        ISNULL([sitem26], -1) AS [sitem26],
+                        ISNULL([sitem27], -1) AS [sitem27],
+                        ISNULL([sitem28], -1) AS [sitem28],
+                        ISNULL([sitem29], -1) AS [sitem29],
+                        ISNULL([sitem30], -1) AS [sitem30],
+                        ISNULL([sitem31], -1) AS [sitem31],
+                        ISNULL([sitem32], -1) AS [sitem32],
+                        ISNULL([sitem33], -1) AS [sitem33],
+                        ISNULL([sitem34], -1) AS [sitem34],
+                        ISNULL([sitem35], -1) AS [sitem35],
+                        ISNULL([sitem36], -1) AS [sitem36],
+                        ISNULL([sitem37], -1) AS [sitem37],
+                        ISNULL([sitem38], -1) AS [sitem38],
+                        ISNULL([sitem39], -1) AS [sitem39],
+                        ISNULL([sitem40], -1) AS [sitem40],
+                        ISNULL([sitem41], -1) AS [sitem41],
+                        ISNULL([sitem42], -1) AS [sitem42],
+                        ISNULL([sitem43], -1) AS [sitem43],
+                        ISNULL([sitem44], -1) AS [sitem44],
+                        ISNULL([sitem45], -1) AS [sitem45]
+                    FROM Main.'+ @TenantCode + '_MCAS_' + @CurrentYear +' st
+                    LEFT JOIN main.k12school sc 
+                        ON (st.testschoolname = sc.NameofInstitution 
+                            OR st.testschoolcode = sc.SchoolIdentifier) 
+                        AND st.TenantId = sc.TenantId
+                ) T
+                UNPIVOT (
+                    orders FOR Item IN (
+                        [sitem1],[sitem2],[sitem3],[sitem4],[sitem5],[sitem6],[sitem7],[sitem8],[sitem9],[sitem10],
+                        [sitem11],[sitem12],[sitem13],[sitem14],[sitem15],[sitem16],[sitem17],[sitem18],[sitem19],[sitem20],
+                        [sitem21],[sitem22],[sitem23],[sitem24],[sitem25],[sitem26],[sitem27],[sitem28],[sitem29],[sitem30],
+                        [sitem31],[sitem32],[sitem33],[sitem34],[sitem35],[sitem36],[sitem37],[sitem38],[sitem39],[sitem40],
+                        [sitem41],[sitem42],[sitem43],[sitem44],[sitem45]
+                    )
+                ) AS unpvt
+                WHERE orders <> ''''
+            ) T
+            JOIN dbo.'+ @TenantCode + '_MCAS_ItemAnalysis_Math_ELA_Science ss
+                ON ss.item_Number = T.ItemId
+                AND ss.Subject = T.Subjectareacode
+                AND (
+                    CASE 
+                        WHEN ss.Grade NOT IN (''10'',''11'',''12'',''PK'',''KF'') 
+                            THEN REPLACE(ss.Grade, ''0'', '''') 
+                        ELSE ss.Grade 
+                    END
+                ) = (
+                    CASE 
+                        WHEN T.Grade NOT IN (''10'',''11'',''12'',''PK'',''KF'') 
+                            THEN REPLACE(T.Grade, ''0'', '''') 
+                        ELSE T.Grade 
+                    END
+                )
+                AND ss.TenantId = T.TenantId
+            WHERE ss.Subject = ''Science''
+            ) a';
 			SET @SQL6 = '
-where not exists (select 1 from AggrptMCASItemAnalysis b where a.TenantId=b.TenantId and a.SchoolYear=b.SchoolYear	and a.SubjectAreaCode=b.SubjectAreaCode and a.grade=b.Grade and a.ItemId=b.ItemId and a.LEAIdentifier=b.LEAIdentifier and a.SchoolIdentifier=b.SchoolIdentifier and a.AssessmentCode=b.AssessmentCode and a.Reporting_Category=b.Reporting_Category and a.Standard=b.MA_Curriculum_Framework and a.ItemTypeCode=b.ItemTypeCode
-)  END ;
-'
+                where not exists (
+                    select 1
+                    from ' + @TenantCode + '_AggrptMCASItemAnalysis b
+                    where a.TenantId = b.TenantId
+                      and a.SchoolYear = b.SchoolYear
+                      and a.SubjectAreaCode = b.SubjectAreaCode
+                      and a.grade = b.Grade
+                      and a.ItemId = b.ItemId
+                      and a.LEAIdentifier = b.LEAIdentifier
+                      and a.SchoolIdentifier = b.SchoolIdentifier
+                      and a.AssessmentCode = b.AssessmentCode
+                      and a.Reporting_Category = b.Reporting_Category
+                      and a.Standard = b.MA_Curriculum_Framework
+                      and a.ItemTypeCode = b.ItemTypeCode
+                )
+                END ;'
 			SET @SQL4 = @SQL + @SQL1 + @SQL2 + @SQL3 + @SQL6
 
 			EXEC sp_executesql @SQL4;
@@ -791,7 +1547,7 @@ where not exists (select 1 from AggrptMCASItemAnalysis b where a.TenantId=b.Tena
 		-- Test whether the transaction is uncommittable.                         
 		IF XACT_STATE() = - 1
 		BEGIN
-			ROLLBACK TRAN;
+			ROLLBACK TRANSACTION;
 		END;
 
 		--Comment it if SP contains only SELECT statement                                             
@@ -895,7 +1651,7 @@ End
 IF EXISTS (SELECT 1 FROM INFORMATION_SCHEMA.TABLES WHERE TABLE_NAME = ''' + @TenantCode + '_MCAS_' + @CurrentYear + 
 				''')
 BEGIN
- INSERT INTO  AggrptMCASItemStudentResults (LEAIdentifier,SchoolIdentifier,SchoolYear,AssessmentCode, ItemId, ItemMaxScore,	 Itemtext,StudentScore,DistrictStudentId, ItemTypeCode,SubjectAreaCode	,Reporting_Category,Reporting_Category_Number,MA_Curriculum_Framework ,Correct_Answer	,State_Percent_Possible,District_Percent_Possible,School_Percent_Possible,School_State_Diff	,School_Average_Points,District_Average_Points,State_Average_Points,grade,TenantId	,gender,race,StudentName,FRL,DisabilityStatus,ELL,SubjectAreaDescription,SortOrder)
+ INSERT INTO  ' + @TenantCode + '_AggrptMCASItemStudentResults (LEAIdentifier,SchoolIdentifier,SchoolYear,AssessmentCode, ItemId, ItemMaxScore,	 Itemtext,StudentScore,DistrictStudentId, ItemTypeCode,SubjectAreaCode	,Reporting_Category,Reporting_Category_Number,MA_Curriculum_Framework ,Correct_Answer	,State_Percent_Possible,District_Percent_Possible,School_Percent_Possible,School_State_Diff	,School_Average_Points,District_Average_Points,State_Average_Points,grade,TenantId	,gender,race,StudentName,FRL,DisabilityStatus,ELL,SubjectAreaDescription,SortOrder)
 
 select LEAIdentifier,SchoolIdentifier,SchoolYear,AssessmentCode, ItemId, ItemMaxScore, Itemtext,StudentScore,DistrictStudentId, ItemTypeCode,SubjectAreaCode,Reporting_Category,Reporting_Category_Number,Standard ,Correct_Answer,State_Percent_Possible,District_Percent_Possible,School_Percent_Possible,School_State_Diff,School_Average_Points,District_Average_Points,State_Average_Points,grade,TenantId,gender,race,StudentName,FRL,DisabilityStatus,ELL,SubjectAreaDescription,SortOrder
 from (	select distinct LEAIdentifier,SchoolIdentifier,t.SchoolYear,AssessmentCode,ItemId1 ItemId,ss.Max_Points ItemMaxScore,ss.Item_Description Itemtext,StudentScore,	DistrictStudentId,ss.Item_Type ItemTypeCode,SubjectAreaCode	,ss.Reporting_Category,ss.Reporting_Category_Number,ss.MA_Curriculum_Framework Standard,ss.Correct_Answer,ss.State_Percent_Possible,ss.District_Percent_Possible,ss.School_Percent_Possible,ss.School_State_Diff	,ss.School_Average_Points,ss.District_Average_Points,ss.State_Average_Points,T.grade,T.TenantId	,T.gender,T.race,T.StudentName,T.FRL,T.DisabilityStatus,T.ELL,case when SubjectAreaCode=''MATH'' then ''Mathematics'' else SubjectAreaCode end as SubjectAreaDescription,[ItemId] SortOrder
@@ -950,7 +1706,7 @@ from (	select distinct LEAIdentifier,SchoolIdentifier,t.SchoolYear,AssessmentCod
 				'_MCAS_ItemAnalysis_Math_ELA_Science	ss	
 			on ss.Item_Number=T.ItemId 	and (Case when ss.Grade not in (''10'',''11'',''12'',''PK'',''KF'') Then Replace(ss.Grade,''0'','''') Else ss.Grade end) =(Case when t.Grade not in (''10'',''11'',''12'',''PK'',''KF'') Then Replace(t.Grade,''0'','''') Else t.Grade end)  and	ss.Subject=T.SubjectAreaCode and ss.TenantId=T.TenantId
 		where ss.Subject=''Science'' ) a
-where not exists (select 1 from AggrptMCASItemStudentResults b where a.TenantId=b.TenantId and a.SchoolYear=b.SchoolYear and a.SubjectAreaCode=b.SubjectAreaCode and a.grade=b.Grade and a.ItemId=b.ItemId and a.LEAIdentifier=b.LEAIdentifier 	and a.SchoolIdentifier=b.SchoolIdentifier and a.AssessmentCode=b.AssessmentCode and a.Reporting_Category=b.Reporting_Category	and a.Standard=b.MA_Curriculum_Framework and a.ItemTypeCode=b.ItemTypeCode and a.DistrictStudentId=b.DistrictStudentId
+where not exists (select 1 from ' + @TenantCode + '_AggrptMCASItemStudentResults b where a.TenantId=b.TenantId and a.SchoolYear=b.SchoolYear and a.SubjectAreaCode=b.SubjectAreaCode and a.grade=b.Grade and a.ItemId=b.ItemId and a.LEAIdentifier=b.LEAIdentifier 	and a.SchoolIdentifier=b.SchoolIdentifier and a.AssessmentCode=b.AssessmentCode and a.Reporting_Category=b.Reporting_Category	and a.Standard=b.MA_Curriculum_Framework and a.ItemTypeCode=b.ItemTypeCode and a.DistrictStudentId=b.DistrictStudentId
 )   
 END ;
 '
@@ -1015,28 +1771,49 @@ CREATE OR ALTER PROCEDURE [dbo].[USP_MCASItemAnalysis_ItemTypeDescriptionUpdatio
 AS
 BEGIN
 	SET XACT_ABORT ON;
-	SET NOCOUNT ON
+	SET NOCOUNT ON;
 
 	BEGIN TRY
 		DECLARE @TenantCode VARCHAR(MAX)
 			,@LEAIdentifier VARCHAR(500);
 
+		-- Get tenant code
 		SET @TenantCode = (
 				SELECT TenantCode
 				FROM idm.Tenant
 				WHERE TenantId = @TenantId
 				);
 
+		-- Get LEA Identifier
 		SELECT @LEAIdentifier = LEAIdentifier
 		FROM main.K12LEA
 		WHERE TenantId = @TenantId;
 
+		-- Create tenant-specific views if base tables exist
 		IF EXISTS (
-				SELECT DISTINCT 1
+				SELECT 1
 				FROM INFORMATION_SCHEMA.TABLES
-				WHERE TABLE_NAME IN ('AggrptMCASItemAnalysis')
+				WHERE TABLE_NAME = @TenantCode + '_AggrptMCASItemAnalysis'
 				)
 		BEGIN
+			-- Drop views if already exist
+			IF OBJECT_ID('dbo.TenantAggrptMCASItemAnalysis', 'V') IS NOT NULL
+				DROP VIEW dbo.TenantAggrptMCASItemAnalysis;
+
+			IF OBJECT_ID('dbo.TenantAggrptMCASItemStudentResults', 'V') IS NOT NULL
+				DROP VIEW dbo.TenantAggrptMCASItemStudentResults;
+
+			-- Create new tenant-specific views
+			DECLARE @SQL NVARCHAR(MAX);
+
+			SET @SQL = 'CREATE VIEW dbo.TenantAggrptMCASItemAnalysis AS SELECT * FROM ' + QUOTENAME(@TenantCode + '_AggrptMCASItemAnalysis');
+
+			EXEC (@SQL);
+
+			SET @SQL = 'CREATE VIEW dbo.TenantAggrptMCASItemStudentResults AS SELECT * FROM ' + QUOTENAME(@TenantCode + '_AggrptMCASItemStudentResults');
+
+			EXEC (@SQL);
+
 			-- Table variable to store individual school years
 			DECLARE @SchoolYearTable TABLE (SchoolYear VARCHAR(10));
 
@@ -1064,70 +1841,44 @@ BEGIN
 			WHILE @@FETCH_STATUS = 0
 			BEGIN
 				UPDATE a
-				SET ItemTypeDescription = CASE 
-						WHEN ItemTypeCode = 'SR'
-							THEN 'Selected Response'
-						WHEN ItemTypeCode = 'SA'
-							THEN 'Short Answer'
-						WHEN ItemTypeCode = 'CR'
-							THEN 'Constructed Response'
-						WHEN ItemTypeCode = 'ES'
-							THEN 'Essay'
-						END
-				FROM AggrptMCASItemAnalysis a
+				SET ItemTypeDescription = CASE WHEN ItemTypeCode = 'SR' THEN 'Selected Response' WHEN ItemTypeCode = 'SA' THEN 'Short Answer' WHEN ItemTypeCode = 'CR' THEN 'Constructed Response' WHEN ItemTypeCode = 'ES' THEN 'Essay' END
+				FROM TenantAggrptMCASItemAnalysis a
 				WHERE TenantId = @Tenantid
 					AND SchoolYear = @CurrentYear
 
 				UPDATE a
-				SET ItemTypeDescription = CASE 
-						WHEN ItemTypeCode = 'SR'
-							THEN 'Selected Response'
-						WHEN ItemTypeCode = 'SA'
-							THEN 'Short Answer'
-						WHEN ItemTypeCode = 'CR'
-							THEN 'Constructed Response'
-						WHEN ItemTypeCode = 'ES'
-							THEN 'Essay'
-						END
-				FROM AggrptMCASItemStudentResults a
+				SET ItemTypeDescription = CASE WHEN ItemTypeCode = 'SR' THEN 'Selected Response' WHEN ItemTypeCode = 'SA' THEN 'Short Answer' WHEN ItemTypeCode = 'CR' THEN 'Constructed Response' WHEN ItemTypeCode = 'ES' THEN 'Essay' END
+				FROM TenantAggrptMCASItemStudentResults a
 				WHERE TenantId = @Tenantid
 					AND SchoolYear = @CurrentYear
 
-				UPDATE AggrptMCASItemAnalysis
+				UPDATE TenantAggrptMCASItemAnalysis
 				SET State_Percent_Possible = REPLACE(State_Percent_Possible, '%', '')
 					,District_Percent_Possible = REPLACE(District_Percent_Possible, '%', '')
 					,School_Percent_Possible = REPLACE(School_Percent_Possible, '%', '')
 				WHERE TenantId = @Tenantid
 					AND SchoolYear = @CurrentYear
 
-				UPDATE AggrptMCASItemStudentResults
+				UPDATE TenantAggrptMCASItemStudentResults
 				SET State_Percent_Possible = REPLACE(State_Percent_Possible, '%', '')
 					,District_Percent_Possible = REPLACE(District_Percent_Possible, '%', '')
 					,School_Percent_Possible = REPLACE(School_Percent_Possible, '%', '')
 				WHERE TenantId = @Tenantid
 					AND SchoolYear = @CurrentYear
 
-				UPDATE AggrptMCASItemStudentResults
-				SET IsCorrect = CASE 
-						WHEN cast(Replace(Replace(Replace(StudentScore, '\', ''), '+', ''), '-', '') AS INT) > 0
-							THEN 1
-						ELSE 0
-						END
+				UPDATE TenantAggrptMCASItemStudentResults
+				SET IsCorrect = CASE WHEN cast(Replace(Replace(Replace(StudentScore, '\', ''), '+', ''), '-', '') AS INT) > 0 THEN 1 ELSE 0 END
 				WHERE TenantId = @Tenantid
 					AND SchoolYear = @CurrentYear
 
 				UPDATE a
-				SET highneeds = CASE 
-						WHEN (
+				SET highneeds = CASE WHEN (
 								b.ELL = 'Yes'
 								OR b.SpecialEdStatus = 'Yes'
 								OR b.FRL = 'Free Lunch'
 								OR b.FEL = 'Yes'
-								)
-							THEN 'Yes'
-						ELSE 'No'
-						END
-				FROM AggrptMCASItemStudentResults a
+								) THEN 'Yes' ELSE 'No' END
+				FROM TenantAggrptMCASItemStudentResults a
 				INNER JOIN AggRptK12StudentDetails b ON a.SchoolYear = b.SchoolYear
 					AND a.DistrictStudentId = b.DistrictStudentId
 					AND a.TenantId = b.TenantId
@@ -1136,7 +1887,7 @@ BEGIN
 
 				UPDATE a
 				SET a.Avg_Correct = b.Avg_Correct
-				FROM AggrptMCASItemStudentResults a
+				FROM TenantAggrptMCASItemStudentResults a
 				INNER JOIN (
 					SELECT ds.[ItemId]
 						,ds.grade
@@ -1162,7 +1913,7 @@ BEGIN
 											,TenantId
 											,SchoolYear
 											,count(cast(replace(Replace(replace(studentscore, '\', ''), '+', ''), '-', '') AS INT)) AS studentscoreCount
-										FROM AggrptMCASItemStudentResults
+										FROM TenantAggrptMCASItemStudentResults
 										GROUP BY Grade
 											,ItemId
 											,LEAIdentifier
@@ -1177,14 +1928,8 @@ BEGIN
 											,SubjectAreaCode
 											,TenantId
 											,SchoolYear
-											,cast(max(CASE 
-														WHEN ItemMaxScore = '(3 in v2)'
-															THEN 3
-														WHEN ItemMaxScore = '(2 in v2)'
-															THEN 2
-														ELSE ItemMaxScore
-														END) AS INT) AS ItemMaxScore
-										FROM AggrptMCASItemAnalysis
+											,cast(max(CASE WHEN ItemMaxScore = '(3 in v2)' THEN 3 WHEN ItemMaxScore = '(2 in v2)' THEN 2 ELSE ItemMaxScore END) AS INT) AS ItemMaxScore
+										FROM TenantAggrptMCASItemAnalysis
 										GROUP BY Grade
 											,ItemId
 											,LEAIdentifier
@@ -1205,7 +1950,7 @@ BEGIN
 									AND ds.TenantId = ds1.TenantId
 									AND ds.SchoolYear = ds1.SchoolYear
 								) AS DECIMAL(10, 2)) AS Avg_Correct
-					FROM dbo.AggrptMCASItemStudentResults AS ds WITH (NOLOCK)
+					FROM dbo.TenantAggrptMCASItemStudentResults AS ds WITH (NOLOCK)
 					WHERE (
 							(ISNULL(ds.[LEAIdentifier], ' ') IN ('' + @LEAIdentifier + ''))
 							AND (ds.TenantId = @Tenantid)
@@ -1228,7 +1973,7 @@ BEGIN
 
 				UPDATE a
 				SET a.Avg_Correct = b.Avg_Correct
-				FROM AggrptMCASItemAnalysis a
+				FROM TenantAggrptMCASItemAnalysis a
 				INNER JOIN (
 					SELECT ds.[ItemId]
 						,ds.grade
@@ -1254,7 +1999,7 @@ BEGIN
 											,TenantId
 											,SchoolYear
 											,count(cast(replace(replace(replace(studentscore, '\', ''), '-', ''), '+', '') AS INT)) AS studentscoreCount
-										FROM AggrptMCASItemStudentResults
+										FROM TenantAggrptMCASItemStudentResults
 										GROUP BY Grade
 											,ItemId
 											,LEAIdentifier
@@ -1269,14 +2014,8 @@ BEGIN
 											,SubjectAreaCode
 											,TenantId
 											,SchoolYear
-											,cast(max(CASE 
-														WHEN ItemMaxScore = '(3 in v2)'
-															THEN 3
-														WHEN ItemMaxScore = '(2 in v2)'
-															THEN 2
-														ELSE ItemMaxScore
-														END) AS INT) AS ItemMaxScore
-										FROM AggrptMCASItemAnalysis
+											,cast(max(CASE WHEN ItemMaxScore = '(3 in v2)' THEN 3 WHEN ItemMaxScore = '(2 in v2)' THEN 2 ELSE ItemMaxScore END) AS INT) AS ItemMaxScore
+										FROM TenantAggrptMCASItemAnalysis
 										GROUP BY Grade
 											,ItemId
 											,LEAIdentifier
@@ -1297,7 +2036,7 @@ BEGIN
 									AND ds.TenantId = ds1.TenantId
 									AND ds.SchoolYear = ds1.SchoolYear
 								) AS DECIMAL(10, 2)) AS Avg_Correct
-					FROM dbo.AggrptMCASItemStudentResults AS ds WITH (NOLOCK)
+					FROM dbo.TenantAggrptMCASItemStudentResults AS ds WITH (NOLOCK)
 					WHERE (
 							(ISNULL(ds.[LEAIdentifier], ' ') IN ('' + @LEAIdentifier + ''))
 							AND (ds.TenantId = @Tenantid)
@@ -1320,7 +2059,7 @@ BEGIN
 
 				UPDATE a
 				SET a.Avg_School_Correct = cast(ROUND(b.Avg_Correct, 0, 0) AS INT)
-				FROM AggrptMCASItemStudentResults a
+				FROM TenantAggrptMCASItemStudentResults a
 				INNER JOIN (
 					SELECT ds.[ItemId]
 						,ds.grade
@@ -1349,7 +2088,7 @@ BEGIN
 											,TenantId
 											,SchoolYear
 											,count(cast(replace(replace(replace(studentscore, '\', ''), '-', ''), '+', '') AS INT)) AS studentscoreCount
-										FROM AggrptMCASItemStudentResults
+										FROM TenantAggrptMCASItemStudentResults
 										GROUP BY Grade
 											,ItemId
 											,LEAIdentifier
@@ -1366,14 +2105,8 @@ BEGIN
 											,SubjectAreaCode
 											,TenantId
 											,SchoolYear
-											,cast(max(CASE 
-														WHEN ItemMaxScore = '(3 in v2)'
-															THEN 3
-														WHEN ItemMaxScore = '(2 in v2)'
-															THEN 2
-														ELSE ItemMaxScore
-														END) AS INT) AS ItemMaxScore
-										FROM AggrptMCASItemAnalysis
+											,cast(max(CASE WHEN ItemMaxScore = '(3 in v2)' THEN 3 WHEN ItemMaxScore = '(2 in v2)' THEN 2 ELSE ItemMaxScore END) AS INT) AS ItemMaxScore
+										FROM TenantAggrptMCASItemAnalysis
 										GROUP BY Grade
 											,ItemId
 											,LEAIdentifier
@@ -1397,7 +2130,7 @@ BEGIN
 									AND ds.TenantId = ds1.TenantId
 									AND ds.SchoolYear = ds1.SchoolYear
 								) AS DECIMAL(10, 2)) AS Avg_Correct
-					FROM dbo.AggrptMCASItemStudentResults AS ds WITH (NOLOCK)
+					FROM dbo.TenantAggrptMCASItemStudentResults AS ds WITH (NOLOCK)
 					WHERE cast(Replace(Replace(Replace(StudentScore, '\', ''), '+', ''), '-', '') AS INT) > 0
 					GROUP BY ds.[ItemId]
 						,ds.[grade]
@@ -1418,7 +2151,7 @@ BEGIN
 
 				UPDATE a
 				SET a.Avg_School_Correct = cast(ROUND(b.Avg_Correct, 0, 0) AS INT)
-				FROM AggrptMCASItemAnalysis a
+				FROM TenantAggrptMCASItemAnalysis a
 				INNER JOIN (
 					SELECT ds.[ItemId]
 						,ds.grade
@@ -1447,7 +2180,7 @@ BEGIN
 											,TenantId
 											,SchoolYear
 											,count(cast(replace(replace(replace(studentscore, '\', ''), '-', ''), '+', '') AS INT)) AS studentscoreCount
-										FROM AggrptMCASItemStudentResults
+										FROM TenantAggrptMCASItemStudentResults
 										GROUP BY Grade
 											,ItemId
 											,LEAIdentifier
@@ -1464,14 +2197,8 @@ BEGIN
 											,SubjectAreaCode
 											,TenantId
 											,SchoolYear
-											,cast(max(CASE 
-														WHEN ItemMaxScore = '(3 in v2)'
-															THEN 3
-														WHEN ItemMaxScore = '(2 in v2)'
-															THEN 2
-														ELSE ItemMaxScore
-														END) AS INT) AS ItemMaxScore
-										FROM AggrptMCASItemAnalysis
+											,cast(max(CASE WHEN ItemMaxScore = '(3 in v2)' THEN 3 WHEN ItemMaxScore = '(2 in v2)' THEN 2 ELSE ItemMaxScore END) AS INT) AS ItemMaxScore
+										FROM TenantAggrptMCASItemAnalysis
 										GROUP BY Grade
 											,ItemId
 											,LEAIdentifier
@@ -1495,7 +2222,7 @@ BEGIN
 									AND ds1.TenantId = ds.TenantId
 									AND ds.SchoolYear = ds1.SchoolYear
 								) AS DECIMAL(10, 2)) AS Avg_Correct
-					FROM dbo.AggrptMCASItemStudentResults AS ds WITH (NOLOCK)
+					FROM dbo.TenantAggrptMCASItemStudentResults AS ds WITH (NOLOCK)
 					WHERE (
 							(ISNULL(ds.[LEAIdentifier], ' ') IN ('' + @LEAIdentifier + ''))
 							AND (ds.TenantId = @Tenantid)
@@ -1518,48 +2245,48 @@ BEGIN
 				WHERE a.TenantId = @Tenantid
 					AND a.SchoolYear = @CurrentYear
 
-				UPDATE AggrptMCASItemAnalysis
+				UPDATE TenantAggrptMCASItemAnalysis
 				SET Avg_Correct = ROUND(Avg_Correct, 0, 0)
 				WHERE TenantId = @Tenantid
 					AND SchoolYear = @CurrentYear
 
-				UPDATE AggrptMCASItemStudentResults
+				UPDATE TenantAggrptMCASItemStudentResults
 				SET Avg_Correct = ROUND(Avg_Correct, 0, 0)
 				WHERE TenantId = @Tenantid
 					AND SchoolYear = @CurrentYear
 
-				UPDATE AggrptMCASItemAnalysis
+				UPDATE TenantAggrptMCASItemAnalysis
 				SET Avg_Correct = 0
 				WHERE Avg_Correct IS NULL
 					AND TenantId = @Tenantid
 					AND SchoolYear = @CurrentYear
 
-				UPDATE AggrptMCASItemStudentResults
+				UPDATE TenantAggrptMCASItemStudentResults
 				SET Avg_Correct = 0
 				WHERE Avg_Correct IS NULL
 					AND TenantId = @Tenantid
 					AND SchoolYear = @CurrentYear
 
-				UPDATE AggrptMCASItemAnalysis
+				UPDATE TenantAggrptMCASItemAnalysis
 				SET Avg_school_Correct = 0
 				WHERE Avg_school_Correct IS NULL
 					AND TenantId = @Tenantid
 					AND SchoolYear = @CurrentYear
 
-				UPDATE AggrptMCASItemStudentResults
+				UPDATE TenantAggrptMCASItemStudentResults
 				SET Avg_school_Correct = 0
 				WHERE Avg_school_Correct IS NULL
 					AND TenantId = @Tenantid
 					AND SchoolYear = @CurrentYear
 
-				UPDATE AggrptMCASItemAnalysis
+				UPDATE TenantAggrptMCASItemAnalysis
 				SET Diff_From_State = cast(Avg_Correct AS INT) - cast(State_Percent_Possible AS INT)
 				WHERE TenantId = @Tenantid
 					AND SchoolYear = @CurrentYear
 
 				UPDATE a
 				SET a.GradeDescription = b.GradeDescription
-				FROM AggrptMCASItemStudentResults a
+				FROM TenantAggrptMCASItemStudentResults a
 				INNER JOIN RefGrade b ON a.grade = b.GradeCode
 					AND a.TenantId = b.TenantId
 				WHERE a.TenantId = @Tenantid
@@ -1567,7 +2294,7 @@ BEGIN
 
 				UPDATE a
 				SET a.LeaName = b.OrganizationName
-				FROM AggrptMCASItemStudentResults a
+				FROM TenantAggrptMCASItemStudentResults a
 				INNER JOIN Main.K12LEA b ON a.LEAIdentifier = b.LEAIdentifier
 					AND a.TenantId = b.TenantId
 					AND a.SchoolYear = b.SchoolYear
@@ -1576,7 +2303,7 @@ BEGIN
 
 				UPDATE a
 				SET a.SchoolName = b.NameofInstitution
-				FROM AggrptMCASItemStudentResults a
+				FROM TenantAggrptMCASItemStudentResults a
 				INNER JOIN Main.K12School b ON a.SchoolIdentifier = b.SchoolIdentifier
 					AND a.TenantId = b.TenantId
 					AND a.SchoolYear = b.SchoolYear
@@ -1585,7 +2312,7 @@ BEGIN
 
 				UPDATE a
 				SET a.GradeDescription = b.GradeDescription
-				FROM AggrptMCASItemAnalysis a
+				FROM TenantAggrptMCASItemAnalysis a
 				INNER JOIN RefGrade b ON a.grade = b.GradeCode
 					AND a.TenantId = b.TenantId
 				WHERE a.TenantId = @Tenantid
@@ -1593,7 +2320,7 @@ BEGIN
 
 				UPDATE a
 				SET a.LeaName = b.OrganizationName
-				FROM AggrptMCASItemAnalysis a
+				FROM TenantAggrptMCASItemAnalysis a
 				INNER JOIN Main.K12LEA b ON a.LEAIdentifier = b.LEAIdentifier
 					AND a.TenantId = b.TenantId
 					AND a.SchoolYear = b.SchoolYear
@@ -1602,7 +2329,7 @@ BEGIN
 
 				UPDATE a
 				SET a.SchoolName = b.NameofInstitution
-				FROM AggrptMCASItemAnalysis a
+				FROM TenantAggrptMCASItemAnalysis a
 				INNER JOIN Main.K12School b ON a.SchoolIdentifier = b.SchoolIdentifier
 					AND a.TenantId = b.TenantId
 					AND a.SchoolYear = b.SchoolYear
@@ -1611,12 +2338,12 @@ BEGIN
 
 				UPDATE a
 				SET race = 'NA'
-				FROM AggrptMCASItemStudentResults a
+				FROM TenantAggrptMCASItemStudentResults a
 				WHERE race IS NULL
 					AND a.TenantId = @Tenantid
 					AND a.SchoolYear = @CurrentYear
 
-				UPDATE AggrptMCASItemStudentResults
+				UPDATE TenantAggrptMCASItemStudentResults
 				SET StudentScore = NULL
 				WHERE StudentScore = '-1'
 					AND TenantId = @Tenantid
@@ -1630,17 +2357,21 @@ BEGIN
 			CLOSE YearCursor;
 
 			DEALLOCATE YearCursor;
+
+			-- Drop the views at the end of processing
+			DROP VIEW dbo.TenantAggrptMCASItemAnalysis;
+
+			DROP VIEW dbo.TenantAggrptMCASItemStudentResults;
 		END
 	END TRY
 
 	BEGIN CATCH
-		-- Test whether the transaction is uncommittable.                         
+		-- Handle errors
 		IF XACT_STATE() = - 1
 		BEGIN
-			ROLLBACK TRAN;
+			ROLLBACK TRANSACTION;
 		END;
 
-		--Comment it if SP contains only SELECT statement                                             
 		DECLARE @ErrorFromProc VARCHAR(500);
 		DECLARE @ProcErrorMessage VARCHAR(1000);
 		DECLARE @SeverityLevel INT;
@@ -1662,7 +2393,7 @@ BEGIN
 			,@ProcErrorMessage
 			,@SeverityLevel
 			,GETDATE()
-			,@Tenantid
+			,@TenantId
 			);
 
 		RAISERROR (
@@ -1671,9 +2402,9 @@ BEGIN
 				,1
 				,@ErrorNumber
 				,@ProcErrorMessage
-				)
+				);
 	END CATCH;
-END
+END;
 GO
 
 CREATE OR ALTER PROCEDURE [dbo].[USP_MCASItemAnalysis_ReportsMasterData] (@Tenantid INT)

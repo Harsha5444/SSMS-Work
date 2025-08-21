@@ -296,4 +296,13 @@ select * from main.k12studentgenericassessment where assessmentcodeid in (
 select assessmentdetailsid from main.assessmentdetails where tenantid = 35 and assessmentcode = 'dibels')
 
 
-select * from fn_DashboardReportsDetails(37) where dashboardname = 'Discipline'
+select * from fn_DashboardReportsDetails(37) where dashboardname = 'Attendance'
+
+select * from main.k12lea where tenantid = 37
+select * from reportdetails where tenantid = 37 and reportdetailscode = 'q162'
+
+--Rochelle COMMUNITY SCHOOL DISTRICT
+
+
+
+select * from idm.apperrorlog order by 1 desc

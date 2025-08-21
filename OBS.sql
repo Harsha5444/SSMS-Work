@@ -92,8 +92,8 @@ select * from idm.StudentsSubgroup where tenantid = 38
 --drop index NCISX_ReportUsers_R on  ReportUsers
 
 select * from dbo.WHPS_StudentSummaryWithAllAss
-exec sp_depends WHPS_BlitzReportDistrict_Vw
-exec sp_helptext WHPSAssessmentAllDS_Vw
+--exec sp_depends WHPS_BlitzReportDistrict_Vw
+--exec sp_helptext WHPSAssessmentAllDS_Vw
 
 select * from RefFileTemplates where tenantid = 38 and filetemplatename like '%aim%';
 
@@ -176,16 +176,16 @@ ORDER BY ds.[SchoolName] ASC
 	,dbo.RefProficiencylevel.SortOrder ASC
 	,ds.[AcuityTier] ASC
 
-sp_helptext WHPS_AcuityMatrix_Vw
+--sp_helptext WHPS_AcuityMatrix_Vw
 
 
 	select distinct schoolyear from AggRptK12StudentDetails
 	select distinct schoolyear from WHPS_AcuityMatrix_Vw
 	select distinct schoolyear from WHPS_HomeRoomTeacher_Vw
 
-	dbo.AggRptK12StudentDetails
-dbo.WHPS_AcuityMatrix_Vw
-dbo.WHPS_HomeRoomTeacher_Vw
+--	dbo.AggRptK12StudentDetails
+--dbo.WHPS_AcuityMatrix_Vw
+--dbo.WHPS_HomeRoomTeacher_Vw
 
 
 
@@ -230,7 +230,7 @@ order by 1 desc
 --8943
 --8942
 --8853
-8851
+--8851
 
 
 
@@ -531,8 +531,8 @@ SELECT  ds.[Period] as [Period], ds.[WHPSProfLevel] as [WHPSProfLevel],Count(Dis
 
 SELECT  ds.[Period] as [Period], ds.[WHPSProfLevel] as [WHPSProfLevel],Count(  ds.[DistrictStudentId]) as [% Students]  FROM dbo.WHPSProfLevelAimsWebPlusDS as ds with (nolock)  LEFT JOIN dbo.RefProficiencylevel ON ds.[WHPSProfLevel] = dbo.RefProficiencylevel.ProficiencyDescription AND  ds.tenantid =dbo.RefProficiencylevel.tenantid    WHERE  ((ds.[SchoolYear] IN (2025)) AND (ds.[SchoolYear] IN (2025)) AND (ds.TenantId = 38))   GROUP BY ds.[Period],ds.[WHPSProfLevel],dbo.RefProficiencylevel.SortOrder  ORDER BY dbo.RefProficiencylevel.SortOrder ASC,ds.[WHPSProfLevel] ASC 
 
-sp_helptext StudentLevelAssessmentDataset
-sp_helptext AssessmentSubgrpProfDS
+--sp_helptext StudentLevelAssessmentDataset
+--sp_helptext AssessmentSubgrpProfDS
 
 SELECT 
     t.name AS TableName,
@@ -612,3 +612,26 @@ select * from rptviewfields where DomainRelatedViewId=2857
 --	,ds.[TermDescription] ASC
 --	,dbo.[WHPSi_ReadyLevel].SortOrder ASC
 --	,ds.[ProficiencyDescription] ASC
+
+
+select * from Prompts
+
+
+
+SELECT DISTINCT a.RecurringScheduleJobId
+    ,'WHPS'
+    ,a.DataSourceType
+    ,a.RecurringType
+    ,a.BatchName
+    ,c.FileTemplateName
+    ,dateadd(HH, - 6, a.RecurringTime) AS EST
+    ,a.RecurringTime AS UTC
+    ,dateadd(MINUTE, 330, a.RecurringTime) IST
+FROM RecurringScheduleJob a
+JOIN RecurringScheduleJobTemplate b ON a.RecurringScheduleJobId = b.RecurringScheduleJobId
+    AND a.TenantId = b.TenantId
+JOIN RefFileTemplates c ON b.FileTemplateID = c.FileTemplateId
+    AND a.TenantId = c.TenantId
+WHERE a.TenantId = 38 and a.statusid = 1
+ORDER BY IST ASC
+ 

@@ -4,7 +4,7 @@ select * from idm.Tenant
 --36	NSBoro
 --37	Rochelle Schools
 
-select * from RefFileTemplates where tenantid = 28 and filetemplatename like '%mcas%'
+select * from RefFileTemplates where tenantid = 35 and filetemplatename like '%dibels%'
 select * from fn_DashboardReportsDetails(35) where DataSet is NULL
 
 --FPS_MCAS_2023 for Admins
@@ -173,23 +173,7 @@ WHERE tenantid = 35
 	AND AssessmentCode NOT IN ('SBAC', 'NGSS', 'MathSkills', 'IAB', 'DIBELS')
 
 select * from refgrade where tenantid = 35
-
-
 select * from reportdetails where tenantid = 35 order by 1 desc
-
-select distinct schoolyear,cast(LATEST_SAT_DATE as date),case when cast(LATEST_SAT_DATE as date) between y.begindate and y.enddate then 'True' else 'False' end as IsValid,y2.yearcode as ActualYear
-from main.eh_sat s
-join refyear y on s.tenantid = y.tenantid and s.schoolyear = y.yearcode
-join refyear y2 on s.tenantid = y2.tenantid and cast(LATEST_SAT_DATE as date) between y2.begindate and y2.enddate
-where s.tenantid = 35  and cast(LATEST_SAT_DATE as date) not between y.begindate and y.enddate
-order by cast(LATEST_SAT_DATE as date)
-
-select distinct schoolyear,cast(LATEST_PSAT_DATE as date),case when cast(LATEST_PSAT_DATE as date) between y.begindate and y.enddate then 'True' else 'False' end as IsValid,y2.yearcode as ActualYear
-from main.EH_PSAT s
-join refyear y on s.tenantid = y.tenantid and s.schoolyear = y.yearcode
-join refyear y2 on s.tenantid = y2.tenantid and cast(LATEST_PSAT_DATE as date) between y2.begindate and y2.enddate
-where s.tenantid = 35  and cast(LATEST_PSAT_DATE as date) not between y.begindate and y.enddate
-order by cast(LATEST_PSAT_DATE as date)
 
 		select distinct schoolyear as AVSchoolyear,AssessmentCode
 		,cast(TestTakenDate as date) as TestTakenDate
@@ -201,11 +185,7 @@ order by cast(LATEST_PSAT_DATE as date)
 		where s.tenantid = 35 and cast(TestTakenDate as date) not between y.begindate and y.enddate
 		order by AssessmentCode,schoolyear,cast(TestTakenDate as date)
 
-
-SELECT  ds.[ItemId] as [ItemId], ds.[IsCorrect] as [IsCorrect],Count(  ds.[DistrictStudentId]) as [DistrictStudentId],(SELECT COUNT(subds.[DistrictStudentId]) FROM dbo.FPSMCASItemStudentTeacherResultsMathsDS AS subds WITH (NOLOCK) LEFT JOIN dbo.FPS_MCAS_Item_SortOrder_Vw ON subds.[ItemId] = dbo.FPS_MCAS_Item_SortOrder_Vw.itemid AND  subds.tenantid =dbo.FPS_MCAS_Item_SortOrder_Vw.tenantid  Where  subds.[ItemId] = ds.[ItemId] AND  subds.[Reporting_Category] = ('Number and Operations in Base Ten') AND  subds.[IsCorrect] = ('Correct') AND  subds.[Reporting_Category] IN ('Number and Operations in Base Ten') AND  subds.[Reporting_Category] = ('Number and Operations in Base Ten') AND  subds.[IsCorrect] = ('Correct') AND  subds.[Reporting_Category] IN ('Number and Operations in Base Ten') AND (subds.[DistrictStudentId] IS NOT NULL ) AND (subds.TenantId =28)) AS [SeriesTotalCount]  FROM dbo.FPSMCASItemStudentTeacherResultsMathsDS as ds with (nolock)  LEFT JOIN dbo.FPS_MCAS_Item_SortOrder_Vw ON ds.[ItemId] = dbo.FPS_MCAS_Item_SortOrder_Vw.itemid AND  ds.tenantid =dbo.FPS_MCAS_Item_SortOrder_Vw.tenantid    WHERE  ((ds.[Reporting_Category] = 'Number and Operations in Base Ten') AND (ds.[IsCorrect] = 'Correct') AND (ds.[IsCorrect] = 'Correct') AND (ds.[Reporting_Category] IN ('Number and Operations in Base Ten')) AND (ds.[Reporting_Category] = 'Number and Operations in Base Ten') AND (ds.[IsCorrect] = 'Correct') AND (ds.[IsCorrect] = 'Correct') AND (ds.[Reporting_Category] IN ('Number and Operations in Base Ten')) AND (ds.[DistrictStudentId] IS NOT NULL ) AND (ds.[IsCorrect] = 'Correct') AND (ds.TenantId = 28))   GROUP BY ds.[ItemId],ds.[IsCorrect],dbo.FPS_MCAS_Item_SortOrder_Vw.SortOrder  ORDER BY dbo.FPS_MCAS_Item_SortOrder_Vw.SortOrder ASC,ds.[ItemId] ASC,ds.[IsCorrect] ASC 
-
-SELECT  ds.[ItemId] as [ItemId], ds.[IsCorrect] as [IsCorrect],Count(  ds.[DistrictStudentId]) as [DistrictStudentId],(SELECT COUNT(subds.[DistrictStudentId]) FROM dbo.FPSMCASItemStudentTeacherResultsMathsDS AS subds WITH (NOLOCK) LEFT JOIN dbo.FPS_MCAS_Item_SortOrder_Vw ON subds.[ItemId] = dbo.FPS_MCAS_Item_SortOrder_Vw.itemid AND  subds.tenantid =dbo.FPS_MCAS_Item_SortOrder_Vw.tenantid  Where  subds.[ItemId] = ds.[ItemId] AND  subds.[Reporting_Category] = ('Number and Operations in Base Ten') AND  subds.[Reporting_Category] = ('Correct') AND  subds.[Reporting_Category] = ('Number and Operations in Base Ten') AND  subds.[Reporting_Category] = ('Correct') AND (subds.[DistrictStudentId] IS NOT NULL ) AND (subds.TenantId =28)) AS [SeriesTotalCount]  FROM dbo.FPSMCASItemStudentTeacherResultsMathsDS as ds with (nolock)  LEFT JOIN dbo.FPS_MCAS_Item_SortOrder_Vw ON ds.[ItemId] = dbo.FPS_MCAS_Item_SortOrder_Vw.itemid AND  ds.tenantid =dbo.FPS_MCAS_Item_SortOrder_Vw.tenantid    WHERE  ((ds.[Reporting_Category] = 'Number and Operations in Base Ten') AND (ds.[Reporting_Category] = 'Correct') AND (ds.[IsCorrect] = 'Correct') AND (ds.[Reporting_Category] = 'Number and Operations in Base Ten') AND (ds.[Reporting_Category] = 'Correct') AND (ds.[IsCorrect] = 'Correct') AND (ds.[DistrictStudentId] IS NOT NULL ) AND (ds.[IsCorrect] = 'Correct') AND (ds.TenantId = 28))   GROUP BY ds.[ItemId],ds.[IsCorrect],dbo.FPS_MCAS_Item_SortOrder_Vw.SortOrder  ORDER BY dbo.FPS_MCAS_Item_SortOrder_Vw.SortOrder ASC,ds.[ItemId] ASC,ds.[IsCorrect] ASC 
-
+select * from AggrptAssessmentSubgroupData where assessmentcode = 'sbac' and tenantid = 35
 select * from dataimportviews where tenantid = 28  
 
 SELECT 
@@ -227,3 +207,93 @@ TenantId
 select * from FPSACCESSAssessmentLevel
 
 select * from WHPSAssessmentAllDS
+
+
+
+select * from [dbo].[Import_SBAC_NGSS_K12StudentGenericAssessment_Vw_35]
+select * from [dbo].[Import_SAT_PSAT_K12StudentGenericAssessment_Vw_35]
+select * from [dbo].[Import_MathSkills_K12StudentGenericAssessment_Vw_35]
+select * from [dbo].[Import_IAB_K12StudentGenericAssessment_Vw_35]
+select * from [dbo].[Import_DIBELS_K12StudentGenericAssessment_Vw_35]
+
+
+select * from Main.EH_DIBELS --ClientDate
+
+select * from Main.EH_IAB_ELA  --TestCompletionDate
+select * from Main.EH_IAB_MATH  --TestCompletionDate
+
+
+select * from Main.EH_SBAC_ELA  --DateTaken
+select * from Main.EH_SBAC_Math  --DateTaken
+
+select * from Main.EH_NGSS  --DateTaken
+
+select * from Main.EH_SAT  --LATEST_SAT_DATE
+select * from Main.EH_PSAT  --LATEST_PSAT_DATE
+
+select * from Main.EH_K_5MathSkills --no testdate column
+
+SELECT DISTINCT 
+    s.SchoolYear AS AVSchoolYear,
+    'SBAC_ELA' AS AssessmentCode,
+    CAST(s.DateTaken AS DATE) AS TestTakenDate,
+    CASE WHEN CAST(s.DateTaken AS DATE) BETWEEN y.BeginDate AND y.EndDate 
+         THEN 'True' ELSE 'False' END AS IsValid,
+    y2.YearCode AS ActualYear
+FROM Main.EH_SBAC_ELA s
+JOIN refyear y  ON s.TenantId = y.TenantId AND s.SchoolYear = y.YearCode
+JOIN refyear y2 ON s.TenantId = y2.TenantId AND CAST(s.DateTaken AS DATE) BETWEEN y2.BeginDate AND y2.EndDate
+WHERE s.TenantId = 35
+  AND CAST(s.DateTaken AS DATE) NOT BETWEEN y.BeginDate AND y.EndDate
+ORDER BY s.SchoolYear, CAST(s.DateTaken AS DATE);
+
+SELECT DISTINCT 
+    s.SchoolYear AS AVSchoolYear,
+    'SBAC_MATH' AS AssessmentCode,
+    CAST(s.DateTaken AS DATE) AS TestTakenDate,
+    CASE WHEN CAST(s.DateTaken AS DATE) BETWEEN y.BeginDate AND y.EndDate 
+         THEN 'True' ELSE 'False' END AS IsValid,
+    y2.YearCode AS ActualYear
+FROM Main.EH_SBAC_Math s
+JOIN refyear y  ON s.TenantId = y.TenantId AND s.SchoolYear = y.YearCode
+JOIN refyear y2 ON s.TenantId = y2.TenantId AND CAST(s.DateTaken AS DATE) BETWEEN y2.BeginDate AND y2.EndDate
+WHERE s.TenantId = 35
+  AND CAST(s.DateTaken AS DATE) NOT BETWEEN y.BeginDate AND y.EndDate
+ORDER BY s.SchoolYear, CAST(s.DateTaken AS DATE);
+
+SELECT DISTINCT 
+    s.SchoolYear AS AVSchoolYear,
+    'SAT' AS AssessmentCode,
+    CAST(s.LATEST_SAT_DATE AS DATE) AS TestTakenDate,
+    CASE WHEN CAST(s.LATEST_SAT_DATE AS DATE) BETWEEN y.BeginDate AND y.EndDate 
+         THEN 'True' ELSE 'False' END AS IsValid,
+    y2.YearCode AS ActualYear
+FROM Main.EH_SAT s
+JOIN refyear y  ON s.TenantId = y.TenantId AND s.SchoolYear = y.YearCode
+JOIN refyear y2 ON s.TenantId = y2.TenantId AND CAST(s.LATEST_SAT_DATE AS DATE) BETWEEN y2.BeginDate AND y2.EndDate
+WHERE s.TenantId = 35
+  AND CAST(s.LATEST_SAT_DATE AS DATE) NOT BETWEEN y.BeginDate AND y.EndDate
+ORDER BY s.SchoolYear, CAST(s.LATEST_SAT_DATE AS DATE);
+
+SELECT DISTINCT 
+    s.SchoolYear AS AVSchoolYear,
+    'PSAT' AS AssessmentCode,
+    CAST(s.LATEST_PSAT_DATE AS DATE) AS TestTakenDate,
+    CASE WHEN CAST(s.LATEST_PSAT_DATE AS DATE) BETWEEN y.BeginDate AND y.EndDate 
+         THEN 'True' ELSE 'False' END AS IsValid,
+    y2.YearCode AS ActualYear
+FROM Main.EH_PSAT s
+JOIN refyear y  ON s.TenantId = y.TenantId AND s.SchoolYear = y.YearCode
+JOIN refyear y2 ON s.TenantId = y2.TenantId AND CAST(s.LATEST_PSAT_DATE AS DATE) BETWEEN y2.BeginDate AND y2.EndDate
+WHERE s.TenantId = 35
+  AND CAST(s.LATEST_PSAT_DATE AS DATE) NOT BETWEEN y.BeginDate AND y.EndDate
+ORDER BY s.SchoolYear, CAST(s.LATEST_PSAT_DATE AS DATE);
+
+
+
+
+select * from main.k12studentgenericassessment where assessmentcodeid in (
+select assessmentdetailsid from main.assessmentdetails where tenantid = 35 and assessmentcode = 'dibels')
+
+
+select * from fn_DashboardReportsDetails(37) where dashboardname = 'Discipline'

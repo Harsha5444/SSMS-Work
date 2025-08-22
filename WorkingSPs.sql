@@ -1,3 +1,0 @@
-USP_Clayton_AcademicProgressDES_Elem_Loading
-USP_Clayton_AcademicProgress_High_Loading
-USP_Clayton_AcademicProgress_Middle_Loading

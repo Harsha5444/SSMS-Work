@@ -5,7 +5,7 @@ select * from idm.Tenant
 --37	Rochelle Schools
 
 select * from RefFileTemplates where tenantid = 35 and filetemplatename like '%dibels%'
-select * from fn_DashboardReportsDetails(35) where DataSet is NULL
+select * from fn_DashboardReportsDetails(35) where dashboardname = 'Discipline Dashboard District'
 
 --FPS_MCAS_2023 for Admins
 --FPS_MCAS_Tierwithdemo
@@ -16,7 +16,8 @@ select * from fn_DashboardReportsDetails(35) where DataSet is NULL
 --FPSMCAS2025ELAwithdemo
 
 --[FPSMCAS2023forAdmins]
-
+exec sp_depends Rochelle_Attendance_Vw
+select * from rptdomainrelatedviews where tenantid = 37
 
 select * from RptDomainRelatedViews where tenantid = 35 and viewname like '%sbac%'
 select * from ReportDetails where tenantid = 35 and reportdetailsid = 3081
@@ -60,10 +61,10 @@ select * from schoolevent where tenantid = 37 and schoolyear = 2025
 
 
 
-select * from RefYear where TenantId=28
-select * from refproficiencylevel where TenantId=28 and sy=2026 --166
-select * from refterm where TenantId=28 and schoolyear=2026 --19
-select * from filetemplatefieldbyyear where TenantId=28 and YearId in (49) --YearId in (241,258) 7548
+select * from RefYear where TenantId=35 
+select * from refproficiencylevel where TenantId=35 and sy=2026 --66
+select * from refterm where TenantId=35 and schoolyear=2026 --16
+select * from filetemplatefieldbyyear where TenantId=35 and YearId in (52) --YearId in (44,52) 5751
  
 
 select * from fn_DashboardReportsDetails(35) where DashboardName in ('District')
@@ -296,13 +297,29 @@ select * from main.k12studentgenericassessment where assessmentcodeid in (
 select assessmentdetailsid from main.assessmentdetails where tenantid = 35 and assessmentcode = 'dibels')
 
 
-select * from fn_DashboardReportsDetails(37) where dashboardname = 'Attendance'
+select * from fn_DashboardReportsDetails(37) where dashboardname = 'discipline'
 
 select * from main.k12lea where tenantid = 37
-select * from reportdetails where tenantid = 37 and reportdetailscode = 'q162'
+select * from reportdetails where tenantid = 37 order by 1 desc
 
 --Rochelle COMMUNITY SCHOOL DISTRICT
 
 
 
 select * from idm.apperrorlog order by 1 desc
+
+select * from [IDM].[StudentsSubgroup] where tenantid=35
+
+--insert into idm.StudentsSubgroup
+--select 'School Year' as SubgroupName, 'SY' as Code ,1 as StatusId,16 as	SortOrder,35 as 	TenantId,'DDAAdmin' as 	CreatedBy, Getdate() as CreatedDate,null as ModifiedBy, null as ModifiedDate,
+--1 as DisplayInDashboard, 0 as DisplayRosterView, 'SchoolYear' as ColumnName
+
+--update idm.StudentsSubgroup set SubgroupName = 'School Year' where StudentsSubgroupId=471
+
+
+
+exec sp_depends ehdisciplinelogds
+
+select * from EHDisciplineLogDS where districtstudentid = '999019039'
+
+select distinct student_number from Main.eh_lognew where (sanctiontype2 = '1000' ) and schoolyear = 2025

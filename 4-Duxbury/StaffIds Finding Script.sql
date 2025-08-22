@@ -113,11 +113,11 @@ FROM TeacherList tl
 LEFT JOIN main.Duxbury_StaffDemographics sd
     ON sd.TenantId = 26
    AND (
-        --sd.FirstName = tl.First
-        --or
+        sd.FirstName = tl.First 
+        or
         sd.LastName = tl.Last
     )
-Where sd.LocalID is not null and tl.OrderNum in (4,12,18,22,24,29,31)
+Where sd.LocalID is not null and tl.OrderNum in (12)
 ORDER BY OrderNum;
 
 

@@ -95,7 +95,7 @@ select * from dbo.WHPS_StudentSummaryWithAllAss
 --exec sp_depends WHPS_BlitzReportDistrict_Vw
 --exec sp_helptext WHPSAssessmentAllDS_Vw
 
-select * from RefFileTemplates where tenantid = 38 and filetemplatename like '%aim%';
+select * from RefFileTemplates where tenantid = 26 and filetemplatename like '%staff%';
 
 --1) We have "NULL" and "N/A" in Period
 --select distinct [Period] from main.WHPS_AimsWebPlus order by [Period]
@@ -635,3 +635,5 @@ JOIN RefFileTemplates c ON b.FileTemplateID = c.FileTemplateId
 WHERE a.TenantId = 38 and a.statusid = 1
 ORDER BY IST ASC
  
+
+ select * from main.K12StaffSectionAssignment

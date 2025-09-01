@@ -120,7 +120,7 @@ WHERE 1=1
     AND table_name LIKE '%attendance%' 
 ORDER BY 
     TABLE_SCHEMA, 
-    table_name;   hi
+    table_name;
 --===================================================================================================
 SELECT SPID
 	,ER.percent_complete
@@ -1414,3 +1414,57 @@ select * from final
 --          AND rdx.RoleId = dep.RoleId
 --          AND rdx.TenantId = rd.TenantId
 --    );
+
+
+DECLARE @BaseTables TABLE (TableName NVARCHAR(200));
+INSERT INTO @BaseTables (TableName)
+VALUES
+('Duxbury_Enrollment'),
+('K12DisabilityStudent'),
+('K12SpecialEducationStudent'),
+('K12StudentDemographics'),
+('K12StudentEnrollment'),
+('K12StudentOtherRaces'),
+('K12StudentProgram'),
+('Duxbury_StaffDemographics'),
+('K12StaffAssignment'),
+('K12StaffContactEmail'),
+('K12StaffDemographics'),
+('K12StaffEmployment'),
+('Duxbury_Course'),
+('Duxbury_CourseSection'),
+('Duxbury_StudentSections'),
+('Duxbury_StaffSections'),
+('K12StaffSectionAssignment'),
+('Duxbury_DailyAttendance');
+
+select * from @BaseTables where tablename not like '%Demographics%'
+
+DECLARE @StageSuffixes TABLE (Suffix NVARCHAR(100), Ord INT);
+INSERT INTO @StageSuffixes (Suffix, Ord)
+VALUES
+ ('_Audit', 1),
+ ('_CleanRecords', 2),
+ ('_Deletes', 3),
+ ('_FailedRecords', 4),
+ ('_NoAction', 5),
+ ('_Stage', 6);
+
+-- Generate queries in required order
+SELECT 
+    b.TableName,
+    s.Ord,
+    CONCAT('SELECT count(1) FROM Stage.', b.TableName, s.Suffix, 
+           ' WHERE schoolyear = 2026 AND tenantid = 26') AS QueryText
+FROM @BaseTables b
+CROSS JOIN @StageSuffixes s
+
+UNION ALL
+
+SELECT 
+    b.TableName,
+    7 AS Ord,
+    CONCAT('SELECT count(1) FROM Main.', b.TableName, 
+           ' WHERE schoolyear = 2026 AND tenantid = 26') AS QueryText
+FROM @BaseTables b
+ORDER BY b.TableName, Ord;

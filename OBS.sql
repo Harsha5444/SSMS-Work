@@ -618,22 +618,115 @@ select * from Prompts
 
 
 
-SELECT DISTINCT a.RecurringScheduleJobId
-    ,'WHPS'
-    ,a.DataSourceType
-    ,a.RecurringType
-    ,a.BatchName
-    ,c.FileTemplateName
-    ,dateadd(HH, - 6, a.RecurringTime) AS EST
-    ,a.RecurringTime AS UTC
-    ,dateadd(MINUTE, 330, a.RecurringTime) IST
+SELECT DISTINCT 
+    a.RecurringScheduleJobId,
+    'WHPS' AS District,
+    a.DataSourceType,
+    a.RecurringType,
+    a.BatchName,
+    c.FileTemplateName,
+    CONVERT(VARCHAR(20), DATEADD(HOUR, -6, a.RecurringTime), 100) AS EST,  -- AM/PM format
+    CONVERT(VARCHAR(20), a.RecurringTime, 100) AS UTC,
+    CONVERT(VARCHAR(20), DATEADD(MINUTE, 330, a.RecurringTime), 100) AS IST,
+    a.RecurringTime
 FROM RecurringScheduleJob a
-JOIN RecurringScheduleJobTemplate b ON a.RecurringScheduleJobId = b.RecurringScheduleJobId
-    AND a.TenantId = b.TenantId
-JOIN RefFileTemplates c ON b.FileTemplateID = c.FileTemplateId
-    AND a.TenantId = c.TenantId
-WHERE a.TenantId = 38 and a.statusid = 1
-ORDER BY IST ASC
+JOIN RecurringScheduleJobTemplate b 
+    ON a.RecurringScheduleJobId = b.RecurringScheduleJobId
+   AND a.TenantId = b.TenantId
+JOIN RefFileTemplates c 
+    ON b.FileTemplateID = c.FileTemplateId
+   AND a.TenantId = c.TenantId
+WHERE a.TenantId = 38 AND a.statusid = 1
+ORDER BY a.RecurringTime ASC;
+
  
 
- select * from main.K12StaffSectionAssignment
+select b.NameofInstitution,a.* from  [dbo].[Import_K12StaffSectionAssignment_CoTeachers_Vw_26] a
+join  main.k12school b on  a.schoolyear = b.schoolyear and a.schoolidentifier = b.schoolidentifier
+where b.TenantId = 26 and a.schoolyear = 2026
+
+select * from idm.ddauser where districtstaffid = '111028282'
+
+
+select * from [Main].[WHPS_Attendance] where schoolyear = 2026 and student_number='189989'
+
+SELECT *  FROM main.K12StudentDailyAttendance WHERE schoolyear = 2026 and tenantid = 38 and districtstudentid = '189989'
+
+select * from WHPSAttendancedateRangeDS
+
+
+
+SELECT DISTINCT 
+    a.RecurringScheduleJobId,
+    'Duxbury' AS District,
+    a.DataSourceType,
+    a.RecurringType,
+    a.BatchName,
+    c.FileTemplateName,
+    CONVERT(VARCHAR(20), DATEADD(HOUR, -6, a.RecurringTime), 100) AS EST,  -- AM/PM format
+    CONVERT(VARCHAR(20), a.RecurringTime, 100) AS UTC,
+    CONVERT(VARCHAR(20), DATEADD(MINUTE, 330, a.RecurringTime), 100) AS IST,
+    a.RecurringTime
+FROM RecurringScheduleJob a
+JOIN RecurringScheduleJobTemplate b 
+    ON a.RecurringScheduleJobId = b.RecurringScheduleJobId
+   AND a.TenantId = b.TenantId
+JOIN RefFileTemplates c 
+    ON b.FileTemplateID = c.FileTemplateId
+   AND a.TenantId = c.TenantId
+WHERE a.TenantId = 26 AND a.statusid = 1
+ORDER BY a.RecurringTime ASC;
+
+
+DECLARE @BaseTables TABLE (TableName NVARCHAR(200));
+INSERT INTO @BaseTables (TableName)
+VALUES
+('Duxbury_Enrollment'),
+('K12DisabilityStudent'),
+('K12SpecialEducationStudent'),
+('K12StudentDemographics'),
+('K12StudentEnrollment'),
+('K12StudentOtherRaces'),
+('K12StudentProgram'),
+('Duxbury_StaffDemographics'),
+('K12StaffAssignment'),
+('K12StaffContactEmail'),
+('K12StaffDemographics'),
+('K12StaffEmployment'),
+('Duxbury_Course'),
+('Duxbury_CourseSection'),
+('Duxbury_StudentSections'),
+('Duxbury_StaffSections'),
+('K12StaffSectionAssignment'),
+('Duxbury_DailyAttendance');
+
+select * from @BaseTables where tablename not like '%Demographics%'
+
+DECLARE @StageSuffixes TABLE (Suffix NVARCHAR(100), Ord INT);
+INSERT INTO @StageSuffixes (Suffix, Ord)
+VALUES
+ ('_Audit', 1),
+ ('_CleanRecords', 2),
+ ('_Deletes', 3),
+ ('_FailedRecords', 4),
+ ('_NoAction', 5),
+ ('_Stage', 6);
+
+-- Generate queries in required order
+SELECT 
+    b.TableName,
+    s.Ord,
+    CONCAT('SELECT count(1) FROM Stage.', b.TableName, s.Suffix, 
+           ' WHERE schoolyear = 2026 AND tenantid = 26') AS QueryText
+FROM @BaseTables b
+CROSS JOIN @StageSuffixes s
+
+UNION ALL
+
+SELECT 
+    b.TableName,
+    7 AS Ord,
+    CONCAT('SELECT count(1) FROM Main.', b.TableName, 
+           ' WHERE schoolyear = 2026 AND tenantid = 26') AS QueryText
+FROM @BaseTables b
+ORDER BY b.TableName, Ord;

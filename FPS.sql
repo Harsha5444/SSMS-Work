@@ -5,8 +5,8 @@ select * from idm.Tenant
 --37	Rochelle Schools
 
 select * from RefFileTemplates where tenantid = 35 and filetemplatename like '%dibels%'
-select * from fn_DashboardReportsDetails(35) where dashboardname = 'Discipline Dashboard District'
-
+select * from fn_DashboardReportsDetails(35) where dashboardname = 'Alliance Data Tracker'
+select ActionTypeCode,SuspensionType from refactiontype where tenantid = 35 and SuspensionType is not null
 --FPS_MCAS_2023 for Admins
 --FPS_MCAS_Tierwithdemo
 --FPS_MCAS2024withDemo
@@ -14,6 +14,7 @@ select * from fn_DashboardReportsDetails(35) where dashboardname = 'Discipline D
 --FPS_MCASELA2024SchoolsOnly
 --FPSiReady5LevelsDS
 --FPSMCAS2025ELAwithdemo
+select distinct SanctionType1,SanctionType2 from main.eh_lognew
 
 --[FPSMCAS2023forAdmins]
 exec sp_depends Rochelle_Attendance_Vw
@@ -320,6 +321,19 @@ select * from [IDM].[StudentsSubgroup] where tenantid=35
 
 exec sp_depends ehdisciplinelogds
 
-select * from EHDisciplineLogDS where districtstudentid = '999019039'
+select * from EHDisciplineLogDS where districtstudentid = '999010896'
 
 select distinct student_number from Main.eh_lognew where (sanctiontype2 = '1000' ) and schoolyear = 2025
+
+exec [dbo].[USP_GetStudentAbsenceRptData] @tenantid='35',@SchoolId=NULL,@keyvalue='D-AR',@SchoolYear='2026'
+
+select * from AggRptK12StudentAbsentReasons where tenantid = 35 and schoolyear = 2026 and AbsentReason='unExcused Absence' and schoolidentifier is not null
+select avg(absentreasonrate) from AggRptK12StudentAbsentReasons where tenantid = 35 and schoolyear = 2026 and AbsentReason='Excused Absence' and schoolidentifier is not null
+--USP_DataGenDynamic_K12StudentAttendance
+
+select * from #TempAI_ALLTenantsData 
+ORDER BY SchoolYear desc, SchoolName, Gender desc, Race desc;
+
+select SchoolYear,SchoolName,sum(enrollmentno) as enrollmentno from #TempAI_ALLTenantsData 
+group by schoolyear,schoolname
+ORDER BY SchoolYear desc, SchoolName

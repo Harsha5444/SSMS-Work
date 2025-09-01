@@ -74,8 +74,10 @@ CREATE TABLE EH_StudentSummaryWithAllAss (
 	,[TenantId] INT
 	);
 
+--truncate table EH_StudentSummaryWithAllAss
+
 INSERT INTO EH_StudentSummaryWithAllAss
-SELECT s.SchoolYear --241757 with sections // 259792 without sections (termid join)
+SELECT s.SchoolYear 
 	,s.StudentId
 	,sch.NameofInstitution AS StudentSchool
 	,sch.SchoolIdentifier

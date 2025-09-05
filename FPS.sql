@@ -6,6 +6,7 @@ select * from idm.Tenant
 
 select * from RefFileTemplates where tenantid = 35 and filetemplatename like '%dibels%'
 select * from fn_DashboardReportsDetails(35) where dashboardname = 'Alliance Data Tracker'
+select * from fn_DashboardReportsDetails(28) where groupname is not null
 select ActionTypeCode,SuspensionType from refactiontype where tenantid = 35 and SuspensionType is not null
 --FPS_MCAS_2023 for Admins
 --FPS_MCAS_Tierwithdemo
@@ -337,3 +338,111 @@ ORDER BY SchoolYear desc, SchoolName, Gender desc, Race desc;
 select SchoolYear,SchoolName,sum(enrollmentno) as enrollmentno from #TempAI_ALLTenantsData 
 group by schoolyear,schoolname
 ORDER BY SchoolYear desc, SchoolName
+
+select * from staffsummaryviewFields where tenantid = 28 and statusid = 1 order by sortorder
+select * from staffsummaryviewFields where tenantid = 28 and statusid = 1 and GroupHeader='i-Ready Proficiency'
+select * from staffsummaryviewFields order by 1 desc
+--insert into staffsummaryviewFields
+select 'MCASMathProficiencyStudentData','FPSMCASMathProficiencyLevelStudentData',NULL,'MCASMathProfciencyLevel','Math','MCAS Proficiency','0',null,null,0,null,null,null,null,'String',null,null,null,2024,'k12StudentGenericAssessment','MCAS','Math',1,0,0,8,28,1,'ddauser@dda',getdate(),null,null,0,0,1,0,0,0,0,null union all
+select 'MCASSciProficiencyStudentData','FPSMCASSciProficiencyLevelStudentData',NULL,'MCASSciProfciencyLevel','Sci','MCAS Proficiency','0',null,null,0,null,null,null,null,'String',null,null,null,2024,'k12StudentGenericAssessment','MCAS','Sci',1,0,0,8,28,1,'ddauser@dda',getdate(),null,null,0,0,1,0,0,0,0,null union all
+select 'MCASELAProficiencyStudentData','FPSMCASELAProficiencyLevelStudentData',NULL,'MCASELAProfciencyLevel','ELA','MCAS Proficiency','0',null,null,0,null,null,null,null,'String',null,null,null,2024,'k12StudentGenericAssessment','MCAS','ELA',1,0,0,8,28,1,'ddauser@dda',getdate(),null,null,0,0,1,0,0,0,0,null
+
+--StaffSummaryViewFieldsId
+--237
+--236
+--235
+
+select * from idm.apperrorlog order by 1 desc
+select * from errorlogforusp order by 1 desc
+
+select * from StaffSummaryViewFieldsByUser where tenantid = 28 and statusid = 1 order by 1 desc
+
+--insert into StaffSummaryViewFieldsByUser
+select 235,null,8,28,1,'ddauser@dda',getdate(),null,null union all
+select 236,null,8,28,1,'ddauser@dda',getdate(),null,null union all 
+select 237,null,8,28,1,'ddauser@dda',getdate(),null,null
+
+--insert into StaffSummaryViewFieldByGrade
+select 
+'235' as StaffSummaryViewFieldsId
+,GradeId
+,SortOrder
+,TenantId
+,StatusId
+,CreatedBy
+,getdate() as CreatedDate
+,ModifiedBy
+,ModifiedDate
+from StaffSummaryViewFieldByGrade where tenantid = 28 and statusid = 1 and  StaffSummaryViewFieldsId=149 and gradeid < 11 and gradeid >2
+union all
+select 
+'236' as StaffSummaryViewFieldsId
+,GradeId
+,SortOrder
+,TenantId
+,StatusId
+,CreatedBy
+,getdate() as CreatedDate
+,ModifiedBy
+,ModifiedDate
+from StaffSummaryViewFieldByGrade where tenantid = 28 and statusid = 1 and  StaffSummaryViewFieldsId=149 and gradeid < 11 and gradeid >2
+union all
+select 
+'237' as StaffSummaryViewFieldsId
+,GradeId
+,SortOrder
+,TenantId
+,StatusId
+,CreatedBy
+,getdate() as CreatedDate
+,ModifiedBy
+,ModifiedDate
+from StaffSummaryViewFieldByGrade where tenantid = 28 and statusid = 1 and  StaffSummaryViewFieldsId=149 and gradeid < 11 and gradeid >2
+
+
+
+exec USP_GetIReadyDomainReportDrilldownData_lvl5 @UserId=1,@TenantId=28,@SchoolYear='2026',@sectionId=NULL,@courseId=NULL,@subject='Reading',
+@SchoolId='AdultESL,BAR,BRO,CAM,DUN,FHS,FUL,HAR,HEM,JUN,KNG,MCC,POT,STA,ALT,WAL',@Grade=NULL,@StaffIds=NULL,
+@STARTRECORD=0,@RECORDS=5606,@SORTBY='StudentName',@SORTTYPE='asc',@IsALLRecords=0,@ValueFilters=NULL,@ColorFilters=NULL,@FieldDataType='',
+@CohortFilters=NULL,@SubgroupFilter=NULL,
+@ProficiencyLevel='3 or More Grade Levels Below',@StandardAreaCode='Vocabulary',@IsCohortStudents=0
+
+
+SELECT DISTINCT 
+    a.RecurringScheduleJobId,
+    'Rochelle' AS District,
+    a.DataSourceType,
+    a.RecurringType,
+    a.BatchName,
+    c.FileTemplateName,
+    CONVERT(VARCHAR(20), DATEADD(HOUR, -6, a.RecurringTime), 100) AS EST,  -- AM/PM format
+    CONVERT(VARCHAR(20), a.RecurringTime, 100) AS UTC,
+    CONVERT(VARCHAR(20), DATEADD(MINUTE, 330, a.RecurringTime), 100) AS IST,
+    a.RecurringTime
+FROM RecurringScheduleJob a
+JOIN RecurringScheduleJobTemplate b 
+    ON a.RecurringScheduleJobId = b.RecurringScheduleJobId
+   AND a.TenantId = b.TenantId
+JOIN RefFileTemplates c 
+    ON b.FileTemplateID = c.FileTemplateId
+   AND a.TenantId = c.TenantId
+JOIN Refyear y on a.tenantid = y.tenantid and a.yearid = y.yearid
+WHERE a.TenantId = 37 and y.yearcode = '2026' AND a.statusid = 2 --and cast(a.lastrundate as date) <> cast(getdate() as date)
+ORDER BY a.RecurringTime ASC;
+
+
+SELECT tenantid,tenantname,tenantcode FROM AnalyticVue_Hallco.idm.tenant UNION ALL
+SELECT tenantid,tenantname,tenantcode FROM AnalyticVue_norwood.idm.tenant UNION ALL
+SELECT tenantid,tenantname,tenantcode FROM AnalyticVue_district.idm.tenant UNION ALL
+SELECT tenantid,tenantname,tenantcode FROM AnalyticVue_obs.idm.tenant UNION ALL
+SELECT tenantid,tenantname,tenantcode FROM AnalyticVue_fps.idm.tenant UNION ALL
+SELECT tenantid,tenantname,tenantcode FROM AnalyticVue_clayton.idm.tenant
+
+exec USP_GetIReadyDomainReportDrilldownData_lvl5 @UserId=1,@TenantId=28,@SchoolYear='2026',@sectionId=NULL,@courseId=NULL,@subject='Reading',
+@SchoolId='AdultESL,BAR,BRO,CAM,DUN,FHS,FUL,HAR,HEM,JUN,KNG,MCC,POT,STA,ALT,WAL',@Grade=NULL,@StaffIds=NULL,
+@STARTRECORD=0,@RECORDS=5606,@SORTBY='StudentName',@SORTTYPE='asc',@IsALLRecords=0,@ValueFilters=NULL,@ColorFilters=NULL,@FieldDataType='',
+@CohortFilters=NULL,@SubgroupFilter=NULL,
+@ProficiencyLevel='3 or More Grade Levels Below',@StandardAreaCode='Vocabulary',@IsCohortStudents=0
+ 
+ 
+ select * from reportdetails where reportdetailsid = 3231

@@ -1,3 +1,7 @@
+--exec USP_GetReportAnalyticsQuestion @QuestionCode='Q164',@tenantid=26
+
+--exec [dbo].[DataVisulaizerReportsSPDriven] @TenantId=26,@SPName='DataVisulaizerAssessmentReport',@CategoryFields=' ISNULL(x.SchoolYear,'''') as [School Year],  ISNULL(x.Grade,'''') as [Grade],  dbo.[RefGrade].SortOrder as [RefGrade]',@SeriesFields=' x.ProficiencyDescription as [ProficiencyDescription]',@GroupBySeries=' x.ProficiencyDescription ',@GroupByColumns=' x.SchoolYear,  x.Grade ,  dbo.[RefGrade].SortOrder',@WhereCondtion=' x.Subject IN ( ''Mathematics'') AND x.Assessment IN ( ''MCAS'') AND x.SchoolYear IN ( ''2024'') AND x.IsLatest = 1',@SortOrderFileds='[School Year]  asc ,  [RefGrade] asc,  [Grade]  asc',@JoinsTables=' inner join dbo.[RefGrade] on  x.Grade = dbo.[RefGrade].[GradeDescription] AND x.tenantid =dbo.[RefGrade].tenantid  ',@UserId=15,@SubqueryCondition='[School Year], [Grade]',@DynamicFields=' [School Year]  varchar(max),  [Grade]  varchar(max),  [RefGrade]  int',@FinalSelectColumns=' [School Year],  [Grade]',@istesttaken=1,@IsfilteredOnCohort=0,@Subcategorycolumns=' [School Year],  [Grade], [RefGrade]',@studentlist =NULL
+
 select * from idm.Tenant;
 --26	Duxbury Public Schools
 --38	West Hartford Public Schools
@@ -6,7 +10,7 @@ select * from idm.Tenant;
 select * from idm.DDARole where tenantid = 38;
 select * from idm.AppErrorLog order by 1 desc;
 
-select * from fn_DashboardReportsDetails(38) where groupname = 'District - Assessments with Grades';
+select * from fn_DashboardReportsDetails(38) where  reportname like '%ngss%' and dashboardname not in ('sbac', 'SBAC Longitudinal Performance')
 
 --8932
 --8933
@@ -655,7 +659,6 @@ SELECT *  FROM main.K12StudentDailyAttendance WHERE schoolyear = 2026 and tenant
 select * from WHPSAttendancedateRangeDS
 
 
-
 SELECT DISTINCT 
     a.RecurringScheduleJobId,
     'Duxbury' AS District,
@@ -674,59 +677,144 @@ JOIN RecurringScheduleJobTemplate b
 JOIN RefFileTemplates c 
     ON b.FileTemplateID = c.FileTemplateId
    AND a.TenantId = c.TenantId
-WHERE a.TenantId = 26 AND a.statusid = 1
+JOIN Refyear y on a.tenantid = y.tenantid and a.yearid = y.yearid
+WHERE a.TenantId = 26 and y.yearcode = '2026' AND a.statusid = 1 and cast(a.lastrundate as date) <> cast(getdate() as date)
 ORDER BY a.RecurringTime ASC;
 
+select * from batchschedule where batchid = 91065
+select * from filerecordcountstats where batchid = 90948
+select * from reffiletemplates where filetemplateid = 94
 
-DECLARE @BaseTables TABLE (TableName NVARCHAR(200));
-INSERT INTO @BaseTables (TableName)
-VALUES
-('Duxbury_Enrollment'),
-('K12DisabilityStudent'),
-('K12SpecialEducationStudent'),
-('K12StudentDemographics'),
-('K12StudentEnrollment'),
-('K12StudentOtherRaces'),
-('K12StudentProgram'),
-('Duxbury_StaffDemographics'),
-('K12StaffAssignment'),
-('K12StaffContactEmail'),
-('K12StaffDemographics'),
-('K12StaffEmployment'),
-('Duxbury_Course'),
-('Duxbury_CourseSection'),
-('Duxbury_StudentSections'),
-('Duxbury_StaffSections'),
-('K12StaffSectionAssignment'),
-('Duxbury_DailyAttendance');
+select * from filerecordcountstats where tenantid = 26 and tenantfiletemplatename like '%coteachers%'
+SELECT * FROM Main.Duxbury_Enrollment WHERE schoolyear = 2026 AND tenantid = 26
 
-select * from @BaseTables where tablename not like '%Demographics%'
+SELECT * FROM Main.K12DisabilityStudent  WHERE schoolyear = 2026 AND tenantid = 26
+SELECT * FROM Main.K12SpecialEducationStudent  WHERE schoolyear = 2026 AND tenantid = 26
+SELECT * FROM Main.K12StudentEnrollment  WHERE schoolyear = 2026 AND tenantid = 26
+SELECT * FROM Main.K12StudentOtherRaces  WHERE schoolyear = 2026 AND tenantid = 26
+SELECT * FROM Main.K12StudentProgram  WHERE schoolyear = 2026 AND tenantid = 26
 
-DECLARE @StageSuffixes TABLE (Suffix NVARCHAR(100), Ord INT);
-INSERT INTO @StageSuffixes (Suffix, Ord)
-VALUES
- ('_Audit', 1),
- ('_CleanRecords', 2),
- ('_Deletes', 3),
- ('_FailedRecords', 4),
- ('_NoAction', 5),
- ('_Stage', 6);
+SELECT count(1) FROM Main.K12StaffSectionAssignment WHERE schoolyear = 2026 AND tenantid = 26
 
--- Generate queries in required order
-SELECT 
-    b.TableName,
-    s.Ord,
-    CONCAT('SELECT count(1) FROM Stage.', b.TableName, s.Suffix, 
-           ' WHERE schoolyear = 2026 AND tenantid = 26') AS QueryText
-FROM @BaseTables b
-CROSS JOIN @StageSuffixes s
 
-UNION ALL
+select distinct b.nameofinstitution ,a.SchoolIdentifier,	DistrictStaffId from [dbo].[Import_K12StaffSectionAssignment_CoTeachers_Vw_26] a
+join Main.K12School b on a.SchoolIdentifier = b.SchoolIdentifier and b.TenantId = 26
 
-SELECT 
-    b.TableName,
-    7 AS Ord,
-    CONCAT('SELECT count(1) FROM Main.', b.TableName, 
-           ' WHERE schoolyear = 2026 AND tenantid = 26') AS QueryText
-FROM @BaseTables b
-ORDER BY b.TableName, Ord;
+select * from import_k12staffsectionassignment_vw_26 
+select * from [Import_K12StaffSectionAssignment_CoTeachers_Vw_26]
+
+exec [dbo].[USP_GetStudentsForStaffBySectionCourse] @UserId=318,@TenantId=26,@SchoolYear='2026',@SchoolId='820004',@sectionId=NULL,@courseId=NULL,@Grade=NULL,@StaffIds='114035471',@STARTRECORD='0',@RECORDS='50',@SORTBY='StudentName',@SORTTYPE='asc',@IsALLRecords=0,@IsFilterFirstTime=0,@ValueFilters=NULL,@ColorFilters=NULL,@SubGroupFilters=NULL,@CohortFilters=NULL,@isCohortGradeColumn=0,@CohortTitle=NULL,@FilterField=NULL,@UserRoles='6,7',@IsFromTeacherview=0,@MetrcGroupId=3,@IsExport=0
+
+exec [dbo].[USP_GetNotificationsForStaffBySectionCourse] @UserId=318,@TenantId=26,@SchoolYear='2026',@SchoolId='820004',@sectionId=NULL,@courseId=NULL,@StaffIds='114035471',@Grade=NULL,@CohortFilters=NULL,@SubgroupFilters=NULL
+
+select * from main.K12StaffSectionAssignment where DistrictStaffId='111036916' and schoolyear = 2026  --Theophilos
+select * from main.K12StaffSectionAssignment where DistrictStaffId='111021501' and schoolyear = 2026  --Armstrong
+select * from main.K12StaffSectionAssignment where DistrictStaffId='125121185' and schoolyear = 2026  --McNeil
+
+select distinct districtstaffid from [dbo].[Import_K12StaffSectionAssignment_CoTeachers_Vw_26]
+
+
+SELECT b.roleid
+	,b.IsDefaultRole
+	,a.*
+FROM idm.ddauser a
+INNER JOIN idm.userroleorg b ON a.ddauserid = b.ddauserid
+	AND a.tenantid = b.tenantid
+WHERE districtstaffid IN (
+		SELECT DISTINCT districtstaffid
+		FROM [dbo].[Import_K12StaffSectionAssignment_CoTeachers_Vw_26]
+		)
+	AND a.tenantid = 26
+	AND IsDefaultRole = 1
+
+
+SELECT b.roleid
+	,b.IsDefaultRole
+	,a.*
+FROM idm.ddauser a
+INNER JOIN idm.userroleorg b ON a.ddauserid = b.ddauserid
+	AND a.tenantid = b.tenantid
+WHERE districtstaffid IN ('111020745', '111021501', '111029310', '111030656', '111030784', '111031805', '111031886', '111032779', '111033655', '111034800', '111035862', '111037536', '111037892', '111038395', '112026830', '112030224', '112032348', '112034585', '112034880', '112035384', '112035667', '112035815', '112036579', '112038495', '112038832', '113031374', '113036449', '114038173', '114038175', '114038211', '114038632', '114038648', '114038650', '114038814', '114038818', '114038843', '114038855', '114038875', '125121185', '125126579')
+	AND a.tenantid = 26
+	AND IsDefaultRole = 1
+
+
+select * from DuxburyAbsenteesbyReasonDS where schoolyear = 2026
+
+exec sp_helptext DuxburyAbsenteesbyReasonDS
+
+
+
+
+select  * from reffiletemplates where tenantid = 38 and filetemplatename like '%NGSS%'
+select  * from TenantFileTemplateMapper where tenantid = 38 and tenantfilename like '%sba%'
+--2827
+select  * from TenantFileTemplateMapper where tenantid = 38 and tenantfilename like '%ngss%'
+--2863
+--2838
+select  * from TenantFileTemplateMapper where tenantid = 38 and FileTemplateId in (2848,2849)
+
+
+
+
+select distinct schoolyear from main.WHPS_NGSS where tenantid = 38
+--2019
+--2021
+--2022
+select  distinct schoolyear from main.WHPS_NGSS_Source where tenantid = 38
+--2024
+--2023
+
+select distinct schoolyear from main.WHPS_SBAC where tenantid = 38
+--2019
+--2021
+--2022
+select distinct schoolyear from main.WHPS_SBAC_ELA_Source where tenantid = 38
+--2024
+--2023
+select distinct schoolyear from main.WHPS_SBAC_Math_Source where tenantid = 38
+--2024
+--2023
+
+
+select * from main.WHPS_SBAC where tenantid = 38
+select * from main.WHPS_SBAC_ELA_Source where tenantid = 38
+select * from main.WHPS_SBAC_Math_Source where tenantid = 38
+
+select * from main.WHPS_NGSS where tenantid = 38
+select * from main.WHPS_NGSS_Source where tenantid = 38
+
+--===============================================
+
+select * from Main.WHPS_SBAC_SourceData
+select * from Main.WHPS_NGSS_SourceData
+
+select * from Main.WHPS_SBAC_SourceData where vertical_scale_score is null
+select * from Main.WHPS_NGSS_SourceData where scale_score is null
+
+--[Import_SBAC_NGSS_K12StudentGenericAssessment_Vw_38]
+--[Import_SBAC_NGSS_AssessmentDetails_Vw_38]
+select * from dataimportviews where tenantid = 38
+select * from refgrade where tenantid = 38
+
+--insert into dataimportviews
+--select 'Import_SBAC_NGSS_K12StudentGenericAssessment_Vw_38','Import_SBAC_NGSS_K12StudentGenericAssessment_Vw_38',38,1,1,'DDAUser@DDA',getdate(),null,null
+--union select 'Import_SBAC_NGSS_AssessmentDetails_Vw_38','Import_SBAC_NGSS_AssessmentDetails_Vw_38',38,1,1,'DDAUser@DDA',getdate(),null,null
+
+
+select * from main.K12StudentGenericAssessment with (nolock) where tenantid = 38 and schoolyear = 2025 and assessmentcodeid in
+(select assessmentdetailsid from main.AssessmentDetails where tenantid = 38 and assessmentcode = 'sbac' and schoolyear = 2025)
+
+
+
+select * from main.K12StudentGenericAssessment with (nolock) where tenantid = 38 and schoolyear = 2025 and assessmentcodeid in
+(select assessmentdetailsid from main.AssessmentDetails where tenantid = 38 and assessmentcode = 'ngss' and schoolyear = 2025)
+
+
+sp_helptext WHPSSBACCYearStudentsDS
+
+select * from WHPSAssessmentAllDS
+select * from WHPSiReadySBACDS
+select * from WHPSSBACDSNew
+select * from WHPS_SBAC_DS_New
+select * from WHPSSBACCYearStudentsDS

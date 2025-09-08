@@ -11,6 +11,9 @@ select * from idm.DDARole where tenantid = 38;
 select * from idm.AppErrorLog order by 1 desc;
 
 select * from fn_DashboardReportsDetails(38) where  reportname like '%ngss%' and dashboardname not in ('sbac', 'SBAC Longitudinal Performance')
+select * from fn_DashboardReportsDetails(38) where  DashboardName='Acuity Matrix'
+select * from fn_DashboardReportsDetails(38) where  groupname in ('Blitz Reports','District - Assessments with Grades','Teacher Blitz Grade Level Assessments')
+select distinct groupname from fn_DashboardReportsDetails(38) 
 
 --8932
 --8933
@@ -811,10 +814,28 @@ select * from main.K12StudentGenericAssessment with (nolock) where tenantid = 38
 (select assessmentdetailsid from main.AssessmentDetails where tenantid = 38 and assessmentcode = 'ngss' and schoolyear = 2025)
 
 
-sp_helptext WHPSSBACCYearStudentsDS
+sp_helptext WHPS_AcuityMatrix_Vw
 
 select * from WHPSAssessmentAllDS
 select * from WHPSiReadySBACDS
 select * from WHPSSBACDSNew
 select * from WHPS_SBAC_DS_New
 select * from WHPSSBACCYearStudentsDS
+
+select reportfiledetails from reportdetails where reportdetailsid = 8852
+
+--UPDATE ReportDetails
+--SET ReportFileDetails = JSON_MODIFY(
+--        JSON_MODIFY(ReportFileDetails, '$.DisplayLatestYearData', CAST(0 AS bit)),
+--        '$.DisplayLastYearData', CAST(1 AS bit)
+--    )
+--WHERE ReportDetailsId in (select distinct reportid 
+--from fn_DashboardReportsDetails(38) 
+--where viewname in ('WHPS_StudentSummaryWithAllAss','WHPS_BlitzReportDistrict_Vw')
+--)
+
+select * from refcharttype where tenantid = 38
+
+
+select * from reportdetails where  tenantid = 38
+--reporttypeid in (354,351,355)

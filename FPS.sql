@@ -5,7 +5,7 @@ select * from idm.Tenant
 --37	Rochelle Schools
 
 select * from RefFileTemplates where tenantid = 35 and filetemplatename like '%dibels%'
-select * from fn_DashboardReportsDetails(35) where dashboardname = 'Alliance Data Tracker'
+select * from fn_DashboardReportsDetails(35) where dashboardname = 'Discipline'
 select * from fn_DashboardReportsDetails(28) where groupname is not null
 select ActionTypeCode,SuspensionType from refactiontype where tenantid = 35 and SuspensionType is not null
 --FPS_MCAS_2023 for Admins
@@ -22,7 +22,7 @@ exec sp_depends Rochelle_Attendance_Vw
 select * from rptdomainrelatedviews where tenantid = 37
 
 select * from RptDomainRelatedViews where tenantid = 35 and viewname like '%sbac%'
-select * from ReportDetails where tenantid = 35 and reportdetailsid = 3081
+select * from ReportDetails  order by 1 desc
 select * from Main.EH_SBAC_Math where tenantid = 35
 
 

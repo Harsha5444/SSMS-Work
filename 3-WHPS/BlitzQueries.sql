@@ -20,6 +20,7 @@ select distinct grade_level from WHPSBlitzReportDS
 exec sp_depends WHPSBlitzReportDS
 
 select distinct grade_level from WHPS_StudentSummaryWithAllAss
+select distinct schoolyear from WHPS_StudentSummaryWithAllAss
 
 
 --6,7,8

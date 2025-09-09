@@ -618,10 +618,7 @@ SELECT * FROM @AllResults
  
 
 
-
-
---drop table #temp_HCS_VAlidation
-
+drop table  #temp_HCS_VAlidation
 
 WITH MAPBase AS (
     SELECT [SchoolYear]
@@ -647,12 +644,8 @@ WITH MAPBase AS (
                 ,g.GradeCode
                 ,g.GradeDescription
                 ,CASE 
-                    WHEN m.MetricCode = 'RITScore' 
+                    WHEN m.MetricCode = '00501' 
                         THEN 'RITScore(' + k.Termcode + ')'
-                    WHEN m.MetricCode = '03479' 
-                        THEN 'ScaleScore(' + k.Termcode + ')'
-                    WHEN m.MetricCode = '00502' 
-                        THEN 'PercentileRank(' + k.Termcode + ')'
                 END Termcode
                 ,CAST(h.MetricValue AS INT) MetricValue
                 ,ROW_NUMBER() OVER (
@@ -678,7 +671,7 @@ WITH MAPBase AS (
                         AND strandareacode IS NULL
                         and TenantId = h.TenantId
                 )
-              AND m.MetricCode IN ('RITScore','00502','03479')
+              AND m.MetricCode IN ('00501')
         ) t
         WHERE RN = 1
     ) o
@@ -766,7 +759,7 @@ PrevYear AS (
         ,EOGPercentileRank [EOGPercentileRank_Previous]
     FROM Base
 )
-insert into #temp_HCS_VAlidation
+--insert into #temp_HCS_VAlidation
 SELECT 
     b.SchoolYear,
     b.DistrictStudentId,
@@ -789,8 +782,8 @@ SELECT
     b.Gender,
     b.Disability,
     b.FRL,
-    b.TotalIncidents,
-    b.tenantid 
+    b.TotalIncidents, 
+    b.tenantid into #temp_HCS_VAlidation
 FROM Base b  
 LEFT JOIN PrevYear p 
     ON b.SchoolYear = p.SchoolYear
@@ -798,27 +791,25 @@ LEFT JOIN PrevYear p
 
 
 
-SELECT  
+
+SELECT DISTINCT 
     GradeCode,
-    [MAPPercentile(Fall)],
-    [MAPPercentile(Winter)],
-    [MAPPercentile(Spring)],
+    [MAPRITScore(Fall)],
+    [MAPRITScore(Winter)],
+    [MAPRITScore(Spring)],
     EOGScaleScore,
     EOGScaleScore_Previous,
-    EOGPercentileRank,
-    EOGPercentileRank_Previous,
     presentPercentage,
     ChronicallyAbsent,
     Race,
     Gender,
     Disability,
     FRL,
-    TotalIncidents,
-    tenantid
+    TotalIncidents
 FROM #temp_HCS_VAlidation
-
 WHERE EOGScaleScore is not null and EOGScaleScore_Previous is not null
   --AND [MAPRITScore(Fall)] IS NOT NULL
   --AND [MAPRITScore(Winter)] IS NOT NULL
   --AND [MAPRITScore(Spring)] IS NOT NULL
 ORDER BY GradeCode, Race, Gender;
+

@@ -18,3 +18,7 @@ ravibabu.sanapala@henry.k12.ga.us
 10.10.1.220
 10.10.1.52
 10.10.1.58
+
+analyt19vu6.database.windows.net 
+AVReaderUser
+AVue!321

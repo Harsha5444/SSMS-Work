@@ -10,11 +10,12 @@ select * from idm.Tenant;
 select * from idm.DDARole where tenantid = 38;
 select * from idm.AppErrorLog order by 1 desc;
 
-select * from fn_DashboardReportsDetails(38) where  reportname like '%ngss%' and dashboardname not in ('sbac', 'SBAC Longitudinal Performance')
+select distinct ReportId,
+ReportName,
+ChildReportId,
+ChildReportName from fn_DashboardReportsDetails(38) where  reportname like '%sbac%'
 select * from fn_DashboardReportsDetails(38) where  DashboardName='Acuity Matrix'
 select * from fn_DashboardReportsDetails(38) where  groupname in ('Blitz Reports','District - Assessments with Grades','Teacher Blitz Grade Level Assessments')
-select distinct groupname from fn_DashboardReportsDetails(38) 
-
 --8932
 --8933
 --8934
@@ -197,9 +198,6 @@ ORDER BY ds.[SchoolName] ASC
 
 
 
-select * from fn_DashboardReportsDetails(38) where reportname like '%chronic%';
-
-
 SELECT ds.SchoolYear AS [School Year]
 	,Count(ds.DistrictStudentId) AS [Count]
 	,(
@@ -242,7 +240,6 @@ order by 1 desc
 
 
 select * from AggRptK12StudentDetails where 1=1 and schoolyear= 2024 and districtstudentid = '117733'
-select * from fn_dashboardreportsdetails(38) where dashboardname like '%DISTRICT%'
 
 select * FROM reportdetails where reportdetailsid = 7032
 
@@ -625,6 +622,7 @@ select * from Prompts
 
 
 
+
 SELECT DISTINCT 
     a.RecurringScheduleJobId,
     'WHPS' AS District,
@@ -643,7 +641,8 @@ JOIN RecurringScheduleJobTemplate b
 JOIN RefFileTemplates c 
     ON b.FileTemplateID = c.FileTemplateId
    AND a.TenantId = c.TenantId
-WHERE a.TenantId = 38 AND a.statusid = 1
+JOIN Refyear y on a.tenantid = y.tenantid and a.yearid = y.yearid
+WHERE a.TenantId = 38 and y.yearcode = '2026' AND a.statusid = 2 --and cast(a.lastrundate as date) <> cast(getdate() as date)
 ORDER BY a.RecurringTime ASC;
 
  
@@ -814,7 +813,7 @@ select * from main.K12StudentGenericAssessment with (nolock) where tenantid = 38
 (select assessmentdetailsid from main.AssessmentDetails where tenantid = 38 and assessmentcode = 'ngss' and schoolyear = 2025)
 
 
-sp_helptext WHPS_AcuityMatrix_Vw
+exec sp_helptext WHPSSBACDS
 
 select * from WHPSAssessmentAllDS
 select * from WHPSiReadySBACDS
@@ -829,13 +828,160 @@ select reportfiledetails from reportdetails where reportdetailsid = 8852
 --        JSON_MODIFY(ReportFileDetails, '$.DisplayLatestYearData', CAST(0 AS bit)),
 --        '$.DisplayLastYearData', CAST(1 AS bit)
 --    )
---WHERE ReportDetailsId in (select distinct reportid 
---from fn_DashboardReportsDetails(38) 
---where viewname in ('WHPS_StudentSummaryWithAllAss','WHPS_BlitzReportDistrict_Vw')
---)
+--WHERE ReportDetailsId in ('8047','8050')
 
+select distinct schoolyear from WHPS_AimswebPlusTermLevels
 select * from refcharttype where tenantid = 38
 
 
-select * from reportdetails where  tenantid = 38
+select * from reportdetails where ReportDetailsId in ('8080')
 --reporttypeid in (354,351,355)
+
+--WHPSAcuityMatrixDS
+
+select * from [WHPS_AcuityMatrix_Vw] where schoolyear = 2026 and GradeCode = 9 and  schoolname = 'strive'
+
+SELECT ds.[SchoolName] AS [SchoolName]
+	,ds.[AcuityTier] AS [AcuityTier]
+	,Count(DISTINCT ds.[DistrictStudentId]) AS [Student %]
+FROM dbo.WHPSAcuityMatrixDS AS ds WITH (NOLOCK)
+LEFT JOIN dbo.RefProficiencylevel ON ds.[AcuityTier] = dbo.RefProficiencylevel.ProficiencyDescription
+	AND ds.tenantid = dbo.RefProficiencylevel.tenantid
+WHERE (
+		(ds.[GradeCode] = '9')
+		AND (ds.[schoolyear] IN (2026))
+		AND (ds.TenantId = 38)
+		)
+GROUP BY ds.[SchoolName]
+	,ds.[AcuityTier]
+	,dbo.RefProficiencylevel.SortOrder
+ORDER BY ds.[SchoolName] ASC
+	,dbo.RefProficiencylevel.SortOrder ASC
+	,ds.[AcuityTier] ASC
+
+
+select * from RefProficiencylevel where tenantid = 38 and assessmentcode = 'Acuity Matrix' and sy = 2025
+
+--insert into RefProficiencylevel
+--select '2026','Cannot Calculate Score','Cannot Calculate Score',5,'#808080',null,null,'Acuity Matrix','Reading','PROFLVL',5,38,1,'DDAUser@DDA',getdate(),null,null
+--union select '2025','Cannot Calculate Score','Cannot Calculate Score',5,'#808080',null,null,'Acuity Matrix','Reading','PROFLVL',5,38,1,'DDAUser@DDA',getdate(),null,null
+
+
+select * from idm.StudentsSubgroup where tenantid = 38 and statusid = 1 order by sortorder 
+select * from dashboardsubgroups where tenantid = 38 and dashboardid = 285
+select * from dashboard where tenantid = 38 and dashboardname like '%aim%'
+
+select distinct schoolyear from aggrptassessmentsubgroupdata where tenantid = 38 and assessmentcode like '%aim%'
+
+exec sp_helptext WHPS_IReadyTermLevels
+
+select max(schoolyear) from Main.WHPS_AimsWebPlus
+
+
+SELECT  ds.[Term] as [Term], ds.[Level] as [Level],Count(Distinct  ds.[DistrictStudentId]) as [DistrictStudentId]  FROM dbo.WHPSiReadyTermLevelsDS as ds with (nolock)  LEFT JOIN dbo.RefAimswebPlusTermLevel ON ds.[Level] = dbo.RefAimswebPlusTermLevel.LevelCode AND  ds.tenantid =dbo.RefAimswebPlusTermLevel.tenantid    WHERE  ((ds.[SubjectAreaName] = 'Reading') AND (ds.[Level] IS NOT NULL ) AND (ds.[SchoolYear] IN (2025)) AND (ds.TenantId = 38))   GROUP BY ds.[Term],ds.[Level],dbo.RefAimswebPlusTermLevel.SortOrder  ORDER BY ds.[Term] ASC,dbo.RefAimswebPlusTermLevel.SortOrder ASC,ds.[Level] ASC 
+
+SELECT  ds.[Term] as [Term], ds.[Level] as [Level],Count(Distinct ds.[DistrictStudentId]) as [DistrictStudentId]  FROM dbo.WHPSiReadyTermLevelsDS as ds with (nolock)  LEFT JOIN dbo.RefAimswebPlusTermLevel ON ds.[Level] = dbo.RefAimswebPlusTermLevel.LevelCode AND  ds.tenantid =dbo.RefAimswebPlusTermLevel.tenantid    WHERE  ((ISNULL(ds.[SubjectAreaName],' ') = 'Mathematics') AND (ds.[Level] IS NOT NULL ) AND (ISNULL(ds.[SchoolYear],' ') IN (2025)) AND (ds.TenantId = 38))   GROUP BY ds.[Term],ds.[Level],dbo.RefAimswebPlusTermLevel.SortOrder  ORDER BY ds.[Term] ASC,dbo.RefAimswebPlusTermLevel.SortOrder ASC,ds.[Level] ASC 
+
+
+--CREATE NONCLUSTERED INDEX [NCDIX_AggPLPStudentCourseSections_SDTC] ON [dbo].[AggPLPStudentCourseSections] ([SchoolYear],[DistrictStudentId],[TenantId],[CourseIdentifier]) 
+
+select * from WHPSAcuityMatrixDS where DistrictStudentId='115467'
+
+DROP INDEX NCIDX_AggrptAssessmentSubgroupData_TASG ON AggrptAssessmentSubgroupData;
+
+CREATE NONCLUSTERED INDEX [NCIDX_AggrptAssessmentSubgroupData_TASG]
+ON [dbo].[AggrptAssessmentSubgroupData] ([TenantId],[AssessmentCode],[SubjectAreaCode],[GradeCode]) 
+INCLUDE ([SchoolYear],[SchoolIdentifier],[ProficiencyDescription],[DistrictStudentId],[SchoolName],[TermDescription],[TestTakenDate],[PercentileRank])
+
+
+
+--SELECT  ds.[SchoolName] as [SchoolName], ds.[AcuityTier] as [AcuityTier],Count(Distinct  ds.[DistrictStudentId]) as [DistrictStudentId]  FROM dbo.WHPSAcuityMatrixDS as ds with (nolock)  LEFT JOIN dbo.RefProficiencylevel ON ds.[AcuityTier] = dbo.RefProficiencylevel.ProficiencyDescription AND  ds.tenantid =dbo.RefProficiencylevel.tenantid    WHERE  ((ds.[GradeCode] = '10') AND (ds.[schoolyear] IN (2026)) AND (ds.TenantId = 38))   GROUP BY ds.[SchoolName],ds.[AcuityTier],dbo.RefProficiencylevel.SortOrder  ORDER BY ds.[SchoolName] ASC,dbo.RefProficiencylevel.SortOrder ASC,ds.[AcuityTier] ASC 
+--go
+--SELECT  ds.[SchoolName] as [SchoolName], ds.[AcuityTier] as [AcuityTier],Count(Distinct  ds.[DistrictStudentId]) as [DistrictStudentId]  FROM dbo.WHPSAcuityMatrixDS as ds with (nolock)  LEFT JOIN dbo.RefProficiencylevel ON ds.[AcuityTier] = dbo.RefProficiencylevel.ProficiencyDescription AND  ds.tenantid =dbo.RefProficiencylevel.tenantid    WHERE  ((ds.[GradeCode] = '6') AND (ds.[schoolyear] IN (2026)) AND (ds.TenantId = 38))   GROUP BY ds.[SchoolName],ds.[AcuityTier],dbo.RefProficiencylevel.SortOrder  ORDER BY ds.[SchoolName] ASC,dbo.RefProficiencylevel.SortOrder ASC,ds.[AcuityTier] ASC 
+--go
+--SELECT  ds.[SchoolName] as [SchoolName], ds.[AcuityTier] as [AcuityTier],Count(Distinct  ds.[DistrictStudentId]) as [DistrictStudentId]  FROM dbo.WHPSAcuityMatrixDS as ds with (nolock)  LEFT JOIN dbo.RefProficiencylevel ON ds.[AcuityTier] = dbo.RefProficiencylevel.ProficiencyDescription AND  ds.tenantid =dbo.RefProficiencylevel.tenantid    WHERE  ((ds.[GradeCode] = '9') AND (ds.[schoolyear] IN (2026)) AND (ds.TenantId = 38))   GROUP BY ds.[SchoolName],ds.[AcuityTier],dbo.RefProficiencylevel.SortOrder  ORDER BY ds.[SchoolName] ASC,dbo.RefProficiencylevel.SortOrder ASC,ds.[AcuityTier] ASC 
+--go
+--SELECT  ds.[SchoolName] as [SchoolName], ds.[AcuityTier] as [AcuityTier],Count(Distinct  ds.[DistrictStudentId]) as [DistrictStudentId]  FROM dbo.WHPSAcuityMatrixDS as ds with (nolock)  LEFT JOIN dbo.RefProficiencylevel ON ds.[AcuityTier] = dbo.RefProficiencylevel.ProficiencyDescription AND  ds.tenantid =dbo.RefProficiencylevel.tenantid    WHERE  ((ds.[GradeCode] = '8') AND (ds.[schoolyear] IN (2026)) AND (ds.TenantId = 38))   GROUP BY ds.[SchoolName],ds.[AcuityTier],dbo.RefProficiencylevel.SortOrder  ORDER BY ds.[SchoolName] ASC,dbo.RefProficiencylevel.SortOrder ASC,ds.[AcuityTier] ASC 
+--go
+--SELECT  ds.[SchoolName] as [SchoolName], ds.[AcuityTier] as [AcuityTier],Count(Distinct  ds.[DistrictStudentId]) as [DistrictStudentId]  FROM dbo.WHPSAcuityMatrixDS as ds with (nolock)  LEFT JOIN dbo.RefProficiencylevel ON ds.[AcuityTier] = dbo.RefProficiencylevel.ProficiencyDescription AND  ds.tenantid =dbo.RefProficiencylevel.tenantid    WHERE  ((ds.[GradeCode] = '7') AND (ds.[schoolyear] IN (2026)) AND (ds.TenantId = 38))   GROUP BY ds.[SchoolName],ds.[AcuityTier],dbo.RefProficiencylevel.SortOrder  ORDER BY ds.[SchoolName] ASC,dbo.RefProficiencylevel.SortOrder ASC,ds.[AcuityTier] ASC 
+--go
+--SELECT  ds.[SchoolName] as [SchoolName], ds.[AcuityTier] as [AcuityTier],Count(Distinct  ds.[DistrictStudentId]) as [DistrictStudentId]  FROM dbo.WHPSAcuityMatrixDS as ds with (nolock)  LEFT JOIN dbo.RefProficiencylevel ON ds.[AcuityTier] = dbo.RefProficiencylevel.ProficiencyDescription AND  ds.tenantid =dbo.RefProficiencylevel.tenantid    WHERE  ((ds.[GradeCode] = '7') AND (ds.[schoolyear] IN (2026)) AND (ds.TenantId = 38))   GROUP BY ds.[SchoolName],ds.[AcuityTier],dbo.RefProficiencylevel.SortOrder  ORDER BY ds.[SchoolName] ASC,dbo.RefProficiencylevel.SortOrder ASC,ds.[AcuityTier] ASC 
+--go
+--SELECT  ds.[SchoolName] as [SchoolName], ds.[AcuityTier] as [AcuityTier],Count(Distinct  ds.[DistrictStudentId]) as [DistrictStudentId]  FROM dbo.WHPSAcuityMatrixDS as ds with (nolock)  LEFT JOIN dbo.RefProficiencylevel ON ds.[AcuityTier] = dbo.RefProficiencylevel.ProficiencyDescription AND  ds.tenantid =dbo.RefProficiencylevel.tenantid    WHERE  ((ds.[GradeCode] = '8') AND (ds.[schoolyear] IN (2026)) AND (ds.TenantId = 38))   GROUP BY ds.[SchoolName],ds.[AcuityTier],dbo.RefProficiencylevel.SortOrder  ORDER BY ds.[SchoolName] ASC,dbo.RefProficiencylevel.SortOrder ASC,ds.[AcuityTier] ASC 
+--go
+--SELECT  ds.[SchoolName] as [SchoolName], ds.[AcuityTier] as [AcuityTier],Count(Distinct  ds.[DistrictStudentId]) as [DistrictStudentId]  FROM dbo.WHPSAcuityMatrixDS as ds with (nolock)  LEFT JOIN dbo.RefProficiencylevel ON ds.[AcuityTier] = dbo.RefProficiencylevel.ProficiencyDescription AND  ds.tenantid =dbo.RefProficiencylevel.tenantid    WHERE  ((ds.[GradeCode] = '9') AND (ds.[schoolyear] IN (2026)) AND (ds.TenantId = 38))   GROUP BY ds.[SchoolName],ds.[AcuityTier],dbo.RefProficiencylevel.SortOrder  ORDER BY ds.[SchoolName] ASC,dbo.RefProficiencylevel.SortOrder ASC,ds.[AcuityTier] ASC 
+--go
+--SELECT  ds.[SchoolName] as [SchoolName], ds.[AcuityTier] as [AcuityTier],Count(Distinct  ds.[DistrictStudentId]) as [DistrictStudentId]  FROM dbo.WHPSAcuityMatrixDS as ds with (nolock)  LEFT JOIN dbo.RefProficiencylevel ON ds.[AcuityTier] = dbo.RefProficiencylevel.ProficiencyDescription AND  ds.tenantid =dbo.RefProficiencylevel.tenantid    WHERE  ((ds.[GradeCode] = '10') AND (ds.[schoolyear] IN (2026)) AND (ds.TenantId = 38))   GROUP BY ds.[SchoolName],ds.[AcuityTier],dbo.RefProficiencylevel.SortOrder  ORDER BY ds.[SchoolName] ASC,dbo.RefProficiencylevel.SortOrder ASC,ds.[AcuityTier] ASC 
+--go
+SELECT  ds.[SchoolName] as [SchoolName], ds.[AcuityTier] as [AcuityTier],Count(Distinct  ds.[DistrictStudentId]) as [DistrictStudentId]  FROM dbo.WHPSAcuityMatrixDS as ds with (nolock)  LEFT JOIN dbo.RefProficiencylevel ON ds.[AcuityTier] = dbo.RefProficiencylevel.ProficiencyDescription AND  ds.tenantid =dbo.RefProficiencylevel.tenantid    WHERE  ((ds.[GradeCode] = '6') AND (ds.[schoolyear] IN (2026)) AND (ds.TenantId = 38))   GROUP BY ds.[SchoolName],ds.[AcuityTier],dbo.RefProficiencylevel.SortOrder  ORDER BY ds.[SchoolName] ASC,dbo.RefProficiencylevel.SortOrder ASC,ds.[AcuityTier] ASC 
+go
+SELECT  ds.[Period] as [Period], ds.[WHPSProfLevel] as [WHPSProfLevel],Count(Distinct  ds.[DistrictStudentId]) as [DistrictStudentId]  FROM dbo.WHPSProfLevelAimsWebPlusDS as ds with (nolock)  LEFT JOIN dbo.RefProficiencylevel ON ds.[WHPSProfLevel] = dbo.RefProficiencylevel.ProficiencyDescription AND  ds.tenantid =dbo.RefProficiencylevel.tenantid    WHERE  ((ds.[SchoolYear] IN (2025)) AND (ds.TenantId = 38))   GROUP BY ds.[Period],ds.[WHPSProfLevel],dbo.RefProficiencylevel.SortOrder  ORDER BY dbo.RefProficiencylevel.SortOrder ASC,ds.[WHPSProfLevel] ASC 
+go
+SELECT  ds.[SchoolName] as [SchoolName], ds.[WHPSProfLevel] as [WHPSProfLevel],Count(  ds.[DistrictStudentId]) as [DistrictStudentId]  FROM dbo.WHPSProfLevelAimsWebPlusDS as ds with (nolock)  LEFT JOIN dbo.RefProficiencylevel ON ds.[WHPSProfLevel] = dbo.RefProficiencylevel.ProficiencyDescription AND  ds.tenantid =dbo.RefProficiencylevel.tenantid    WHERE  ((ds.[Period] = 'Winter') AND (ds.[SchoolYear] IN (2025)) AND (ds.TenantId = 38))   GROUP BY ds.[SchoolName],ds.[WHPSProfLevel],dbo.RefProficiencylevel.SortOrder  ORDER BY ds.[SchoolName] ASC,dbo.RefProficiencylevel.SortOrder ASC,ds.[WHPSProfLevel] ASC 
+go
+SELECT  ds.[SchoolName] as [SchoolName], ds.[WHPSProfLevel] as [WHPSProfLevel],Count(  ds.[DistrictStudentId]) as [DistrictStudentId]  FROM dbo.WHPSProfLevelAimsWebPlusDS as ds with (nolock)  LEFT JOIN dbo.RefProficiencylevel ON ds.[WHPSProfLevel] = dbo.RefProficiencylevel.ProficiencyDescription AND  ds.tenantid =dbo.RefProficiencylevel.tenantid    WHERE  ((ds.[Period] = 'Spring') AND (ds.[SchoolYear] IN (2025)) AND (ds.TenantId = 38))   GROUP BY ds.[SchoolName],ds.[WHPSProfLevel],dbo.RefProficiencylevel.SortOrder  ORDER BY ds.[SchoolName] ASC,dbo.RefProficiencylevel.SortOrder DESC,ds.[WHPSProfLevel] DESC 
+go
+SELECT  ds.[WHPSProfLevel] as [WHPSProfLevel],Count(Distinct ds.[DistrictStudentId]) as [Count],( SELECT COUNT(Distinct subds.[DistrictStudentId]) FROM dbo.WHPSProfLevelAimsWebPlusDS AS subds with (nolock) LEFT JOIN dbo.RefProficiencylevel ON subds.[WHPSProfLevel] = dbo.RefProficiencylevel.ProficiencyDescription AND  subds.tenantid =dbo.RefProficiencylevel.tenantid  Where subds.[Period] = ('Spring') AND  subds.[SchoolYear] IN (2025) AND (subds.TenantId =38)) AS [SeriesTotalCount]  FROM dbo.WHPSProfLevelAimsWebPlusDS as ds with (nolock)  LEFT JOIN dbo.RefProficiencylevel ON ds.[WHPSProfLevel] = dbo.RefProficiencylevel.ProficiencyDescription AND  ds.tenantid =dbo.RefProficiencylevel.tenantid    WHERE  ((ds.[Period] = 'Spring') AND (ds.[SchoolYear] IN (2025)) AND (ds.TenantId = 38))   GROUP BY ds.[WHPSProfLevel],dbo.RefProficiencylevel.SortOrder  ORDER BY dbo.RefProficiencylevel.SortOrder ASC,ds.[WHPSProfLevel] ASC 
+go
+SELECT  ds.[WHPSProfLevel] as [WHPSProfLevel],Count(Distinct ds.[DistrictStudentId]) as [Count],( SELECT COUNT(Distinct subds.[DistrictStudentId]) FROM dbo.WHPSProfLevelAimsWebPlusDS AS subds with (nolock) LEFT JOIN dbo.RefProficiencylevel ON subds.[WHPSProfLevel] = dbo.RefProficiencylevel.ProficiencyDescription AND  subds.tenantid =dbo.RefProficiencylevel.tenantid  Where subds.[Period] = ('Fall') AND  subds.[SchoolYear] IN (2025) AND (subds.TenantId =38)) AS [SeriesTotalCount]  FROM dbo.WHPSProfLevelAimsWebPlusDS as ds with (nolock)  LEFT JOIN dbo.RefProficiencylevel ON ds.[WHPSProfLevel] = dbo.RefProficiencylevel.ProficiencyDescription AND  ds.tenantid =dbo.RefProficiencylevel.tenantid    WHERE  ((ds.[Period] = 'Fall') AND (ds.[SchoolYear] IN (2025)) AND (ds.TenantId = 38))   GROUP BY ds.[WHPSProfLevel],dbo.RefProficiencylevel.SortOrder  ORDER BY dbo.RefProficiencylevel.SortOrder ASC,ds.[WHPSProfLevel] ASC 
+go
+SELECT  ds.[SchoolName] as [SchoolName], ds.[WHPSProfLevel] as [WHPSProfLevel],Count(  ds.[DistrictStudentId]) as [DistrictStudentId]  FROM dbo.WHPSProfLevelAimsWebPlusDS as ds with (nolock)  LEFT JOIN dbo.RefProficiencylevel ON ds.[WHPSProfLevel] = dbo.RefProficiencylevel.ProficiencyDescription AND  ds.tenantid =dbo.RefProficiencylevel.tenantid    WHERE  ((ds.[Period] = 'Fall') AND (ds.[SchoolYear] IN (2025)) AND (ds.TenantId = 38))   GROUP BY ds.[SchoolName],ds.[WHPSProfLevel],dbo.RefProficiencylevel.SortOrder  ORDER BY ds.[SchoolName] ASC,dbo.RefProficiencylevel.SortOrder ASC,ds.[WHPSProfLevel] ASC 
+go
+SELECT  ds.[WHPSProfLevel] as [WHPSProfLevel],Count(Distinct ds.[DistrictStudentId]) as [Count],( SELECT COUNT(Distinct subds.[DistrictStudentId]) FROM dbo.WHPSProfLevelAimsWebPlusDS AS subds with (nolock) LEFT JOIN dbo.RefProficiencylevel ON subds.[WHPSProfLevel] = dbo.RefProficiencylevel.ProficiencyDescription AND  subds.tenantid =dbo.RefProficiencylevel.tenantid  Where subds.[Period] = ('winter') AND  subds.[SchoolYear] IN (2025) AND (subds.TenantId =38)) AS [SeriesTotalCount]  FROM dbo.WHPSProfLevelAimsWebPlusDS as ds with (nolock)  LEFT JOIN dbo.RefProficiencylevel ON ds.[WHPSProfLevel] = dbo.RefProficiencylevel.ProficiencyDescription AND  ds.tenantid =dbo.RefProficiencylevel.tenantid    WHERE  ((ds.[Period] = 'winter') AND (ds.[SchoolYear] IN (2025)) AND (ds.TenantId = 38))   GROUP BY ds.[WHPSProfLevel],dbo.RefProficiencylevel.SortOrder  ORDER BY dbo.RefProficiencylevel.SortOrder ASC,ds.[WHPSProfLevel] ASC 
+go
+SELECT  ds.[SchoolYear] as [SchoolYear],Count(Distinct ds.[districtstudentid]) as [Count]  FROM dbo.WHPSAPAllYearsViewChartDs as ds with (nolock)   WHERE  (ds.TenantId = 38)   GROUP BY ds.[SchoolYear]  ORDER BY ds.[SchoolYear] ASC 
+go
+SELECT  ds.[SchoolYear] as [SchoolYear],Count(ds.[districtstudentid]) as [Count],( SELECT COUNT(subds.[districtstudentid]) FROM dbo.WHPSAPAllYearsViewChartDs AS subds with (nolock)   Where subds.[LEAIdentifier] IN ('1550011') AND (subds.TenantId =38)) AS [SeriesTotalCount]  FROM dbo.WHPSAPAllYearsViewChartDs as ds with (nolock)   WHERE  ((ds.[LEAIdentifier] IN ('1550011')) AND (ds.TenantId = 38))   GROUP BY ds.[SchoolYear]  ORDER BY ds.[SchoolYear] ASC 
+go
+SELECT  ds.[SchoolYear] as [SchoolYear], ds.[Subject] as [Subject], ds.[proficiency_level] as [proficiency_level],Count(  ds.[districtstudentid]) as [districtstudentid]  FROM dbo.WHPSAPAllYearsViewChartDs as ds with (nolock)   WHERE  ((ds.[Subject] IN ('AP Research', 'AP Seminar')) AND (ds.[LEAIdentifier] IN ('1550011')) AND (ds.TenantId = 38))   GROUP BY ds.[SchoolYear],ds.[Subject],ds.[proficiency_level]  ORDER BY ds.[SchoolYear] ASC,ds.[proficiency_level] ASC,ds.[Subject] ASC 
+go
+SELECT  ds.[Subject] as [Subject], ds.[Scores] as [Scores],Count(  ds.[districtstudentid]) as [districtstudentid]  FROM dbo.WHPSAPScoreDistributionDS as ds with (nolock)  LEFT JOIN dbo.RefProficiencylevel ON ds.[Scores] = dbo.RefProficiencylevel.ProficiencyDescription AND  ds.tenantid =dbo.RefProficiencylevel.tenantid    WHERE  ((ds.[SchoolYear] IN (2024)) AND (ds.TenantId = 38))   GROUP BY ds.[Subject],ds.[Scores],dbo.RefProficiencylevel.SortOrder  ORDER BY ds.[Subject] ASC,dbo.RefProficiencylevel.SortOrder DESC,ds.[Scores] DESC 
+go
+SELECT  ds.[SchoolYear] as [SchoolYear], ds.[proficiency_level] as [proficiency_level], ds.[proficiency_level_name] as [proficiency_level_name],Count(  ds.[districtstudentid]) as [districtstudentid]  FROM dbo.WHPSAPAllYearsViewChartDs as ds with (nolock)   WHERE  (ds.TenantId = 38)   GROUP BY ds.[SchoolYear],ds.[proficiency_level],ds.[proficiency_level_name]  ORDER BY ds.[SchoolYear] ASC,ds.[proficiency_level] ASC 
+go
+SELECT  ds.[Subject] as [Subject], ds.[SchoolYear] as [SchoolYear],Count(Distinct  ds.[districtstudentid]) as [districtstudentid],( SELECT COUNT(Distinct subds.[districtstudentid]) FROM dbo.WHPSAPAllYearsViewChartDs AS subds with (nolock)   Where  subds.[Subject] = ds.[Subject] AND subds.[SchoolYear] = ds.[SchoolYear] AND  subds.[SchoolYear] IN (2024) AND (subds.TenantId =38)) AS [SeriesTotalCount]  FROM dbo.WHPSAPAllYearsViewChartDs as ds with (nolock)   WHERE  ((ds.[Original_Score] >= '3') AND (ds.[SchoolYear] IN (2024)) AND (ds.TenantId = 38))   GROUP BY ds.[Subject],ds.[SchoolYear]  ORDER BY ds.[Subject] ASC,ds.[SchoolYear] ASC 
+go
+SELECT  ds.[Grade] as [Grade], ds.[ProficiencyDescription] as [ProficiencyDescription],Count(  ds.[DistrictStudentId]) as [DistrictStudentId]  FROM dbo.WHPSAssessmentAllDS as ds with (nolock)  LEFT JOIN dbo.RefGrade ON ds.[Grade] = dbo.RefGrade.GradeDescription AND  ds.tenantid =dbo.RefGrade.tenantid   LEFT JOIN dbo.WHPSi_ReadyLevel ON ds.[ProficiencyDescription] = dbo.WHPSi_ReadyLevel.AssessmentLevelCode AND  ds.tenantid =dbo.WHPSi_ReadyLevel.tenantid    WHERE  ((ds.[Assessment] = 'i-Ready') AND (ds.[SubjectAreaName] = 'Mathematics') AND (ds.[TermDescription] = 'Spring') AND (ds.[SchoolYear] IN (2026)) AND (ds.TenantId = 38))   GROUP BY ds.[Grade],ds.[ProficiencyDescription],dbo.RefGrade.SortOrder,dbo.WHPSi_ReadyLevel.SortOrder  ORDER BY dbo.RefGrade.SortOrder ASC,ds.[Grade] ASC,dbo.WHPSi_ReadyLevel.SortOrder ASC,ds.[ProficiencyDescription] ASC 
+go
+SELECT  ds.[Grade] as [Grade], ds.[ProficiencyDescription] as [ProficiencyDescription],Count(  ds.[DistrictStudentId]) as [DistrictStudentId]  FROM dbo.WHPSAssessmentAllDS as ds with (nolock)  LEFT JOIN dbo.RefGrade ON ds.[Grade] = dbo.RefGrade.GradeDescription AND  ds.tenantid =dbo.RefGrade.tenantid   LEFT JOIN dbo.WHPSi_ReadyLevel ON ds.[ProficiencyDescription] = dbo.WHPSi_ReadyLevel.AssessmentLevelCode AND  ds.tenantid =dbo.WHPSi_ReadyLevel.tenantid    WHERE  ((ds.[Assessment] = 'i-Ready') AND (ds.[SubjectAreaName] = 'Reading') AND (ds.[TermDescription] = 'Fall') AND (ds.[SchoolYear] IN (2026)) AND (ds.TenantId = 38))   GROUP BY ds.[Grade],ds.[ProficiencyDescription],dbo.RefGrade.SortOrder,dbo.WHPSi_ReadyLevel.SortOrder  ORDER BY dbo.RefGrade.SortOrder ASC,ds.[Grade] ASC,dbo.WHPSi_ReadyLevel.SortOrder ASC,ds.[ProficiencyDescription] ASC 
+go
+SELECT  ds.[Grade] as [Grade], ds.[ProficiencyDescription] as [ProficiencyDescription],Count(  ds.[DistrictStudentId]) as [DistrictStudentId]  FROM dbo.WHPSAssessmentAllDS as ds with (nolock)  LEFT JOIN dbo.RefGrade ON ds.[Grade] = dbo.RefGrade.GradeDescription AND  ds.tenantid =dbo.RefGrade.tenantid   LEFT JOIN dbo.WHPSi_ReadyLevel ON ds.[ProficiencyDescription] = dbo.WHPSi_ReadyLevel.AssessmentLevelCode AND  ds.tenantid =dbo.WHPSi_ReadyLevel.tenantid    WHERE  ((ds.[Assessment] = 'i-Ready') AND (ds.[SubjectAreaName] = 'Mathematics') AND (ds.[TermDescription] = 'Fall') AND (ds.[SchoolYear] IN (2026)) AND (ds.TenantId = 38))   GROUP BY ds.[Grade],ds.[ProficiencyDescription],dbo.RefGrade.SortOrder,dbo.WHPSi_ReadyLevel.SortOrder  ORDER BY dbo.RefGrade.SortOrder ASC,ds.[Grade] ASC,dbo.WHPSi_ReadyLevel.SortOrder ASC,ds.[ProficiencyDescription] ASC 
+
+
+
+
+
+--select * from fn_DashboardReportsDetails(38) where  dashboardname = 'Student Growth - i-Ready'
+--select * from fn_DashboardReportsDetails(38) where  dashboardname = 'Student Growth - AimsWeb Plus'
+--select * from fn_DashboardReportsDetails(38) where  dashboardname = 'SBAC Longitudinal Performance'
+--select * from fn_DashboardReportsDetails(38) where  dashboardname = 'SBAC'
+--select * from fn_DashboardReportsDetails(38) where  dashboardname = 'Student Performance'
+--select * from fn_DashboardReportsDetails(38) where  dashboardname = 'SAT/PSAT'
+--select * from fn_DashboardReportsDetails(38) where  dashboardname = 'LAS Links Growth'
+--select * from fn_DashboardReportsDetails(38) where  dashboardname = 'LAS Links'
+select * from fn_DashboardReportsDetails(38) where  dashboardname = 'i-Ready'
+exec sp_depends [WHPSiReadyTermLevelsDS]
+select * from [WHPSiReadyTermLevelsDS]
+select * from [IDM].[StudentsSubgroup] where tenantid = 38
+
+
+exec sp_depends WHPSSBACDSNew
+exec sp_depends WHPSSBACDS
+exec sp_depends WHPSAimswebPlusTermLevelsDS
+exec sp_depends WHPSSATPSATSSDS
+exec sp_helptext WHPSSBACDS
+exec sp_helptext WHPSSBACDSNew
+exec sp_helptext WHPS_LASGrowth_VW
+
+select * from WHPSSATPSATSSDS
+
+--USP_UpdateDatasetField
+
+[WHPSi-ReadyTermLevels_DS]
+
+
+--exec [USP_UpdateDatasetField] 'WHPSSATPSATSSDS', 'GRADE_LEVEL', 'Grade', 38
+--exec [USP_UpdateDatasetField] 'WHPS_i-ReadyTermLevels_DS', 'GradeDescription', 'Grade', 38
+--exec [USP_UpdateDatasetField] 'WHPS_AimswebPlusTermLevels_DS', 'GradeDescription', 'Grade', 38
+
+select distinct schoolyear from main.whps_laslinks

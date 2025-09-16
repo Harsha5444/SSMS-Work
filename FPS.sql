@@ -6,7 +6,7 @@ select * from idm.Tenant
 
 select * from RefFileTemplates where tenantid = 35 and filetemplatename like '%dibels%'
 select * from fn_DashboardReportsDetails(35) where dashboardname = 'Discipline'
-select * from fn_DashboardReportsDetails(28) where groupname is not null
+select * from fn_DashboardReportsDetails(28) where ReportId = 3231
 select ActionTypeCode,SuspensionType from refactiontype where tenantid = 35 and SuspensionType is not null
 --FPS_MCAS_2023 for Admins
 --FPS_MCAS_Tierwithdemo
@@ -25,6 +25,7 @@ select * from RptDomainRelatedViews where tenantid = 35 and viewname like '%sbac
 select * from ReportDetails  order by 1 desc
 select * from Main.EH_SBAC_Math where tenantid = 35
 
+kill 292
 
 SELECT SPID,ER.percent_complete,
 		CAST(((DATEDIFF(s,start_time,GetDate()))/3600) as varchar) + ' hour(s), '
@@ -427,7 +428,7 @@ JOIN RefFileTemplates c
     ON b.FileTemplateID = c.FileTemplateId
    AND a.TenantId = c.TenantId
 JOIN Refyear y on a.tenantid = y.tenantid and a.yearid = y.yearid
-WHERE a.TenantId = 37 and y.yearcode = '2026' AND a.statusid = 2 --and cast(a.lastrundate as date) <> cast(getdate() as date)
+WHERE a.TenantId = 35 and y.yearcode = '2026' AND a.statusid = 2 --and cast(a.lastrundate as date) <> cast(getdate() as date)
 ORDER BY a.RecurringTime ASC;
 
 
@@ -446,3 +447,22 @@ exec USP_GetIReadyDomainReportDrilldownData_lvl5 @UserId=1,@TenantId=28,@SchoolY
  
  
  select * from reportdetails where reportdetailsid = 3231
+
+
+exec sp_depends FPS_MCASItemStudentTeacherResults_Maths_View
+
+
+select * from fn_DashboardReportsDetails(28) where ReportId = 3231
+
+select distinct schoolname from FPS_AggrptMCASItemStudentResults
+select * from FPS_AggrptMCASItemStudentResults where schoolname is null
+
+select * from main.k12school where tenantid = 28 and schoolyear = 2025
+
+
+select distinct sprp_sch,sprp_sch_name from main.fps_mcas_2025
+
+--sprp_sch_name
+--sprp_sch
+
+select  87427+87695+38480

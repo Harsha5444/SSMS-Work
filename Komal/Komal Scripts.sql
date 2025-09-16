@@ -620,29 +620,20 @@ SELECT * FROM @AllResults
 
 drop table  #temp_HCS_VAlidation
 
+--drop table  #temp_HCS_VAlidation
+
 WITH MAPBase AS (
     SELECT [SchoolYear]
         ,[Districtstudentid]
-        ,[GradeCode]
         ,[RITScore(Fall)]
         ,[RITScore(Winter)]
         ,[RITScore(Spring)]
-        ,[ScaleScore(Fall)]
-        ,[ScaleScore(Winter)]
-        ,[ScaleScore(Spring)]
-        ,[PercentileRank(Fall)]
-        ,[PercentileRank(Winter)]
-        ,[PercentileRank(Spring)]
         ,TenantId
     FROM (
         SELECT *
         FROM (
-            SELECT h.SchoolYear
-                ,p.AssessmentCode
-                ,p.SubjectAreaCode
+            SELECT h.SchoolYear                
                 ,h.Districtstudentid
-                ,g.GradeCode
-                ,g.GradeDescription
                 ,CASE 
                     WHEN m.MetricCode = '00501' 
                         THEN 'RITScore(' + k.Termcode + ')'
@@ -678,33 +669,18 @@ WITH MAPBase AS (
     PIVOT(
         MAX(MetricValue) 
         FOR Termcode IN (
-            [RITScore(Fall)], [RITScore(Winter)], [RITScore(Spring)],
-            [ScaleScore(Fall)], [ScaleScore(Winter)], [ScaleScore(Spring)],
-            [PercentileRank(Fall)], [PercentileRank(Winter)], [PercentileRank(Spring)]
+            [RITScore(Fall)], [RITScore(Winter)], [RITScore(Spring)]
         )
     ) u
 ),
-EOGBase AS (
+EOGBase AS ( 
     SELECT h.SchoolYear
         ,h.Districtstudentid
-        ,g.GradeCode
-        ,MAX(CASE WHEN m.MetricCode = '03479' THEN CAST(h.MetricValue AS INT) END) ScaleScore
-        ,MAX(CASE WHEN m.MetricCode = '00502' THEN CAST(h.MetricValue AS INT) END) PercentileRank
+        ,H.GradeCode
+        ,H.ScaleScore
         ,h.TenantId
-    FROM main.k12studentgenericassessment h
-    INNER JOIN main.assessmentdetails p ON h.AssessmentCodeId = p.assessmentdetailsid and h.TenantId = p.TenantId
-    INNER JOIN dbo.RefGrade g ON g.gradeid = h.StudentCurrentGradeId and g.TenantId = h.TenantId
-    INNER JOIN dbo.refmetric m ON h.MetricCodeId = m.MetricId and m.TenantId = h.TenantId
-    WHERE h.AssessmentCodeId IN (
-            SELECT assessmentdetailsid
-            FROM main.assessmentdetails
-            WHERE AssessmentCode LIKE '%EOG%'
-                AND SubjectAreaCode LIKE '%math%'
-                AND strandareacode IS NULL
-                and TenantId = h.TenantId
-        )
-      AND m.MetricCode IN ('03479','00502')
-    GROUP BY h.SchoolYear, h.Districtstudentid, g.GradeCode,h.TenantId
+    FROM AggrptAssessmentSubgroupData h
+    WHERE h.assessmentcode = 'EOG' and islatest = 1
 )
 ,Base AS (
     SELECT agg.SchoolYear
@@ -714,14 +690,7 @@ EOGBase AS (
         ,a.[RITScore(Fall)] as [MAPRITScore(Fall)]
         ,a.[RITScore(Winter)] as [MAPRITScore(Winter)]
         ,a.[RITScore(Spring)] as [MAPRITScore(Spring)]
-        ,a.[ScaleScore(Fall)]
-        ,a.[ScaleScore(Winter)]
-        ,a.[ScaleScore(Spring)]
-        ,a.[PercentileRank(Fall)] as [MAPPercentile(Fall)]
-        ,a.[PercentileRank(Winter)] as [MAPPercentile(Winter)]
-        ,a.[PercentileRank(Spring)] as [MAPPercentile(Spring)]
         ,t.ScaleScore as EOGScaleScore
-        ,t.PercentileRank as EOGPercentileRank
         ,agg.Presentrate as presentPercentage
         ,agg.IsChronic as ChronicallyAbsent
         ,agg.Race as Race
@@ -752,14 +721,9 @@ PrevYear AS (
         ,[MAPRITScore(Fall)] [MAPRITScore(Fall)_Previous]
         ,[MAPRITScore(Winter)] [MAPRITScore(Winter)_Previous]
         ,[MAPRITScore(Spring)] [MAPRITScore(Spring)_Previous]
-        ,[MAPPercentile(Fall)] [MAPPercentile(Fall)_Previous]
-        ,[MAPPercentile(Winter)] [MAPPercentile(Winter)_Previous]
-        ,[MAPPercentile(Spring)] [MAPPercentile(Spring)_Previous]
         ,EOGScaleScore [EOGScaleScore_Previous]
-        ,EOGPercentileRank [EOGPercentileRank_Previous]
     FROM Base
 )
---insert into #temp_HCS_VAlidation
 SELECT 
     b.SchoolYear,
     b.DistrictStudentId,
@@ -768,14 +732,7 @@ SELECT
     b.[MAPRITScore(Fall)],
     b.[MAPRITScore(Winter)],
     b.[MAPRITScore(Spring)], 
-    b.[ScaleScore(Fall)],
-    b.[ScaleScore(Winter)],
-    b.[ScaleScore(Spring)],
-    b.[MAPPercentile(Fall)], p.[MAPPercentile(Fall)_Previous],
-    b.[MAPPercentile(Winter)], p.[MAPPercentile(Winter)_Previous],
-    b.[MAPPercentile(Spring)], p.[MAPPercentile(Spring)_Previous],
     b.EOGScaleScore, p.[EOGScaleScore_Previous],
-    b.EOGPercentileRank, p.[EOGPercentileRank_Previous],
     b.presentPercentage,
     b.ChronicallyAbsent,
     b.Race,
@@ -788,7 +745,7 @@ FROM Base b
 LEFT JOIN PrevYear p 
     ON b.SchoolYear = p.SchoolYear
    AND b.DistrictStudentId = p.DistrictStudentId
-
+WHERE EOGScaleScore is not null and EOGScaleScore_Previous is not null
 
 
 
@@ -807,9 +764,7 @@ SELECT DISTINCT
     FRL,
     TotalIncidents
 FROM #temp_HCS_VAlidation
-WHERE EOGScaleScore is not null and EOGScaleScore_Previous is not null
-  --AND [MAPRITScore(Fall)] IS NOT NULL
-  --AND [MAPRITScore(Winter)] IS NOT NULL
-  --AND [MAPRITScore(Spring)] IS NOT NULL
+  where [MAPRITScore(Fall)] IS NOT NULL
+  AND [MAPRITScore(Winter)] IS NOT NULL
+  AND [MAPRITScore(Spring)] IS NOT NULL
 ORDER BY GradeCode, Race, Gender;
-

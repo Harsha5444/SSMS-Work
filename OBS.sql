@@ -1,4 +1,4 @@
---exec usp_getreportanalyticsquestion @questioncode='q164',@tenantid=26
+--exec usp_getreportanalyticsquestion @questioncode='q115',@tenantid=38
 
 --exec [dbo].[datavisulaizerreportsspdriven] @tenantid=26,@spname='datavisulaizerassessmentreport',@categoryfields=' isnull(x.schoolyear,'''') as [school year],  isnull(x.grade,'''') as [grade],  dbo.[refgrade].sortorder as [refgrade]',@seriesfields=' x.proficiencydescription as [proficiencydescription]',@groupbyseries=' x.proficiencydescription ',@groupbycolumns=' x.schoolyear,  x.grade ,  dbo.[refgrade].sortorder',@wherecondtion=' x.subject in ( ''mathematics'') and x.assessment in ( ''mcas'') and x.schoolyear in ( ''2024'') and x.islatest = 1',@sortorderfileds='[school year]  asc ,  [refgrade] asc,  [grade]  asc',@joinstables=' inner join dbo.[refgrade] on  x.grade = dbo.[refgrade].[gradedescription] and x.tenantid =dbo.[refgrade].tenantid  ',@userid=15,@subquerycondition='[school year], [grade]',@dynamicfields=' [school year]  varchar(max),  [grade]  varchar(max),  [refgrade]  int',@finalselectcolumns=' [school year],  [grade]',@istesttaken=1,@isfilteredoncohort=0,@subcategorycolumns=' [school year],  [grade], [refgrade]',@studentlist =null
 
@@ -103,7 +103,7 @@ select * from dbo.whps_studentsummarywithallass
 --exec sp_depends whps_blitzreportdistrict_vw
 --exec sp_helptext whpsassessmentallds_vw
 
-select * from reffiletemplates where tenantid = 26 and filetemplatename like '%staff%';
+select * from reffiletemplates where tenantid = 38 and filetemplatename like '%att%';
 
 --1) we have "null" and "n/a" in period
 --select distinct [period] from main.whps_aimswebplus order by [period]
@@ -834,7 +834,7 @@ select distinct schoolyear from whps_aimswebplustermlevels
 select * from refcharttype where tenantid = 38
 
 
-select * from reportdetails where reportdetailsid in ('8080')
+select * from reportdetails where reportdetailsid in ('8318')
 --reporttypeid in (354,351,355)
 
 --whpsacuitymatrixds
@@ -987,16 +987,98 @@ select * from main.whps_blitzreport  where schoolyear = 2025
 
 select * from whpsactivitydetailsviewds --5sec
 
+Alter VIEW [dbo].WHPSBlitzReportDistrictDS
+AS
+SELECT [WHPS_BlitzReportDistrict_Vw].[highneeds] AS [highneeds],
+	[WHPS_BlitzReportDistrict_Vw].[ETHNICITY] AS [ETHNICITY],
+	[WHPS_BlitzReportDistrict_Vw].[counselor] AS [counselor],
+	[WHPS_BlitzReportDistrict_Vw].[Student_Number] AS [Student_Number],
+	[WHPS_BlitzReportDistrict_Vw].[GRADE_LEVEL] AS [GRADE_LEVEL],
+	[WHPS_BlitzReportDistrict_Vw].[crdc_504] AS [crdc_504],
+	[WHPS_BlitzReportDistrict_Vw].[sped] AS [sped],
+	[WHPS_BlitzReportDistrict_Vw].[ell] AS [ell],
+	[WHPS_BlitzReportDistrict_Vw].[gender] AS [gender],
+	[WHPS_BlitzReportDistrict_Vw].[SASID] AS [SASID],
+	[WHPS_BlitzReportDistrict_Vw].[StudentName] AS [StudentName],
+	[WHPS_BlitzReportDistrict_Vw].[last_name] AS [last_name],
+	[WHPS_BlitzReportDistrict_Vw].[first_name] AS [first_name],
+	[WHPS_BlitzReportDistrict_Vw].[SchoolYear] AS [SchoolYear],
+	[WHPS_BlitzReportDistrict_Vw].[StudentId] AS [StudentId],
+	[WHPS_BlitzReportDistrict_Vw].[StudentSchool] AS [StudentSchool],
+	[WHPS_BlitzReportDistrict_Vw].[SchoolIdentifier] AS [SchoolIdentifier],
+	[WHPS_BlitzReportDistrict_Vw].[parentcombinedname] AS [parentcombinedname],
+	[WHPS_BlitzReportDistrict_Vw].[el_zone] AS [el_zone],
+	[WHPS_BlitzReportDistrict_Vw].[ms_zone] AS [ms_zone],
+	[WHPS_BlitzReportDistrict_Vw].[hs_zone] AS [hs_zone],
+	[WHPS_BlitzReportDistrict_Vw].[OpenChoice] AS [OpenChoice],
+	[WHPS_BlitzReportDistrict_Vw].[SAT_TotalScore] AS [SAT_TotalScore],
+	[WHPS_BlitzReportDistrict_Vw].[SAT_ReadingScore] AS [SAT_ReadingScore],
+	[WHPS_BlitzReportDistrict_Vw].[SAT_ReadingBenchmark] AS [SAT_ReadingBenchmark],
+	[WHPS_BlitzReportDistrict_Vw].[SAT_ReadingMetScore] AS [SAT_ReadingMetScore],
+	[WHPS_BlitzReportDistrict_Vw].[SAT_MathScore] AS [SAT_MathScore],
+	[WHPS_BlitzReportDistrict_Vw].[SAT_MathBenchmark] AS [SAT_MathBenchmark],
+	[WHPS_BlitzReportDistrict_Vw].[SAT_MathMetScore] AS [SAT_MathMetScore],
+	[WHPS_BlitzReportDistrict_Vw].[PSAT_TotalScore] AS [PSAT_TotalScore],
+	[WHPS_BlitzReportDistrict_Vw].[PSAT_ReadingScore] AS [PSAT_ReadingScore],
+	[WHPS_BlitzReportDistrict_Vw].[PSAT_ReadingBenchmark] AS [PSAT_ReadingBenchmark],
+	[WHPS_BlitzReportDistrict_Vw].[PSAT_ReadingMetScore] AS [PSAT_ReadingMetScore],
+	[WHPS_BlitzReportDistrict_Vw].[PSAT_MathScore] AS [PSAT_MathScore],
+	[WHPS_BlitzReportDistrict_Vw].[PSAT_MathBenchmark] AS [PSAT_MathBenchmark],
+	[WHPS_BlitzReportDistrict_Vw].[PSAT_MathMetScore] AS [PSAT_MathMetScore],
+	[WHPS_BlitzReportDistrict_Vw].[AIMSWebPlus_Mathematics_ProfLevel] AS [AIMSWebPlus_Mathematics_ProfLevel],
+	[WHPS_BlitzReportDistrict_Vw].[AIMSWebPlus_Mathematics_ScaleScore] AS [AIMSWebPlus_Mathematics_ScaleScore],
+	[WHPS_BlitzReportDistrict_Vw].[AIMSWebPlus_OralReadingFluency_ProfLevel] AS [AIMSWebPlus_OralReadingFluency_ProfLevel],
+	[WHPS_BlitzReportDistrict_Vw].[AIMSWebPlus_OralReadingFluency_ScaleScore] AS [AIMSWebPlus_OralReadingFluency_ScaleScore],
+	[WHPS_BlitzReportDistrict_Vw].[AIMSWebPlus_Reading_ProfLevel] AS [AIMSWebPlus_Reading_ProfLevel],
+	[WHPS_BlitzReportDistrict_Vw].[AIMSWebPlus_Reading_ScaleScore] AS [AIMSWebPlus_Reading_ScaleScore],
+	[WHPS_BlitzReportDistrict_Vw].[i-Ready_Mathematics_ProfLevel] AS [i-Ready_Mathematics_ProfLevel],
+	[WHPS_BlitzReportDistrict_Vw].[i-Ready_Mathematics_ScaleScore] AS [i-Ready_Mathematics_ScaleScore],
+	[WHPS_BlitzReportDistrict_Vw].[i-Ready_Reading_ProfLevel] AS [i-Ready_Reading_ProfLevel],
+	[WHPS_BlitzReportDistrict_Vw].[i-Ready_Reading_ScaleScore] AS [i-Ready_Reading_ScaleScore],
+	[WHPS_BlitzReportDistrict_Vw].[NGSS_Science_ProfLevel] AS [NGSS_Science_ProfLevel],
+	[WHPS_BlitzReportDistrict_Vw].[NGSS_Science_ScaleScore] AS [NGSS_Science_ScaleScore],
+	[WHPS_BlitzReportDistrict_Vw].[SBAC_EnglishLanguageArts_ProfLevel] AS [SBAC_EnglishLanguageArts_ProfLevel],
+	[WHPS_BlitzReportDistrict_Vw].[SBAC_EnglishLanguageArts_ScaleScore] AS [SBAC_EnglishLanguageArts_ScaleScore],
+	[WHPS_BlitzReportDistrict_Vw].[SBAC_Mathematics_ProfLevel] AS [SBAC_Mathematics_ProfLevel],
+	[WHPS_BlitzReportDistrict_Vw].[SBAC_Mathematics_ScaleScore] AS [SBAC_Mathematics_ScaleScore],
+	[WHPS_BlitzReportDistrict_Vw].[STAR_Reading_ProfLevel] AS [STAR_Reading_ProfLevel],
+	[WHPS_BlitzReportDistrict_Vw].[STAR_Reading_ScaleScore] AS [STAR_Reading_ScaleScore],
+	[WHPS_BlitzReportDistrict_Vw].[AssessmentYear] AS [AssessmentYear],
+	[WHPS_BlitzReportDistrict_Vw].TenantId
+FROM [dbo].[WHPS_BlitzReportDistrict_Vw] AS [WHPS_BlitzReportDistrict_Vw]
+WHERE [WHPS_BlitzReportDistrict_Vw].TenantId = 38
 
 
-exec sp_helptext whps_baselineclaim_unpivoted_vw
+exec sp_helptext whpsblitzreportdistrictds
 
 set statistics time on;
 select * from whpsblitzreportdistrictds
 set statistics time off;
 
+set statistics time on;
+select * from WHPS_StudentAcuityScores_Vw
+set statistics time off;
+
+set statistics time on;
+select * from whps_acuitymatrix_vw
+set statistics time off;
 
 
+
+select * from WHPSAcuityMatrixDS
+
+select * from WHPS_StudentAcuityScores_Vw
+select * from whps_acuitymatrix_vw
+
+select * from WHPSStudentAcuityScoresDS
+
+select * from WHPSAcuityMatrixDS
+
+select * from WHPSProfLevelAimsWebPlusDS
+WHPSStudentAcuityScoresDS
+
+
+--select * from fn_dashboardreportsdetails(38) where  dashboardname = 'acuity matrix'
 --select * from fn_dashboardreportsdetails(38) where  dashboardname = 'student growth - i-ready'
 --select * from fn_dashboardreportsdetails(38) where  dashboardname = 'student growth - aimsweb plus'
 --select * from fn_dashboardreportsdetails(38) where  dashboardname = 'sbac longitudinal performance'
@@ -1007,9 +1089,23 @@ set statistics time off;
 --select * from fn_dashboardreportsdetails(38) where  dashboardname = 'las links'
 --select * from fn_dashboardreportsdetails(38) where  dashboardname = 'i-ready'
 --select * from fn_dashboardreportsdetails(38) where  dashboardname = 'ap - advanced placement'
---select * from fn_dashboardreportsdetails(38) where  dashboardname = 'aimsweb plus'
+select * from fn_dashboardreportsdetails(38) where  dashboardname = 'aimsweb plus'
 --select * from fn_dashboardreportsdetails(38) where  dashboardname = 'discipline dashboard (whps)'
-select * from fn_dashboardreportsdetails(38) where  dashboardname = 'Discipline - High School Report'
+--select * from fn_dashboardreportsdetails(38) where  dashboardname = 'blitz report - teacher'
+--select * from fn_dashboardreportsdetails(38) where  dashboardname = 'Discipline - High School Report'
+--select * from fn_dashboardreportsdetails(38) where  dashboardname = 'All Assessments'
+--select * from fn_dashboardreportsdetails(38) where  dashboardname = 'Attendance Dashboard (WHPS)'
+--select * from fn_dashboardreportsdetails(38) where  dashboardname = 'District (WHPS)'
+--select * from fn_dashboardreportsdetails(38) where  dashboardname = 'Enrollment Dashboard (WHPS)'
+--select * from fn_dashboardreportsdetails(38) where  dashboardname = 'principal (WHPS)'
+--select * from fn_dashboardreportsdetails(38) where  dashboardname = 'IT Data Imports'
+select * from fn_dashboardreportsdetails(38) where  dashboardname = 'AP - Advanced Placement'
+select * from fn_dashboardreportsdetails(38) where  dashboardname = 'Quest'
+select * from fn_dashboardreportsdetails(38) where reportname like '%reason%'
+select * from fn_dashboardreportsdetails(38) where dataset like '%WHPS_AP_ScoreDistributionDS%'
+
+
+select * from fn_dashboardreportsdetails(38) where childreportid = '6970'
 
 select top 100 * from DisciplineIncidentSCLevelCountsDS where tenantid = 38
 select * from DisciplineIncidentCountsDS  where tenantid = 38
@@ -1019,8 +1115,15 @@ select * from DisciplineIncidentCountsDS  where tenantid = 38
 --whpsassessmentallds
 --whps_proflevel_aimswebplus_ds
 --whpsproflevelaimswebplusds
+select * from WHPSQuestESDS
+exec sp_depends WHPS_PATLevelMovementStudent_Vw
+exec sp_depends WHPS_ElemQuestAssessmentInfo_Vw
+exec sp_depends WHPS_MiddleQuestAssessmentInfo_Vw
 
-exec sp_depends StudentsDisciplineAverageDS
+--WHPS_ElemQuestAssessmentInfo_Vw
+--WHPS_MiddleQuestAssessmentInfo_Vw
+
+select * from dbo.AssessmentSubgrpProfDS
 select * from [whpsireadytermlevelsds]
 select * from [idm].[studentssubgroup] where tenantid = 38
 
@@ -1030,6 +1133,108 @@ exec sp_depends whpssbacdsnew
 exec sp_depends whpssbacds
 exec sp_depends whpsaimswebplustermlevelsds
 exec sp_depends whpssatpsatssds
-exec sp_helptext whpslaslinksds
-exec sp_helptext whpssbacdsnew
+exec sp_helptext WHPSProfLevelAimsWebPlusDS
+exec sp_helptext WHPSStudentAcuityScoresDS
 exec sp_helptext StudentsDisciplineAverageDS
+exec sp_helptext K12SpecialEducationStudent_View
+exec sp_helptext WHPS_ElemQuestAssessmentInfo_Vw
+exec sp_helptext WHPS_MiddleQuestAssessmentInfo_Vw
+
+select * from aggrptk12studentdetails where schoolyear = 2026 and tenantid = 38
+
+select * from main.k12studentdailyattendance where schoolyear = 2026 and tenantid = 38
+select * from dbo.RefAttendanceStatus where tenantid = 38
+
+select * from main.WHPS_Attendance where schoolyear = 2026
+select * from main.WHPS_PeriodAttendance where schoolyear = 2026
+
+select * from IDM.AppErrorLog order by 1 desc
+
+select * from K12SpecialEducationStudent_View
+
+
+select distinct reportdetailsid from linkedreportmappedfileds where childreportid='6970'
+
+select * from WHPSAcuityMatrixDS
+
+select * from fn_dashboardreportsdetails(38) where  dashboardname = 'acuity matrix'
+
+exec sp_helptext WHPSAcuityMatrixDS
+exec sp_helptext [WHPS_AcuityMatrix_Vw]
+
+
+select * from refproficiencyacuity where tenantid = 38 and assessmentcode = 'Acuity Matrix' and sy = 2026
+
+CREATE VIEW RefProficiencyAcuityLevels AS
+SELECT '2026' AS SchoolYear, 'On watch' AS ProficiencyCode, 'On watch' AS ProficiencyDescription, 3 AS Value, '#1c8704' AS ColorCode, NULL AS Min, NULL AS Max, 'Acuity Matrix' AS AssessmentCode, 'Reading' AS SubjectAreaCode, 'PROFLVL' AS MetricCode, 3 AS SortOrder, 38 AS TenantId, 1 AS StatusId
+UNION ALL
+SELECT '2026', 'Progressing as expected for grade level', 'Progressing as expected for grade level', 4, '#005F89', NULL, NULL, 'Acuity Matrix', 'Reading', 'PROFLVL', 4, 38, 1
+UNION ALL
+SELECT '2026', 'Tier 2', 'Intervention', 2, '#FEC900', NULL, NULL, 'Acuity Matrix', 'Reading', 'PROFLVL', 2, 38, 1
+UNION ALL
+SELECT '2026', 'Tier 3', 'Urgent Intervention', 1, '#CD1900', NULL, NULL, 'Acuity Matrix', 'Reading', 'PROFLVL', 1, 38, 1
+UNION ALL
+SELECT '2026', 'Cannot Calculate Score', 'Cannot Calculate Score', 5, '#808080', NULL, NULL, 'Acuity Matrix', 'Reading', 'PROFLVL', 5, 38, 1;
+
+select * from assessmentinfo where tenantid = 38
+
+select * from refproficiencyacuitylevels where ProficiencyDescription in(
+select ProficiencyDescription  from refproficiencylevel where tenantid = 38 and assessmentcode = 'acuity matrix' and SY=2026)
+and tenantid = 38 and assessmentcode <> 'acuity matrix' and SY=2026
+
+select distinct  Assessment,GradeCode from assessmentinfo where tenantid = 38 and Assessment in
+('STAR'
+,'SBAC'
+,'SAT'
+,'PSATNM'
+,'PSAT89'
+,'PSAT/SAT'
+,'PAT'
+,'NGSS'
+,'NWEA'
+,'LASLinks'
+,'i-Ready'
+,'AP'
+,'AIMSWebPlus')
+order by 1
+
+sp_helptext StudentsDisciplineAverageDS
+
+
+select * from fn_dashboardreportsdetails(38) where  dashboardname = 'AP - Advanced Placement'
+
+select * from idm.apperrorlog order by 1 desc
+
+select * from WHPSAPAllYearsViewChartDs
+
+
+--Acuity Matrix
+select * from idm.studentssubgroup where tenantid = '38' and statusid = 1 order by sortorder
+
+select * from RptDomainRelatedViews where DisplayName='WHPS_LASLinksDS'
+select * from RptDomainRelatedViews where viewname='dbo.WHPSAPAllYearsViewChartDs'
+
+select * from reportdetails where domainrelatedviewid = '2847' 
+
+select * from IDM.DataSetColumn where DomainRelatedViewId=2880
+select * from RptViewFields where DomainRelatedViewId=2880
+  
+select * from IDM.DataSetFormulaColumn where DataSetColumnId in (select DataSetColumnId from IDM.DataSetColumn where DomainRelatedViewId=2880)
+select * from IDM.DataSetJoinColumnInfo where DataSetColumnId in (select DataSetColumnId from IDM.DataSetColumn where DomainRelatedViewId=2880)
+
+
+--update a set a.tablename = 'AggRptK12StudentDetails' ,a.ColumnSchema = 'dbo', a.Formula = REPLACE(a.Formula,'K12School','[AggRptK12StudentDetails]')
+--from IDM.DataSetColumn a where DomainRelatedViewId=2847
+--and DataSetColumnId = 17386
+
+--update a set a.tablename = 'AggRptK12StudentDetails' ,a.ColumnSchema = 'dbo', a.Formula = REPLACE(a.Formula,'K12School','[AggRptK12StudentDetails]')
+--from IDM.DataSetColumn a where DomainRelatedViewId=2847
+--and DataSetColumnId = 17387
+
+
+--delete from IDM.DataSetJoinColumnInfo where DataSetJoinColumnInfoId in (708,709,711)
+
+--update a
+--set a.jointype = 'Inner Join'
+--from IDM.DataSetJoinColumnInfo a 
+--where DataSetJoinColumnInfoId in (712,713)

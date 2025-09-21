@@ -5,6 +5,9 @@ WITH MAPBase AS (  ---87427
         ,[RITScore(Fall)]
         ,[RITScore(Winter)]
         ,[RITScore(Spring)]
+        ,[TestPercentile(Fall)]
+        ,[TestPercentile(Winter)] 
+        ,[TestPercentile(Spring)]
         ,TenantId
     FROM (        
           select  
@@ -15,8 +18,19 @@ WITH MAPBase AS (  ---87427
             TestRITScore as MetricValue,
             TenantId
             from [HCS_Assessment_MAP_7YR] where [Subject] = 'Mathematics'
+
+            union all
+
+             select  
+            SchoolYear,
+            StudentID as Districtstudentid,
+            [Subject] as SubjectAreaName ,
+            'TestPercentile(' + TestTerm + ')' as Termcode,
+            TestPercentile as MetricValue,
+            TenantId
+            from [HCS_Assessment_MAP_7YR] where [Subject] = 'Mathematics'
     ) o
-    PIVOT(MAX(MetricValue) FOR Termcode IN ( [RITScore(Fall)], [RITScore(Winter)], [RITScore(Spring)])) u
+    PIVOT(MAX(MetricValue) FOR Termcode IN ( [RITScore(Fall)], [RITScore(Winter)], [RITScore(Spring)] ,[TestPercentile(Fall)], [TestPercentile(Winter)], [TestPercentile(Spring)] )) u
 ),
 EOGBase AS (
 select SchoolYear,studentNumber as Districtstudentid,testType as [SubjectAreaName],SS as ScaleScore,TenantId from [dbo].[HCS_Assessment_EOG_7YR]
@@ -48,6 +62,9 @@ Base AS (
         ,a.[RITScore(Fall)] [MAPRITScore(Fall)]
         ,a.[RITScore(Winter)] [MAPRITScore(Winter)]
         ,a.[RITScore(Spring)] [MAPRITScore(Spring)]
+        ,a.[TestPercentile(Fall)]   [MAPTestPercentile(Fall)]
+        ,a.[TestPercentile(Winter)] [MAPTestPercentile(Winter)]
+        ,a.[TestPercentile(Spring)] [MAPTestPercentile(Spring)]
         ,t.ScaleScore EOGScaleScore
         ,ISNULL(b.presentPercentage, '0.0') presentPercentage
         ,CASE WHEN ISNULL(b.chronicallyAbsent, 'N') = 'N' THEN 0 ELSE 1 END ChronicallyAbsent
@@ -71,6 +88,9 @@ SELECT
     b.[MAPRITScore(Fall)],
     b.[MAPRITScore(Winter)],
     b.[MAPRITScore(Spring)], 
+    b.[MAPTestPercentile(Fall)],
+    b.[MAPTestPercentile(Winter)],
+    b.[MAPTestPercentile(Spring)],
     b.EOGScaleScore,
     b.presentPercentage,
     b.ChronicallyAbsent,

@@ -466,3 +466,4 @@ select distinct sprp_sch,sprp_sch_name from main.fps_mcas_2025
 --sprp_sch
 
 select  87427+87695+38480
+

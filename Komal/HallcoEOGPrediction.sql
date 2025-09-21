@@ -5,6 +5,9 @@ WITH MAPBase AS (  ---38480
         ,[RITScore(Fall)]
         ,[RITScore(Winter)]
         ,[RITScore(Spring)]
+        ,[TestPercentile(Fall)]
+        ,[TestPercentile(Winter)] 
+        ,[TestPercentile(Spring)]
         ,TenantId
     FROM (        
        select 
@@ -17,8 +20,20 @@ WITH MAPBase AS (  ---38480
         from main.Hallco_MAP_AssessmentResults
         where [Subject] = 'Mathematics' 
 
+        union all
+
+         select 
+        SchoolYear,
+            StudentID as Districtstudentid,
+            [Subject] as SubjectAreaName ,
+            'TestPercentile(' + substring(Termname,1,charindex(' ',Termname)-1) + ')' as Termcode,
+            TestPercentile as MetricValue,
+            TenantId
+        from main.Hallco_MAP_AssessmentResults
+        where [Subject] = 'Mathematics' 
+
         ) t
-    PIVOT(MAX(MetricValue) FOR Termcode IN ( [RITScore(Fall)], [RITScore(Winter)], [RITScore(Spring)])) u
+    PIVOT(MAX(MetricValue) FOR Termcode IN ( [RITScore(Fall)], [RITScore(Winter)], [RITScore(Spring)],[TestPercentile(Fall)], [TestPercentile(Winter)], [TestPercentile(Spring)])) u
 ),
 EOGBase AS ( 
 	SELECT SchoolYear
@@ -71,6 +86,9 @@ EOGBase AS (
         ,a.[RITScore(Fall)] as [MAPRITScore(Fall)]
         ,a.[RITScore(Winter)] as [MAPRITScore(Winter)]
         ,a.[RITScore(Spring)] as [MAPRITScore(Spring)]
+        ,a.[TestPercentile(Fall)]   [MAPTestPercentile(Fall)]
+        ,a.[TestPercentile(Winter)] [MAPTestPercentile(Winter)]
+        ,a.[TestPercentile(Spring)] [MAPTestPercentile(Spring)]
         ,t.ScaleScore as EOGScaleScore
         ,t.[SubjectAreaName]
         ,ISNULL(c.TotalIncidents, 0)  as TotalIncidents
@@ -88,6 +106,9 @@ SELECT
     b.[MAPRITScore(Fall)],
     b.[MAPRITScore(Winter)],
     b.[MAPRITScore(Spring)], 
+    b.[MAPTestPercentile(Fall)],
+    b.[MAPTestPercentile(Winter)],
+    b.[MAPTestPercentile(Spring)],
     b.EOGScaleScore,
     b.presentPercentage,
     b.ChronicallyAbsent,

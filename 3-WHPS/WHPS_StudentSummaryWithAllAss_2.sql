@@ -415,11 +415,16 @@ INNER JOIN (
 	) r ON ss.Student_Number = r.DistrictStudentId
 	AND ss.schoolyear = r.schoolyear
 
-/*
-================================================================================
-UPDATING 'SBAC', 'NGSS' ASSESSMENT DATA
-================================================================================
-*/
+--UPDATE ss
+--SET ss.NGSS_Science_ProfLevel = NULL
+--	,ss.NGSS_Science_ScaleScore = NULL
+--	,ss.SBAC_EnglishLanguageArts_ProfLevel = NULL
+--	,ss.SBAC_EnglishLanguageArts_ScaleScore = NULL
+--	,ss.SBAC_Mathematics_ProfLevel = NULL
+--	,ss.SBAC_Mathematics_ScaleScore = NULL
+--FROM WHPS_StudentSummaryWithAllAss ss
+
+--2025 2024,2023 update
 UPDATE ss
 SET ss.NGSS_Science_ProfLevel = r.NGSS_Science_ProfLevel
 	,ss.NGSS_Science_ScaleScore = r.NGSS_Science_ScaleScore
@@ -463,7 +468,7 @@ INNER JOIN (
 			WHERE IsLatest = 1
 				AND ProficiencyDescription IS NOT NULL
 				AND AssessmentCode IN ('SBAC', 'NGSS')
-				AND SchoolYear IN (2024, 2023)
+				AND SchoolYear IN (2025,2024, 2023)
 			
 			UNION ALL
 			
@@ -479,7 +484,7 @@ INNER JOIN (
 			WHERE IsLatest = 1
 				AND ScaleScore IS NOT NULL
 				AND AssessmentCode IN ('SBAC', 'NGSS')
-				AND SchoolYear IN (2024, 2023)
+				AND SchoolYear IN (2025, 2024, 2023)
 			) AS source
 		PIVOT(MAX(SValue) FOR ColumnName IN ([NGSS_Science_ProfLevel], [NGSS_Science_ScaleScore], [SBAC_English Language Arts_ProfLevel], [SBAC_English Language Arts_ScaleScore], [SBAC_Mathematics_ProfLevel], [SBAC_Mathematics_ScaleScore])) AS p
 		) pivot_results

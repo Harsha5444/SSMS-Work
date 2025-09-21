@@ -5,6 +5,9 @@ WITH MAPBase AS (  ---87695
         ,[RITScore(Fall)]
         ,[RITScore(Winter)]
         ,[RITScore(Spring)]
+                ,[TestPercentile(Fall)]
+        ,[TestPercentile(Winter)] 
+        ,[TestPercentile(Spring)]
         ,TenantId
     FROM (        
        select  
@@ -15,8 +18,20 @@ WITH MAPBase AS (  ---87695
             TestRITScore as MetricValue,
             TenantId
             from clayton_assessment_map where [Subject] = 'Mathematics' --316308
+
+            union all
+
+            select  
+            SchoolYear,
+            StudentID as Districtstudentid,
+            [Subject] as SubjectAreaName ,
+            'TestPercentile(' + TestTerm + ')' as Termcode,
+            TestPercentile as MetricValue,
+            TenantId
+            from clayton_assessment_map where [Subject] = 'Mathematics' --316308
+
         ) t
-    PIVOT(MAX(MetricValue) FOR Termcode IN ( [RITScore(Fall)], [RITScore(Winter)], [RITScore(Spring)])) u
+    PIVOT(MAX(MetricValue) FOR Termcode IN ( [RITScore(Fall)], [RITScore(Winter)], [RITScore(Spring)],[TestPercentile(Fall)], [TestPercentile(Winter)], [TestPercentile(Spring)])) u
 ),
 EOGBase AS ( 
     select SchoolYear,studentNumber as Districtstudentid,testType as [SubjectAreaName],SS as ScaleScore,TenantId 
@@ -47,6 +62,9 @@ EOGBase AS (
         ,a.[RITScore(Fall)] as [MAPRITScore(Fall)]
         ,a.[RITScore(Winter)] as [MAPRITScore(Winter)]
         ,a.[RITScore(Spring)] as [MAPRITScore(Spring)]
+                ,a.[TestPercentile(Fall)]   [MAPTestPercentile(Fall)]
+        ,a.[TestPercentile(Winter)] [MAPTestPercentile(Winter)]
+        ,a.[TestPercentile(Spring)] [MAPTestPercentile(Spring)]
         ,t.ScaleScore as EOGScaleScore
         ,t.[SubjectAreaName]
         ,ISNULL(c.TotalIncidents, 0)  as TotalIncidents
@@ -64,6 +82,9 @@ SELECT
     b.[MAPRITScore(Fall)],
     b.[MAPRITScore(Winter)],
     b.[MAPRITScore(Spring)], 
+        b.[MAPTestPercentile(Fall)],
+    b.[MAPTestPercentile(Winter)],
+    b.[MAPTestPercentile(Spring)],
     b.EOGScaleScore,
     b.presentPercentage,
     b.ChronicallyAbsent,

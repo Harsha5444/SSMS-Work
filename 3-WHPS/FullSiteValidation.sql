@@ -11,7 +11,9 @@
 
 exec [dbo].[USP_ProfileElementInfoView] @TenantId=38,@ProfileId=180,@FilterValue='187931',@FieldList='Gender,Grade,AgeGroup,SpecialEdStatus,GradeCode,StateStudentId,DistrictStudentId,Presentrate,LastorSurName,FirstName,MiddleName'
 
+exec [dbo].[USP_TVU_StaffPublishedProfileDetails] @DistrictStaffId='399990',@TenantId=38,@SchoolId='61'
 
+exec [dbo].[USP_GetStudentsForStaffBySectionCourse] @UserId=1072,@TenantId=38,@SchoolYear='2026',@SchoolId='61',@sectionId='1RES',@courseId='SASS7450',@Grade=NULL,@StaffIds='399990',@STARTRECORD='0',@RECORDS='50',@SORTBY='StudentName',@SORTTYPE='asc',@IsALLRecords=0,@IsFilterFirstTime=0,@ValueFilters=NULL,@ColorFilters=NULL,@SubGroupFilters=NULL,@CohortFilters=NULL,@isCohortGradeColumn=0,@CohortTitle=NULL,@FilterField=NULL,@UserRoles='132',@IsFromTeacherview=1,@MetrcGroupId=15,@IsExport=0
 
 exec [dbo].[USP_GetStudentProfileIReadyAssInfoData] @TenantId=38,@DistrictStudentId='187931',@SchoolYear='2026',@IsAllRecord=0,@SubjectName=NULL
 
@@ -30,7 +32,7 @@ and staff.CourseIdentifier = student.CourseIdentifier
 and staff.SectionIdentifier = student.SectionIdentifier
 and staff.SchoolIdentifier = student.SchoolIdentifier
 and staff.GradeCode = student.Grade
-where staff.DistrictStaffId = '409038' and staff.SchoolYear = '2026'
+where staff.DistrictStaffId = '399990' and staff.SchoolYear = '2026'
 
 
 

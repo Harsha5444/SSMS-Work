@@ -369,7 +369,7 @@ select
         when s.sourceabsencecount is null then 'missing in source'
         when p.productionabsencecount is null then 'missing in production'
         when s.sourceabsencecount = p.productionabsencecount then 'match'
-        else 'mismatch'
+        else 'mismatch'                                                             
     end as status
 from allstudents a
 left join sourcecounts s on a.studentid = s.studentid and a.schoolidentifier = s.schoolidentifier
@@ -987,67 +987,6 @@ select * from main.whps_blitzreport  where schoolyear = 2025
 
 select * from whpsactivitydetailsviewds --5sec
 
-Alter VIEW [dbo].WHPSBlitzReportDistrictDS
-AS
-SELECT [WHPS_BlitzReportDistrict_Vw].[highneeds] AS [highneeds],
-	[WHPS_BlitzReportDistrict_Vw].[ETHNICITY] AS [ETHNICITY],
-	[WHPS_BlitzReportDistrict_Vw].[counselor] AS [counselor],
-	[WHPS_BlitzReportDistrict_Vw].[Student_Number] AS [Student_Number],
-	[WHPS_BlitzReportDistrict_Vw].[GRADE_LEVEL] AS [GRADE_LEVEL],
-	[WHPS_BlitzReportDistrict_Vw].[crdc_504] AS [crdc_504],
-	[WHPS_BlitzReportDistrict_Vw].[sped] AS [sped],
-	[WHPS_BlitzReportDistrict_Vw].[ell] AS [ell],
-	[WHPS_BlitzReportDistrict_Vw].[gender] AS [gender],
-	[WHPS_BlitzReportDistrict_Vw].[SASID] AS [SASID],
-	[WHPS_BlitzReportDistrict_Vw].[StudentName] AS [StudentName],
-	[WHPS_BlitzReportDistrict_Vw].[last_name] AS [last_name],
-	[WHPS_BlitzReportDistrict_Vw].[first_name] AS [first_name],
-	[WHPS_BlitzReportDistrict_Vw].[SchoolYear] AS [SchoolYear],
-	[WHPS_BlitzReportDistrict_Vw].[StudentId] AS [StudentId],
-	[WHPS_BlitzReportDistrict_Vw].[StudentSchool] AS [StudentSchool],
-	[WHPS_BlitzReportDistrict_Vw].[SchoolIdentifier] AS [SchoolIdentifier],
-	[WHPS_BlitzReportDistrict_Vw].[parentcombinedname] AS [parentcombinedname],
-	[WHPS_BlitzReportDistrict_Vw].[el_zone] AS [el_zone],
-	[WHPS_BlitzReportDistrict_Vw].[ms_zone] AS [ms_zone],
-	[WHPS_BlitzReportDistrict_Vw].[hs_zone] AS [hs_zone],
-	[WHPS_BlitzReportDistrict_Vw].[OpenChoice] AS [OpenChoice],
-	[WHPS_BlitzReportDistrict_Vw].[SAT_TotalScore] AS [SAT_TotalScore],
-	[WHPS_BlitzReportDistrict_Vw].[SAT_ReadingScore] AS [SAT_ReadingScore],
-	[WHPS_BlitzReportDistrict_Vw].[SAT_ReadingBenchmark] AS [SAT_ReadingBenchmark],
-	[WHPS_BlitzReportDistrict_Vw].[SAT_ReadingMetScore] AS [SAT_ReadingMetScore],
-	[WHPS_BlitzReportDistrict_Vw].[SAT_MathScore] AS [SAT_MathScore],
-	[WHPS_BlitzReportDistrict_Vw].[SAT_MathBenchmark] AS [SAT_MathBenchmark],
-	[WHPS_BlitzReportDistrict_Vw].[SAT_MathMetScore] AS [SAT_MathMetScore],
-	[WHPS_BlitzReportDistrict_Vw].[PSAT_TotalScore] AS [PSAT_TotalScore],
-	[WHPS_BlitzReportDistrict_Vw].[PSAT_ReadingScore] AS [PSAT_ReadingScore],
-	[WHPS_BlitzReportDistrict_Vw].[PSAT_ReadingBenchmark] AS [PSAT_ReadingBenchmark],
-	[WHPS_BlitzReportDistrict_Vw].[PSAT_ReadingMetScore] AS [PSAT_ReadingMetScore],
-	[WHPS_BlitzReportDistrict_Vw].[PSAT_MathScore] AS [PSAT_MathScore],
-	[WHPS_BlitzReportDistrict_Vw].[PSAT_MathBenchmark] AS [PSAT_MathBenchmark],
-	[WHPS_BlitzReportDistrict_Vw].[PSAT_MathMetScore] AS [PSAT_MathMetScore],
-	[WHPS_BlitzReportDistrict_Vw].[AIMSWebPlus_Mathematics_ProfLevel] AS [AIMSWebPlus_Mathematics_ProfLevel],
-	[WHPS_BlitzReportDistrict_Vw].[AIMSWebPlus_Mathematics_ScaleScore] AS [AIMSWebPlus_Mathematics_ScaleScore],
-	[WHPS_BlitzReportDistrict_Vw].[AIMSWebPlus_OralReadingFluency_ProfLevel] AS [AIMSWebPlus_OralReadingFluency_ProfLevel],
-	[WHPS_BlitzReportDistrict_Vw].[AIMSWebPlus_OralReadingFluency_ScaleScore] AS [AIMSWebPlus_OralReadingFluency_ScaleScore],
-	[WHPS_BlitzReportDistrict_Vw].[AIMSWebPlus_Reading_ProfLevel] AS [AIMSWebPlus_Reading_ProfLevel],
-	[WHPS_BlitzReportDistrict_Vw].[AIMSWebPlus_Reading_ScaleScore] AS [AIMSWebPlus_Reading_ScaleScore],
-	[WHPS_BlitzReportDistrict_Vw].[i-Ready_Mathematics_ProfLevel] AS [i-Ready_Mathematics_ProfLevel],
-	[WHPS_BlitzReportDistrict_Vw].[i-Ready_Mathematics_ScaleScore] AS [i-Ready_Mathematics_ScaleScore],
-	[WHPS_BlitzReportDistrict_Vw].[i-Ready_Reading_ProfLevel] AS [i-Ready_Reading_ProfLevel],
-	[WHPS_BlitzReportDistrict_Vw].[i-Ready_Reading_ScaleScore] AS [i-Ready_Reading_ScaleScore],
-	[WHPS_BlitzReportDistrict_Vw].[NGSS_Science_ProfLevel] AS [NGSS_Science_ProfLevel],
-	[WHPS_BlitzReportDistrict_Vw].[NGSS_Science_ScaleScore] AS [NGSS_Science_ScaleScore],
-	[WHPS_BlitzReportDistrict_Vw].[SBAC_EnglishLanguageArts_ProfLevel] AS [SBAC_EnglishLanguageArts_ProfLevel],
-	[WHPS_BlitzReportDistrict_Vw].[SBAC_EnglishLanguageArts_ScaleScore] AS [SBAC_EnglishLanguageArts_ScaleScore],
-	[WHPS_BlitzReportDistrict_Vw].[SBAC_Mathematics_ProfLevel] AS [SBAC_Mathematics_ProfLevel],
-	[WHPS_BlitzReportDistrict_Vw].[SBAC_Mathematics_ScaleScore] AS [SBAC_Mathematics_ScaleScore],
-	[WHPS_BlitzReportDistrict_Vw].[STAR_Reading_ProfLevel] AS [STAR_Reading_ProfLevel],
-	[WHPS_BlitzReportDistrict_Vw].[STAR_Reading_ScaleScore] AS [STAR_Reading_ScaleScore],
-	[WHPS_BlitzReportDistrict_Vw].[AssessmentYear] AS [AssessmentYear],
-	[WHPS_BlitzReportDistrict_Vw].TenantId
-FROM [dbo].[WHPS_BlitzReportDistrict_Vw] AS [WHPS_BlitzReportDistrict_Vw]
-WHERE [WHPS_BlitzReportDistrict_Vw].TenantId = 38
-
 
 exec sp_helptext whpsblitzreportdistrictds
 
@@ -1165,16 +1104,6 @@ exec sp_helptext [WHPS_AcuityMatrix_Vw]
 
 select * from refproficiencyacuity where tenantid = 38 and assessmentcode = 'Acuity Matrix' and sy = 2026
 
-CREATE VIEW RefProficiencyAcuityLevels AS
-SELECT '2026' AS SchoolYear, 'On watch' AS ProficiencyCode, 'On watch' AS ProficiencyDescription, 3 AS Value, '#1c8704' AS ColorCode, NULL AS Min, NULL AS Max, 'Acuity Matrix' AS AssessmentCode, 'Reading' AS SubjectAreaCode, 'PROFLVL' AS MetricCode, 3 AS SortOrder, 38 AS TenantId, 1 AS StatusId
-UNION ALL
-SELECT '2026', 'Progressing as expected for grade level', 'Progressing as expected for grade level', 4, '#005F89', NULL, NULL, 'Acuity Matrix', 'Reading', 'PROFLVL', 4, 38, 1
-UNION ALL
-SELECT '2026', 'Tier 2', 'Intervention', 2, '#FEC900', NULL, NULL, 'Acuity Matrix', 'Reading', 'PROFLVL', 2, 38, 1
-UNION ALL
-SELECT '2026', 'Tier 3', 'Urgent Intervention', 1, '#CD1900', NULL, NULL, 'Acuity Matrix', 'Reading', 'PROFLVL', 1, 38, 1
-UNION ALL
-SELECT '2026', 'Cannot Calculate Score', 'Cannot Calculate Score', 5, '#808080', NULL, NULL, 'Acuity Matrix', 'Reading', 'PROFLVL', 5, 38, 1;
 
 select * from assessmentinfo where tenantid = 38
 
@@ -1198,7 +1127,7 @@ select distinct  Assessment,GradeCode from assessmentinfo where tenantid = 38 an
 ,'AIMSWebPlus')
 order by 1
 
-sp_helptext StudentsDisciplineAverageDS
+exec sp_helptext StudentsDisciplineAverageDS;
 
 
 select * from fn_dashboardreportsdetails(38) where  dashboardname = 'AP - Advanced Placement'
@@ -1238,3 +1167,119 @@ select * from IDM.DataSetJoinColumnInfo where DataSetColumnId in (select DataSet
 --set a.jointype = 'Inner Join'
 --from IDM.DataSetJoinColumnInfo a 
 --where DataSetJoinColumnInfoId in (712,713)
+
+
+
+
+
+-------------------------------
+select * from reportdetails where reportdetailsid = 8907
+
+select * from RptViewFields where DomainRelatedViewId = '3670'
+
+
+SELECT ReportDetailsId,ReportTypeId, ReportFileDetails
+FROM ReportDetails
+WHERE ReportDetailsId 
+in (8907, 8908, 8909, 8910, 8911, 8912, 8913, 8914, 8920, 8921, 8922, 8923, 8924, 8925, 8926, 8927, 8868, 8870, 8878, 8879, 8880, 8881, 8882, 8890, 8891, 8892, 8893, 8894, 8895, 8852, 8851, 8853, 8951, 8936, 8937, 8939, 8932, 8933, 8934, 8935, 8948, 8949, 8950, 8944, 8943, 8942, 8945)
+
+--AND REPORTTYPEID = 101
+--select * from RefReportType where tenantid = 38
+
+SELECT ReportDetailsId, ReportFileDetails
+FROM ReportDetails
+WHERE ReportDetailsId 
+in (8851, 8852, 8853, 8932, 8933, 8934, 8935, 8936, 8937, 8939, 8942, 8943, 8944, 8945, 8948, 8949, 8950, 8951)
+
+
+
+SELECT DISTINCT  
+       j.[ColumnName],  
+       j.[AliasName]
+FROM ReportDetails r
+CROSS APPLY OPENJSON(r.ReportFileDetails, '$.AdvanceFilter')
+     WITH (
+         ColumnName NVARCHAR(200) '$.ColumnName',
+         AliasName NVARCHAR(200) '$.AliasName'
+     ) j
+WHERE r.ReportDetailsId in (8907, 8908, 8909, 8910, 8911, 8912, 8913, 8914, 8920, 8921, 8922, 8923, 8924, 8925, 8926, 8927, 8868, 8870, 8878, 8879, 8880, 8881, 8882, 8890, 8891, 8892, 8893, 8894, 8895, 8852, 8851, 8853, 8951, 8936, 8937, 8939, 8932, 8933, 8934, 8935, 8948, 8949, 8950, 8944, 8943, 8942, 8945)
+order by 1
+
+
+SELECT DISTINCT  
+       j.[Name] AS ColumnName,  
+       j.[AliasName]
+FROM ReportDetails r
+CROSS APPLY OPENJSON(r.ReportFileDetails, '$.AliasNameList')
+     WITH (
+         [Name] NVARCHAR(200) '$.Name',
+         AliasName NVARCHAR(200) '$.AliasName'
+     ) j
+WHERE r.ReportDetailsId IN (
+    8851, 8852, 8853, 8932, 8933, 8934, 8935, 
+    8936, 8937, 8939, 8942, 8943, 8944, 8945, 
+    8948, 8949, 8950, 8951
+)
+ORDER BY j.[Name], j.AliasName;
+
+select * from AVue_TemplateDependentAggTablesLoading
+select * from [dbo].[USP_WHPS_StaffUserCreationAutomation]
+
+
+
+select count(*) --delete 
+from main.k12studentgenericassessment where tenantid = 38 and assessmentcodeid in (select assessmentdetailsid from main.assessmentdetails where assessmentcode in ('PSAT', 'PSAT89', 'PSATNM', 'SAT'))
+select count(*) --delete
+from stage.k12studentgenericassessment_audit where tenantid = 38 and assessmentcode in ('PSAT', 'PSAT89', 'PSATNM', 'SAT')
+select count(*) --delete
+from stage.k12studentgenericassessment_noaction where tenantid = 38 and assessmentcode in ('PSAT', 'PSAT89', 'PSATNM', 'SAT')
+select count(*) --delete
+from stage.k12studentgenericassessment_failedrecords where tenantid = 38 and assessmentcode in ('PSAT', 'PSAT89', 'PSATNM', 'SAT')
+
+--114242
+
+
+select distinct grade_level from main.WHPS_BlitzReport where tenantid = 38 and schoolyear = 2026
+
+select * from main.WHPS_studentstandards where tenantid = 38 and schoolyear = 2026
+
+
+
+--delete  from main.WHPS_BlitzReport where tenantid = 38 and schoolyear = 2026
+--delete  from stage.WHPS_BlitzReport_audit where tenantid = 38 and schoolyear = 2026
+--delete  from stage.WHPS_BlitzReport_noaction where tenantid = 38 and schoolyear = 2026
+--delete  from stage.WHPS_BlitzReport_failedrecords where tenantid = 38 and schoolyear = 2026
+
+--delete  from main.WHPS_studentstandards where tenantid = 38 and schoolyear = 2026
+--delete  from stage.WHPS_studentstandards_audit where tenantid = 38 and schoolyear = 2026
+--delete  from stage.WHPS_studentstandards_noaction where tenantid = 38 and schoolyear = 2026
+--delete  from stage.WHPS_studentstandards_failedrecords where tenantid = 38 and schoolyear = 2026
+
+
+select distinct cast(grade_level as int) as Grade,count(distinct STUDENT_NUMBER)
+from main.WHPS_BlitzReport where tenantid = 38 and schoolyear = 2026
+group by grade_level
+order by Grade
+
+select * from AggRptK12StudentDetails where tenantid = 38 and schoolyear = 2026 and gradecode = 10
+select * from AggRptK12StudentDetails where tenantid = 38 and schoolyear = 2026 and gradecode = 2
+select * from AggRptK12StudentDetails where tenantid = 38 and schoolyear = 2026 and gradecode = 5
+
+select distinct cast(schoolid as int) as School from main.WHPS_BlitzReport where tenantid = 38 and schoolyear = 2026 order by School
+
+
+select * from main.WHPS_BlitzReport where tenantid = 38 and schoolyear = 2026
+
+select * from main.WHPS_studentstandards where tenantid = 38 and schoolyear = 2026
+
+select distinct grade_level from WHPS_BlitzSummaryWithAllAss
+
+select * from WHPS_BlitzSummaryWithAllAss where student_number =  '124340' --grade 2
+select * from WHPS_BlitzSummaryWithAllAss where student_number =  '123644' --grade 5
+select * from WHPS_BlitzSummaryWithAllAss where student_number =  '123699'  --grade 10
+
+select * from AggrptAssessmentSubgroupData where districtstudentid = '124340' and schoolyear = 2026
+
+select * from WHPS_BlitzSummaryWithAllAss where grade_level = 'grade 2'
+select * from WHPS_BlitzSummaryWithAllAss where grade_level = 'grade 5'
+select * from WHPS_BlitzSummaryWithAllAss where grade_level = 'grade 10'

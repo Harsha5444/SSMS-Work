@@ -1468,3 +1468,22 @@ SELECT
            ' WHERE schoolyear = 2026 AND tenantid = 26') AS QueryText
 FROM @BaseTables b
 ORDER BY b.TableName, Ord;
+
+
+ 
+SELECT RecurringScheduleJobId,BatchId,BatchName,YearId,LastRunDate,DataSourceType,RecurringType,RecurringTime,DayoftheWeek,StatusId
+FROM [dbo].[RecurringScheduleJob]
+where tenantid = 38 
+and statusid = 1
+ORDER BY RecurringTime
+ 
+/*
+UPDATE a SET RecurringTime = '07:35:00.0000000' FROM RecurringScheduleJob a WHERE RecurringScheduleJobId = 820
+*/
+ 
+ 
+SELECT *
+ --UPDATE b SET b.processstatusid = 2 --abort in case
+ --UPDATE b SET ScheduledDateTime = GETDATE()
+FROM BatchSchedule b WHERE BatchId = 92284
+ 

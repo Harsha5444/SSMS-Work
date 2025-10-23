@@ -37,13 +37,17 @@ select SchoolYear,studentNumber as Districtstudentid,testType as [SubjectAreaNam
 where testType='Math'
 ),
 AttendanceSummary AS (
-    SELECT 
-        studentnumber as Districtstudentid,
-        endyear as SchoolYear,
-        ROUND(CAST(SUM(daysPresent) AS FLOAT) * 100 / SUM(scheduledDays), 2) AS PresentPercentage,
-        MAX(chronicallyAbsent) AS chronicallyAbsent 
-    FROM HCS_attendanceSummary_7YR WITH (NOLOCK)
-    GROUP BY studentnumber, endyear
+SELECT 
+    studentnumber AS DistrictStudentID,
+    endyear AS SchoolYear,
+    ROUND(CAST(SUM(daysPresent) AS FLOAT) * 100 / SUM(scheduledDays), 2) AS PresentPercentage,
+    CASE 
+        WHEN (CAST(SUM(daysPresent) AS FLOAT) * 100 / SUM(scheduledDays)) >= 90 THEN '0' 
+        ELSE '1' 
+    END AS ChronicallyAbsent
+FROM HCS_attendanceSummary_7YR WITH (NOLOCK)
+GROUP BY studentnumber, endyear
+
 ),
 BehaviorIncidents AS (
     SELECT 

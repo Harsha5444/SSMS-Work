@@ -1,3 +1,55 @@
+select CONVERT(VARCHAR(20), DateTimeStamp, 100) AS DataBaseTime,CONVERT(VARCHAR(20),(DateTimeStamp AT TIME ZONE 'UTC' AT TIME ZONE 'India Standard Time'),100) AS IST_Time,* from errorlogforusp order by ErrorId desc;
+select CONVERT(VARCHAR(20), LogDateTime, 100) AS DataBaseTime,CONVERT(VARCHAR(20),(LogDateTime AT TIME ZONE 'UTC' AT TIME ZONE 'India Standard Time'),100) AS IST_Time,* from idm.apperrorlog order by EventId desc;
+--==============================================================
+
+
+SELECT distinct o.type_desc AS ObjectType,SCHEMA_NAME(o.schema_id) AS SchemaName,
+    o.name AS ObjectName,o.create_date,o.modify_date
+FROM sys.sql_expression_dependencies d
+INNER JOIN sys.objects o ON d.referencing_id = o.object_id
+INNER JOIN sys.objects ro ON d.referenced_id = ro.object_id
+WHERE ro.name = 'FHS_Academy_ILP' AND ro.type = 'U' -- User tables only
+    AND o.type IN ('V', 'P', 'FN', 'IF', 'TF') -- Views, Stored Procedures, Functions
+ORDER BY o.type_desc, SchemaName, ObjectName;
+
+--==============================================================
+
+SELECT RecurringScheduleJobId,BatchId,BatchName,YearId,LastRunDate,DataSourceType,RecurringType,RecurringTime
+,CAST(CAST(RecurringTime AS datetime) AT TIME ZONE 'UTC'AT TIME ZONE 'India Standard Time'AS time) AS IST_Time,DayoftheWeek,StatusId
+FROM [dbo].[RecurringScheduleJob]
+where tenantid = 35 
+and statusid = 1
+ORDER BY RecurringTime
+
+
+SELECT 
+CONVERT(VARCHAR(20), a.ScheduledDateTime, 100) AS DataBaseTime,
+CONVERT(VARCHAR(20),(a.ScheduledDateTime AT TIME ZONE 'UTC' AT TIME ZONE 'India Standard Time'),100) AS IST_Time
+,RIGHT('0' + CAST(DATEDIFF(SECOND, a.ProcessStartDate, a.ProcessEndDate) / 3600 AS VARCHAR), 2) + ':' +
+RIGHT('0' + CAST((DATEDIFF(SECOND, a.ProcessStartDate, a.ProcessEndDate) % 3600) / 60 AS VARCHAR), 2) + ':' +
+RIGHT('0' + CAST(DATEDIFF(SECOND, a.ProcessStartDate, a.ProcessEndDate) % 60 AS VARCHAR), 2) AS TimeTaken
+,BatchId,DisplayBatchCD,BatchName,ProcessStartDate
+,ProcessEndDate,ProcessStatusId,DDAConversionStatusId,DeltaProcessStatusId,StageLoadStatusId,BRProcessStatusId
+,MasterLoadStatusId,SuccessFileGenerationStatusId,AggregateStatusId,IsImmediate,EmailRequired
+,IsActive
+FROM BatchSchedule a where a.tenantid = 28
+ORDER BY a.BatchID DESC;
+
+select * from refetlprocessstatus where tenantid = 35
+ 
+/*
+UPDATE a SET RecurringTime = '03:20:00.0000000' FROM RecurringScheduleJob a WHERE RecurringScheduleJobId = 72
+*/
+  
+SELECT *
+-- UPDATE b SET b.processstatusid = 2
+-- UPDATE b SET ScheduledDateTime = GETDATE()
+FROM BatchSchedule b WHERE BatchId = 92284
+ 
+--==============================================================
+
+
+
 select * from idm.Tenant
 --28	Framingham Public Schools
 --35	East Hartford Public Schools
@@ -6,6 +58,10 @@ select * from idm.Tenant
 
 select * from RefFileTemplates where tenantid = 35 and filetemplatename like '%dibels%'
 select * from fn_DashboardReportsDetails(35) where dashboardname = 'Discipline'
+select * from fn_DashboardReportsDetails(35) where dashboardname = 'SBAC Performance Outcomes Dashboard'
+--SBAC_Math (dbo.SBACMath)
+exec sp_helptext SBACMath
+--FROM Main.EH_SBAC_Math AS EH_SBAC_Math  
 select * from fn_DashboardReportsDetails(28) where ReportId = 3231
 select ActionTypeCode,SuspensionType from refactiontype where tenantid = 35 and SuspensionType is not null
 --FPS_MCAS_2023 for Admins
@@ -24,6 +80,8 @@ select * from rptdomainrelatedviews where tenantid = 37
 select * from RptDomainRelatedViews where tenantid = 35 and viewname like '%sbac%'
 select * from ReportDetails  order by 1 desc
 select * from Main.EH_SBAC_Math where tenantid = 35
+
+select * from idm.tenant
 
 kill 292
 
@@ -138,7 +196,8 @@ ORDER BY du.TenantId
 	,o.OrgName
 	,du.DDAUserId DESC
  
-
+ select distinct assessment from assessmentinfo where tenantid = 37
+ select distinct assessmentname from main.assessmentdetails where tenantid = 37
 
  
 
@@ -467,3 +526,167 @@ select distinct sprp_sch,sprp_sch_name from main.fps_mcas_2025
 
 select  87427+87695+38480
 
+
+
+select * from fn_dashboardreportsdetails(35) where  dashboardname='LAS Links'
+select * from fn_dashboardreportsdetails(35) where  dashboardname='LAS Links APTA – Literacy & Oral'
+select * from fn_dashboardreportsdetails(35) where  dashboardname='SBAC Performance Outcomes Dashboard'
+select * from fn_dashboardreportsdetails(35) where  dashboardname='SBAC Math'
+
+--EHLASLinksDS (dbo.EHLASLinksDS)
+
+exec sp_helptext EHLASLinksDS
+
+exec sp_helptext EH_LASGrowth_VW
+
+
+
+--update reportdetails
+--set reportfiledetails = json_modify(
+--        json_modify(reportfiledetails, '$.displaylatestyeardata', cast(0 as bit)),
+--        '$.displaylastyeardata', cast(1 as bit)
+--    )
+--where reportdetailsid in (
+--'3093'
+--,'3095'
+--)
+
+--main.EH_LAsGrowthTargets
+
+select * from idm.AppErrorLog order by 1 desc
+select * from ErrorLogForUSP order by 1 desc
+
+--3680
+--3682
+
+select * from ReportDetails where reportdetailsname like '%not met%'order by 1 desc
+select * from ReportDetails where reportdetailsname like '%capped%'order by 1 desc
+select * from ReportDetails order by 1 desc
+
+--update  dashboard
+--set statusid = 1
+--where tenantid = 28 and DashboardId=299
+
+select *from dashboard where tenantid = 28 and DashboardId=299
+
+SELECT a.[SchoolYear]
+	,a.[DistrictStudentId]
+	,a.[StateStudentID]
+	,a.[StudentFullName]
+	,a.[SchoolIdentifier]
+	,a.[SchoolName]
+	,a.[Gender]
+	,a.[Grade]
+	,a.[SchoolCategory]
+	,a.[Race]
+	,a.[Subject]
+	,a.[DateTaken]
+	,a.[TestReason]
+	,a.[TestOppNumber]
+	,a.[TestCompletionDate]
+	,a.[ScaleScore]
+	,a.[PerformanceIndex]
+	,a.[PIndex]
+	,a.[AchievementLevel]
+	,a.[AchievementSubLevel]
+	,a.[GrowthTarget]
+	,a.[GrowthStatus]
+	,a.[ScaleScoreStandardError]
+	,a.[SummativePerformance]
+	,b.SchoolYear AS FromYear
+	,a.SchoolYear AS ToYear
+	,b.AchievementLevel AS FromLevel
+	,a.AchievementLevel AS ToLevel
+	,CASE 
+		WHEN CAST(REPLACE(a.AchievementLevel, 'Level - ', '') AS INT) - CAST(REPLACE(b.AchievementLevel, 'Level - ', '') AS INT) > 0
+			THEN CONCAT (
+					CAST(REPLACE(a.AchievementLevel, 'Level - ', '') AS INT) - CAST(REPLACE(b.AchievementLevel, 'Level - ', '') AS INT)
+					,' Level Up'
+					)
+		WHEN CAST(REPLACE(a.AchievementLevel, 'Level - ', '') AS INT) - CAST(REPLACE(b.AchievementLevel, 'Level - ', '') AS INT) < 0
+			THEN CONCAT (
+					CAST(REPLACE(b.AchievementLevel, 'Level - ', '') AS INT) - CAST(REPLACE(a.AchievementLevel, 'Level - ', '') AS INT)
+					,' Level Down'
+					)
+		WHEN CAST(REPLACE(a.AchievementLevel, 'Level - ', '') AS INT) - CAST(REPLACE(b.AchievementLevel, 'Level - ', '') AS INT) = 0
+			THEN 'No Change'
+		ELSE 'No Prior Data'
+		END AS [Status]
+	,a.[ELL]
+	,a.[CohortGraduationYear]
+	,a.[FRL]
+	,a.[SpecialEdStatus]
+	,a.[504Status]
+	,a.[TenantId]
+	,a.[IEP]
+	,a.[HighNeedsCategory]
+FROM EH_SBAC_StudentPerformanceGrowth_Vw a
+LEFT JOIN EH_SBAC_StudentPerformanceGrowth_Vw b ON a.DistrictStudentId = b.DistrictStudentId
+	AND a.Subject = b.Subject
+	AND a.SchoolYear = (b.SchoolYear + 1)
+
+
+
+
+
+---==============================================SBAC performce validation 
+
+select  * from Main.EH_SBAC_Math where schoolyear = 2023 and SummativePerformance in ('Level 3','Level 4')
+select  * from Main.EH_SBAC_ELA where schoolyear = 2023 and SummativePerformance in ('Level 3','Level 4')
+
+select  * from Main.EH_SBAC_Math where schoolyear = 2024 and DistrictStudentId = '999015040'
+select  * from Main.EH_SBAC_Math where schoolyear = 2025 and DistrictStudentId = '999015040'
+
+select  * from Main.EH_SBAC_ELA where schoolyear = 2024 and DistrictStudentId = '999015040'
+select  * from Main.EH_SBAC_ELA where schoolyear = 2025 and DistrictStudentId = '999015040'
+
+select * from FPSHSgradesterm12026
+select * from reffiletemplates where tenantid = 28 and filetemplatename like '%ilp%'
+
+select * from main.FPS_FHSgrades
+
+select 
+StudentName
+,LASID as DistrictStudentId
+,EnrollStatus_012 as EnrollmentStatus
+,Guidance_Counselor as [GuidanceCounselor]
+,Course
+,Term
+,YearID
+,Teacher
+,Credit
+,[First]
+,[Second]
+,Third
+,Fourth
+,FINAL
+,SchoolYear
+,TenantId
+,Department
+,Support
+from main.FPS_FHSgradesLatestYear	where schoolyear = 2026
+select * from stage.FPS_FHSgradesLatestYear_audit	where schoolyear = 2026
+select * from stage.FPS_FHSgradesLatestYear_failedrecords where schoolyear = 2026
+
+select * from main.FPS_FHSgradesLatestYear	where schoolyear = 2026 and lasid = 162512
+select * from stage.FPS_FHSgradesLatestYear_failedrecords where schoolyear = 2026 and lasid = 162512
+
+select * from main.FHS_Academy_ILP
+
+select * from main.FPS_FHSgradesLatestYear where schoolyear = 2026 
+
+ 
+select count(*) --delete
+from main.FPS_MCAS_ItemAnalysis_Math_ELA_Science where tenantid = 28 and schoolyear = 2026
+select count(*) --delete
+from stage.FPS_MCAS_ItemAnalysis_Math_ELA_Science_audit where tenantid = 28 and schoolyear = 2026
+select count(*) --delete
+from stage.FPS_MCAS_ItemAnalysis_Math_ELA_Science_noaction where tenantid = 28 and schoolyear = 2026
+select count(*) --delete
+from stage.FPS_MCAS_ItemAnalysis_Math_ELA_Science_failedrecords where tenantid = 28 and schoolyear = 2026
+
+
+select * from MAIN.FPS_MCAS_ItemAnalysis_Math_ELA_Science
+--[dbo].[USP_UpdateCurrentSuccessRecordsCount]
+
+--exec [dbo].[USP_UpdateCurrentSuccessRecordsCount] 28

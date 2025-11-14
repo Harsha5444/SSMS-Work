@@ -26,13 +26,13 @@ AS (
 		AND r.ReportDetailsId IN (
 			SELECT DISTINCT ReportId
 			FROM fn_DashboardReportsDetails(38)
-			WHERE dashboardname = 'Student Growth - AimsWeb Plus'
+			WHERE dashboardname = 'ngss'
 			
 			UNION
 			
 			SELECT DISTINCT ChildReportId
 			FROM fn_DashboardReportsDetails(38)
-			WHERE dashboardname = 'Student Growth - AimsWeb Plus'
+			WHERE dashboardname = 'ngss'
 			)
 	)
 SELECT ReportDetailsId

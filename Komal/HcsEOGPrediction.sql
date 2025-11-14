@@ -53,7 +53,7 @@ BehaviorIncidents AS (
     SELECT 
         EndYear as SchoolYear,
         studentNumber as Districtstudentid,
-        COUNT(incidentID) AS TotalIncidents
+        COUNT(distinct incidentID) AS TotalIncidents
     FROM HCS_behavior_7YR WITH (NOLOCK)
     GROUP BY EndYear, studentNumber
 ),
@@ -71,7 +71,7 @@ Base AS (
         ,a.[TestPercentile(Spring)] [MAPTestPercentile(Spring)]
         ,t.ScaleScore EOGScaleScore
         ,ISNULL(b.presentPercentage, '0.0') presentPercentage
-        ,CASE WHEN ISNULL(b.chronicallyAbsent, 'N') = 'N' THEN 0 ELSE 1 END ChronicallyAbsent
+        ,ChronicallyAbsent
         ,agg.raceEthnicity as  Race
         ,agg.gender as  Gender
         ,CASE WHEN agg.disability1 is null THEN 'No' ELSE 'Yes' END Disability
@@ -106,3 +106,5 @@ SELECT
 FROM Base b  
 --WHERE EOGScaleScore is not null 
 ORDER BY Schoolyear,GradeCode, Race, Gender;
+
+

@@ -1,5 +1,7 @@
-select CONVERT(VARCHAR(20), DateTimeStamp, 100) AS DataBaseTime,CONVERT(VARCHAR(20),(DateTimeStamp AT TIME ZONE 'Eastern Standard Time' AT TIME ZONE 'India Standard Time'),100) AS IST_Time,* from errorlogforusp order by ErrorId desc;
-select CONVERT(VARCHAR(20), LogDateTime, 100) AS DataBaseTime,CONVERT(VARCHAR(20),(LogDateTime AT TIME ZONE 'UTC' AT TIME ZONE 'India Standard Time'),100) AS IST_Time,* from idm.apperrorlog order by EventId desc;
+select FORMAT(CAST([DateTimestamp] AT TIME ZONE 'Eastern Standard Time' AT TIME ZONE 'India Standard Time' AS DATETIME),'MMM dd h:mm:ss tt')
+AS IST_Time,* from errorlogforusp order by ErrorId desc;
+select FORMAT(CAST([Logdatetime] AT TIME ZONE 'UTC' AT TIME ZONE 'India Standard Time' AS DATETIME),'MMM dd h:mm:ss tt') AS IST_Time,*
+from idm.apperrorlog order by EventId desc;
 
 --====================================================================================================
 
@@ -29,8 +31,13 @@ ORDER BY CPU DESC;
 
 --====================================================================================================
 
-select [LogStatId],[ProcessName],[TableRowsBefore],[TotalRowsInserted],[TableRowsAfter],cast([TableRowsAfter] as int)-cast([TableRowsBefore]  as int)as CountChange,dateadd(minute,570,cast([StartTime] as datetime))[OurStartTime],dateadd(minute,570,cast([EndTime] as datetime)) [OurEndTime],[StartTime],[EndTime],[ElapsedTime],[TotalExecutionTime],[EstimatedCPUtime],[EstimatedI/O],[TenantId] from HCS_ProcessLogStatistics (nolock)
+select [LogStatId],[ProcessName],[TableRowsBefore],[TotalRowsInserted],[TableRowsAfter],cast([TableRowsAfter] as int)-cast([TableRowsBefore]  as int)as CountChange,
+FORMAT(CAST([StartTime] AT TIME ZONE 'Eastern Standard Time' AT TIME ZONE 'India Standard Time' AS DATETIME),'MMM dd h:mm:ss tt') AS [OurStartTime],
+FORMAT(CAST([Endtime] AT TIME ZONE 'Eastern Standard Time' AT TIME ZONE 'India Standard Time' AS DATETIME),'MMM dd h:mm:ss tt') AS [OurEndTime],
+[StartTime],[EndTime],[ElapsedTime],[TotalExecutionTime],[EstimatedCPUtime],[EstimatedI/O],[TenantId] 
+from HCS_ProcessLogStatistics (nolock)
 order by [LogStatId] desc;
+
 
  --====================================================================================================
 
@@ -61,13 +68,13 @@ SELECT RecurringScheduleJobId,BatchId,BatchName,YearId,LastRunDate,DataSourceTyp
 ,CAST(CAST(RecurringTime AS datetime) AT TIME ZONE 'Eastern Standard Time'AT TIME ZONE 'India Standard Time'AS time) AS IST_Time,DayoftheWeek,StatusId
 FROM [dbo].[RecurringScheduleJob]
 where tenantid = 4 
-and statusid = 1 and DataSourceType = 'SFTP'
+and statusid = 1  and DataSourceType in( 'SFTP','Dataset')
 ORDER BY RecurringTime
 
 
 SELECT 
-CONVERT(VARCHAR(20), a.ScheduledDateTime, 100) AS DataBaseTime,
-CONVERT(VARCHAR(20),(a.ScheduledDateTime AT TIME ZONE 'Eastern Standard Time' AT TIME ZONE 'India Standard Time'),100) AS IST_Time
+FORMAT(a.ScheduledDateTime ,'MMM dd h:mm:ss tt') AS DataBaseTime,
+FORMAT(CAST(a.[ScheduledDateTime] AT TIME ZONE 'Eastern Standard Time' AT TIME ZONE 'India Standard Time' AS DATETIME),'MMM dd h:mm:ss tt') AS IST_Time
 ,RIGHT('0' + CAST(DATEDIFF(SECOND, a.ProcessStartDate, a.ProcessEndDate) / 3600 AS VARCHAR), 2) + ':' +
 RIGHT('0' + CAST((DATEDIFF(SECOND, a.ProcessStartDate, a.ProcessEndDate) % 3600) / 60 AS VARCHAR), 2) + ':' +
 RIGHT('0' + CAST(DATEDIFF(SECOND, a.ProcessStartDate, a.ProcessEndDate) % 60 AS VARCHAR), 2) AS TimeTaken
@@ -81,13 +88,13 @@ ORDER BY a.BatchID DESC;
 select * from refetlprocessstatus where tenantid = 4
  
 /*
-UPDATE a SET RecurringTime = '02:00:00.0000000' FROM RecurringScheduleJob a WHERE RecurringScheduleJobId = 78
+UPDATE a SET RecurringTime = '03:50:00.0000000' FROM RecurringScheduleJob a WHERE RecurringScheduleJobId = 80
 */
   
 SELECT *
 -- UPDATE b SET b.processstatusid = 2
 -- UPDATE b SET ScheduledDateTime = GETDATE()
-FROM BatchSchedule b WHERE BatchId = 2784
+FROM BatchSchedule b WHERE BatchId = 2812
  
 --====================================================================================================
 
@@ -229,3 +236,27 @@ exec sp_depends HCSIncidentIQTicketsExportAVDS
 
 select * from main.Henryinsights_IncidentIQAssetExport
 select * from main.Henryinsights_IncidentIQTicketsExport
+
+select *from assessmentautomation
+select * from [HCS_Assessment_iReadyPIS] where subject = 'reading' order by  cast(daterangestart as date)  desc
+
+select * from [RefMAPRTIBandRanges] where minyear = '2026' 
+select * from [RefMAPRTIBandRanges] where minyear = '2026' and Subject='Reading'
+
+select * from [RefMAPRTIBandRanges] where minyear = '2020' and Subject='Algebra 1' and Term='Spring'
+
+select concat(minscore,'-',maxscore),grade,* from [RefMAPRTIBandRanges] where cast(CreatedDate as date)='2025-11-18' 
+and Subject = 'Reading' and term = 'Spring' 
+
+
+
+
+--781	Mathematics	Winter	08	A - Beginning	Beginning	200	210  --100 210
+--951	Mathematics	Spring	07	A - Beginning	Beginning	105	200  --105 210
+
+--update [RefMAPRTIBandRanges] set maxscore = 210 where MAPRTIBandId=951
+
+
+
+select * from main.HenryInsights_ASSESS_MAP_All where schoolyear = 2026 and TermName='Winter 2025-2026'
+select * from stage.HenryInsights_ASSESS_MAP_All_audit where batchid = 2812

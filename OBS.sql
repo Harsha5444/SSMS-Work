@@ -1,5 +1,7 @@
-select CONVERT(VARCHAR(20), DateTimeStamp, 100) AS DataBaseTime,CONVERT(VARCHAR(20),(DateTimeStamp AT TIME ZONE 'UTC' AT TIME ZONE 'India Standard Time'),100) AS IST_Time,* from errorlogforusp order by ErrorId desc;
-select CONVERT(VARCHAR(20), LogDateTime, 100) AS DataBaseTime,CONVERT(VARCHAR(20),(LogDateTime AT TIME ZONE 'UTC' AT TIME ZONE 'India Standard Time'),100) AS IST_Time,* from idm.apperrorlog order by EventId desc;
+select FORMAT(CAST([DateTimestamp] AT TIME ZONE 'UTC' AT TIME ZONE 'India Standard Time' AS DATETIME),'MMM dd h:mm:ss tt') AS IST_Time,*
+from errorlogforusp order by ErrorId desc;
+select FORMAT(CAST([Logdatetime] AT TIME ZONE 'UTC' AT TIME ZONE 'India Standard Time' AS DATETIME),'MMM dd h:mm:ss tt') AS IST_Time,*
+from idm.apperrorlog order by EventId desc;
 
 --====================================================================================================
 
@@ -26,14 +28,26 @@ ON sp.spid = ER.session_id
 CROSS APPLY SYS.DM_EXEC_SQL_TEXT(er.sql_handle) EST
 --WHERE DB_NAME(SP.DBID) = 'AnalyticVue_Clayton'
 ORDER BY CPU DESC;
+
+--====================================================================================================
+
+select [LogStatId],[ProcessName],[TableRowsBefore],[TotalRowsInserted],[TableRowsAfter],cast([TableRowsAfter] as int)-cast([TableRowsBefore]  as int)as CountChange,
+FORMAT(CAST([StartTime] AT TIME ZONE 'UTC' AT TIME ZONE 'India Standard Time' AS DATETIME),'MMM dd h:mm:ss tt') AS [OurStartTime],
+FORMAT(CAST([Endtime] AT TIME ZONE 'UTC' AT TIME ZONE 'India Standard Time' AS DATETIME),'MMM dd h:mm:ss tt') AS [OurEndTime],
+[StartTime],[EndTime],[ElapsedTime],[TotalExecutionTime],[EstimatedCPUtime],[EstimatedI/O],[TenantId] from WHPS_ProcessLogStatistics (nolock)
+order by [LogStatId] desc;
+
+select * from AVue_TemplateDependentAggTablesLoading
+
  --====================================================================================================
+
 
 SELECT distinct o.type_desc AS ObjectType,SCHEMA_NAME(o.schema_id) AS SchemaName,
     o.name AS ObjectName,o.create_date,o.modify_date
 FROM sys.sql_expression_dependencies d
 INNER JOIN sys.objects o ON d.referencing_id = o.object_id
 INNER JOIN sys.objects ro ON d.referenced_id = ro.object_id
-WHERE ro.name = 'RecurringScheduleJob' AND ro.type = 'U' -- User tables only
+WHERE ro.name = 'WHPSAssessmentAllDS_Table' AND ro.type = 'U' -- User tables only
     AND o.type IN ('V', 'P', 'FN', 'IF', 'TF') -- Views, Stored Procedures, Functions
 ORDER BY o.type_desc, SchemaName, ObjectName;
 
@@ -60,8 +74,8 @@ ORDER BY RecurringTime
 
 
 SELECT 
-CONVERT(VARCHAR(20), a.ScheduledDateTime, 100) AS DataBaseTime,
-CONVERT(VARCHAR(20),(a.ScheduledDateTime AT TIME ZONE 'UTC' AT TIME ZONE 'India Standard Time'),100) AS IST_Time
+FORMAT(a.ScheduledDateTime ,'MMM dd h:mm:ss tt') AS DataBaseTime,
+FORMAT(CAST(a.[ScheduledDateTime] AT TIME ZONE 'UTC' AT TIME ZONE 'India Standard Time' AS DATETIME),'MMM dd h:mm:ss tt') AS IST_Time
 ,RIGHT('0' + CAST(DATEDIFF(SECOND, a.ProcessStartDate, a.ProcessEndDate) / 3600 AS VARCHAR), 2) + ':' +
 RIGHT('0' + CAST((DATEDIFF(SECOND, a.ProcessStartDate, a.ProcessEndDate) % 3600) / 60 AS VARCHAR), 2) + ':' +
 RIGHT('0' + CAST(DATEDIFF(SECOND, a.ProcessStartDate, a.ProcessEndDate) % 60 AS VARCHAR), 2) AS TimeTaken
@@ -206,7 +220,7 @@ select * from IDM.DataSetJoinColumnInfo where DataSetColumnId in (select DataSet
 --Blitz Report - Assessments - Middle
 --Blitz Report - Assessments - High
 --Blitz Report - Assessments - Elementary
-Students Blitz Report - Teacher - High
+--Students Blitz Report - Teacher - High
 
 select ReportDetailsId,ReportFileDetails from reportdetails where tenantid = 38 
 and ReportDetailsId in 
@@ -230,8 +244,8 @@ select * from idm.datasetcolumn where tenantid = 38 and DomainRelatedViewId = 42
 
 
 
-School Year, Student School, Grade, Teacher, Dept
-School Year, School Name, Grade, Teacher, Dept
+--School Year, Student School, Grade, Teacher, Dept
+--School Year, School Name, Grade, Teacher, Dept
 
 
 select * from LinkedReportMappedFileds where  ReportDetailsId in (9003)
@@ -247,8 +261,10 @@ from stage.whps_blitzreport_failedrecords where schoolyear = 2026 and tenantid =
 
 
 select * from AVue_TemplateDependentAggTablesLoading
-insert into AVue_TemplateDependentAggTablesLoading
-select 'WHPS_BlitzReport','[dbo].[USP_WHPS_BlitzSummaryWithAllAss_Loading]','Aggregate',38,1,null,'DDAUser@DDA',getdate(),null,null,'@SchoolYear,@TenantId'
+--delete from AVue_TemplateDependentAggTablesLoading where TemplateDependentAggTablesLoadingId=4
+
+--insert into AVue_TemplateDependentAggTablesLoading
+--select 'WHPS_StudentStandards','[dbo].[USP_WHPS_PAT_LevelMovement_Loading]','Aggregate',38,1,null,'DDAUser@DDA',getdate(),null,null,'@SchoolYear,@TenantId'
 
 
 select distinct assessment from assessmentinfo where tenantid = 38
@@ -381,9 +397,29 @@ ORDER BY GroupName,DashboardName, ReportId;
 ---=====================================================================================
 
 
+select * from fn_dashboardreportsdetails(38) where dashboardname = 'PAT level movement'
 select * from fn_dashboardreportsdetails(38) where dashboardname = 'PAT Standards Performance'
-select * from fn_dashboardreportsdetails(38) where dashboardname = 'Attendance Dashboard (WHPS)'
+select ReportId	,ReportName,	ReportType ,DataSet, ChildReportDataSet,
+ChildReportId,
+ChildReportName,
+ChildReportDataSet from fn_dashboardreportsdetails(38) where dashboardname = 'Attendance Dashboard (WHPS)'
 
+
+
+select * from rptdomainrelatedviews where tenantid = 38 and DomainRelatedViewId=2696
+select * from  rptviewfields   where DomainRelatedViewId=2696
+select * from idm.datasetcolumn where DomainRelatedViewId=2696
+--dbo.TotalPercentageUniqueStudentsDS
+
+--insert into rptviewfields
+--select 2764 as DomainRelatedViewId,'HispanicLatino'as	ColumnName,'HispanicLatino'as	DisplayName,'VARCHAR'	as DataType,
+--null as LookupTable	, NULl as LookupColumn	,17 as SortOrder	, NULL as ColumnTableName	, 38 as TenantId	, 1 as StatusId	, 'DDAUser@DDA' as CreatedBy	,getdate() as CreatedDate	,NULL as ModifiedBy	,NULL as ModifiedDate	,NULL as SortbyColumnName
+--NULL	NULL	16	NULL	38	1		2023-05-11 08:28:36.600	NULL	NULL	NULL
+
+--dbo.WHPS_PATStandards_Vw
+
+--dbo.WHPS_PATLevelMovementStudent_Vw
+--dbo.WHPS_PAT_LevelMovement
 
 select * from reportdetails order by 1 desc 
 select * from idm.ddauser
@@ -396,10 +432,3 @@ select * from idm.ddauser
 	--,agg.AbsentRate
 	--,agg.CurrentMonthAttendance
 
-    SELECT  ds.[StandardName] as [StandardName], ds.[StandardGrade] as [StandardGrade],Count(Distinct ds.[DistrictStudentId]) as [Count],cast(Avg(cast(ds.[Presentrate] as decimal(15,1)))  as decimal(15,1)) as [Presentrate],( SELECT COUNT(Distinct subds.[DistrictStudentId]) FROM dbo.WHPSPATStandardsNewDS AS subds with (nolock) LEFT JOIN dbo.WHPS_PATStandardGradeSortOrder_Vw ON subds.[StandardGrade] = dbo.WHPS_PATStandardGradeSortOrder_Vw.ProficiencyDescription AND  subds.tenantid =dbo.WHPS_PATStandardGradeSortOrder_Vw.tenantid  Where  subds.[StandardName] = ds.[StandardName] AND  subds.[Term] = ('Fall') AND  subds.[StandardName] = ('Analysis') AND (subds.TenantId =38)) AS [SeriesTotalCount]  FROM dbo.WHPSPATStandardsNewDS as ds with (nolock)  LEFT JOIN dbo.WHPS_PATStandardGradeSortOrder_Vw ON ds.[StandardGrade] = dbo.WHPS_PATStandardGradeSortOrder_Vw.ProficiencyDescription AND  ds.tenantid =dbo.WHPS_PATStandardGradeSortOrder_Vw.tenantid    WHERE  ((ISNUMERIC(ds.[Presentrate]) = 1) AND (ds.[Term] = 'Fall') AND (ds.[StandardName] = 'Analysis') AND (ds.TenantId = 38))   GROUP BY ds.[StandardName],ds.[StandardGrade],dbo.WHPS_PATStandardGradeSortOrder_Vw.SortOrder  ORDER BY dbo.WHPS_PATStandardGradeSortOrder_Vw.SortOrder ASC,ds.[StandardGrade] ASC 
-
-    select distinct [StandardName] from WHPSPATStandardsNewDS
-
-    select * from AVue_TemplateDependentAggTablesLoading
-
-    select * from WHPS_BlitzSummaryWithAllAss where assessmentyear = 2026 and SchoolCategory='High'
